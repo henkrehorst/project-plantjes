@@ -17,7 +17,7 @@ namespace project_c_plantjes
 
         public User(int userid, string email, string password, int status, DateTime created)
         {
-            UserID = userid;
+            UserId = userid;
             Email = email;
             Password = password;
             Status = status;
