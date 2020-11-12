@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using project_c.Models.Users;
 
 namespace project_c
 {
@@ -10,5 +11,6 @@ namespace project_c
         }
         
         //add models to database with: public DbSet<modelName> name {get; set;}
+        public DbSet<User> User { get; set; }
     }
 }

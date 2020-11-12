@@ -26,7 +26,7 @@ namespace project_c
         {
             services.AddControllersWithViews();
             services.AddDbContext<DataContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("DataContext")));
+                builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

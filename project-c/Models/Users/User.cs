@@ -11,13 +11,12 @@ namespace project_c_plantjes
         
         [DataType(DataType.Password), Required, StringLength(64)]
         public string Password { get; set; }
-        public enum Role { Customer, Admin }
+        //public enum Role { Customer, Admin }
         public int Status { get; set; }
         public DateTime Created { get; set; }
 
-        public User(int userid, string email, string password, int status, DateTime created)
+        public User(string email, string password, int status, DateTime created)
         {
-            UserId = userid;
             Email = email;
             Password = password;
             Status = status;
