@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace project_c_plantjes
 {
     public class User
     {
-        public int UserID { get; set; }
+        public int UserId { get; set; }
+        [DataType(DataType.EmailAddress), StringLength(255), Required]
         public string Email { get; set; }
+        
+        [DataType(DataType.Password), Required, StringLength(64)]
         public string Password { get; set; }
-        public enum Role { customer, admin }
+        public enum Role { Customer, Admin }
         public int Status { get; set; }
         public DateTime Created { get; set; }
 
