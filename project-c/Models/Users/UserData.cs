@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace project_c_plantjes.Models.Users
 {
-    public class UserData : User
+    public class UserData
     {
         public int UserDataID { get; set; }
+        [StringLength(45), Required]
         public string FirstName { get; set; }
+        [StringLength(45), Required]
         public string LastName { get; set; }
+        [DataType(DataType.PostalCode), Required]
         public string ZipCode { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
+        [DataType(DataType.Url)]
         public string Avatar { get; set; }
 
-        public UserData(int uid, string email, string pw, int status, DateTime created, int udid, string fname, string lname, string zcode, double lat, double lng, string avatar) : base(uid, email, pw, status, created)
-        {
-            UserDataID = udid;
-            FirstName = fname;
-            LastName = lname;
-            ZipCode = zcode;
-            Lat = lat;
-            Lng = lng;
-            Avatar = avatar;
-        }
+        public int UserId { get; set; }
+        public User User { get; set; }
 
     }
 }

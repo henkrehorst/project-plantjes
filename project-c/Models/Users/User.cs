@@ -1,7 +1,8 @@
-﻿using System;
+﻿using project_c_plantjes.Models.Users;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace project_c_plantjes
+namespace project_c_plantjes.Models.Users
 {
     public class User
     {
@@ -14,14 +15,15 @@ namespace project_c_plantjes
         //public enum Role { Customer, Admin }
         public int Status { get; set; }
         public DateTime Created { get; set; }
+        
+        public UserData UserData { get; set; }
 
-        public User(string email, string password, int status, DateTime created)
-        {
-            Email = email;
-            Password = password;
-            Status = status;
-            Created = created;
-        }
-
+       public User(string email, string password, int status, DateTime created)
+       {
+           Email = email;
+           Password = password;
+           Status = status;
+           Created = created;
+       }
 }
 }
