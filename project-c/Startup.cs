@@ -27,6 +27,7 @@ namespace project_c
             services.AddControllersWithViews();
             services.AddDbContext<DataContext>(builder =>
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +47,7 @@ namespace project_c
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -54,6 +55,7 @@ namespace project_c
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
