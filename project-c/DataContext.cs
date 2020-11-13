@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
+using project_c.Models.Plants;
 
 namespace project_c
 {
@@ -20,5 +21,10 @@ namespace project_c
         //added require tables for identity bundle
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
+
+        //plant data tables
+        public DbSet<Plant> Plants { get; set; }
+
+        public DbSet<PlantPictures> PlantPictures {get; set; }
     }
 }

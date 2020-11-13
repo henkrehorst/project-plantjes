@@ -12,18 +12,17 @@ namespace project_c.Models.Plants
         public string Name { get; set; }
         public string Description { get; set; }
         public double Length { get; set; }
-        public int Thumbnail { get; set; }
+        //public int Thumbnail { get; set; }
         //public User RelatedUser { get; set; }
         //The Photos field is not initialized by default.
-        public PlantPictures[] Photos { get; set; }
+        public List<PlantPictures> Photos { get; set; }
 
-        public Plant(int plantid, string name, string description, double length, int thumb)
+        public Plant(string name, string description, double length)
         {
-            PlantId = plantid;
             Name = name;
             Description = description;
             Length = length;
-            Thumbnail = thumb;
+            //Thumbnail = thumb;
         }
     }
 }
