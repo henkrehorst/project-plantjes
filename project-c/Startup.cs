@@ -25,7 +25,8 @@ namespace project_c
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<DataContext>(builder =>
+            services.AddRazorPages();
+            services.AddDbContext<DataContext>(builder => 
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
             services.AddRazorPages();
         }
@@ -49,6 +50,7 @@ namespace project_c
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
