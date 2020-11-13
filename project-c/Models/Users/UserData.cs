@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace project_c_plantjes.Models.Users
+namespace project_c.Models.Users
 {
     public class UserData
     {
-        public int UserDataID { get; set; }
+        public int UserDataId { get; set; }
         [StringLength(45), Required]
         public string FirstName { get; set; }
         [StringLength(45), Required]
@@ -20,7 +16,7 @@ namespace project_c_plantjes.Models.Users
         [DataType(DataType.Url)]
         public string Avatar { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; }
 
     }
