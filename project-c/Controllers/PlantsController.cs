@@ -40,7 +40,7 @@ namespace project_c.Controllers
 
             _context.Add(plant);
             _context.SaveChanges();
-            return null;
+            return Content("Plant toegevoegd");
         }
     }
 }
