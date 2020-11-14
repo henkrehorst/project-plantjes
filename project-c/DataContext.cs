@@ -23,5 +23,10 @@ namespace project_c
         //added require tables for identity bundle
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
+
+        //plant data tables
+        public DbSet<Plant> Plants { get; set; }
+
+        public DbSet<PlantPictures> PlantPictures {get; set; }
     }
 }
