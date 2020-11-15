@@ -86,26 +86,22 @@ namespace project_c.Controllers
                 return View();
             }
         }
-        
-        // // GET: PlantsController/Delete/5
-        // public ActionResult Delete(int id)
-        // {
-        //     return View();
-        // }
-        //
-        // // POST: PlantsController/Delete/5
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public ActionResult Delete(int id, IFormCollection collection)
-        // {
-        //     try
-        //     {
-        //         return RedirectToAction(nameof(Index));
-        //     }
-        //     catch
-        //     {
-        //         return View();
-        //     }
-        // }
+        // POST: PlantsController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id)
+        {
+            try
+            {
+                var plant = _context.Plants.Find(id);
+                _context.Plants.Remove(plant);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Details));
+            }
+        }
     }
 }

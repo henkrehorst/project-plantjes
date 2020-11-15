@@ -7,21 +7,23 @@
 
 <h2>Planten</h2>
 <div class="flex mb-4">
-@{
-    foreach (var plant in Model)
-    {
-        <div class="w-1/3 bg-gray-400 h-12">
-            <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                <img class="w-full" src="@plant.ImgUrl" alt="Plant foto">
-                <div class="px-6 py-4">
-                    <div class="font-bold text-xl mb-2">@plant.Name</div>
-                    <p class="text-gray-700 text-base">
-                        @plant.Description
-                    </p>
-                    <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" href="/plants/details/@plant.PlantId">Show</a>
+    @{
+        foreach (var plant in Model)
+        {
+            <div class="w-1/3 bg-gray-400 h-12">
+                <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                    <img class="w-full" src="@plant.ImgUrl" alt="Plant foto">
+                    <div class="px-6 py-4">
+                        <div class="font-bold text-xl mb-2">@plant.Name</div>
+                        <p class="text-gray-700 text-base">
+                            @plant.Description
+                        </p>
+                        <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" href="/plants/details/@plant.PlantId">Show</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
-}
+    <br>
+    <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" href="/plants/create">Plant toevoegen</a>
 </div>
