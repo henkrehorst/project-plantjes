@@ -54,7 +54,7 @@ namespace project_c.Controllers
             }
             catch
             {
-                return View();
+                return Content("Error probeer het opnieuw");
             }
         }
         
