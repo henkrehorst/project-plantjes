@@ -26,7 +26,7 @@ namespace project_c.Controllers
         public async Task<IActionResult> Privacy()
         {
             var email = new EmailSender();
-            await email.SendEmailAsync("0979264@hr.nl", "hoi maurice", "<h1>hello</h1>");
+            await email.SendEmailAsync("hhrehorst@gmail.com", "hoi Henkie", "<h1>hoooooi</h1>");
             return View();
         }
 

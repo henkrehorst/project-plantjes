@@ -106,9 +106,11 @@ namespace project_c.Areas.Identity.Pages.Account
                         pageHandler: null,
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
+
                     var email = new EmailSender();
-                    await email.SendEmailAsync(Input.Email, "Confirm your email",
+                    await email.SendEmailAsync(Input.Email, "Hello, confirm your email",
                         callbackUrl);
+
                     
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
