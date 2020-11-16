@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_c.Models;
+using project_c.Services;
 
 namespace project_c.Controllers
 {
@@ -17,14 +18,15 @@ namespace project_c.Controllers
         {
             _logger = logger;
         }
-
-        public IActionResult Index()
+        public ViewResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            var email = new EmailSender();
+            await email.SendEmailAsync("0979264@hr.nl", "hoi maurice", "<h1>hello</h1>");
             return View();
         }
 

@@ -13,7 +13,7 @@ namespace project_c.Services
     {
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            return Execute("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", subject, message, email);
+            return Execute("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", subject, message, email);
         }
 
         public Task Execute(string apiKey, string subject, string message, string email)
@@ -21,7 +21,7 @@ namespace project_c.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("Joe@contoso.com", "ProjectPlantjes"),
+                From = new EmailAddress("plantjes@henks.me", "ProjectPlantjes"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
