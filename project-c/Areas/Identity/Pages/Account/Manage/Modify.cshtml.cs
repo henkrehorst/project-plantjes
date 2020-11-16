@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using project_c.Models.Users;
 
@@ -23,18 +24,22 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly DataContext _context;
+        
 
         public ModifyModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<ChangePasswordModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            DataContext context)
 
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
         [Display(Name = "Gebruikersnaam")]
         public string Username { get; set; }
@@ -83,6 +88,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
+            UserData UserData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
             Username = userName;
             Email = email;
 
