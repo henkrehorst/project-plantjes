@@ -44,6 +44,15 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         [Display(Name = "Gebruikersnaam")]
         public string Username { get; set; }
 
+        [Display(Name = "Voornaam")]
+        public string Fname { get; set; }
+
+        [Display(Name = "Achternaam")]
+        public string Lname { get; set; }
+
+        [Display(Name = "Postcode")]
+        public string Zipcode { get; set; }
+
         public string Email { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
@@ -88,7 +97,10 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
-            UserData UserData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            UserData userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            Fname = userData.FirstName;
+            Lname = userData.LastName;
+            Zipcode = userData.ZipCode;
             Username = userName;
             Email = email;
 
