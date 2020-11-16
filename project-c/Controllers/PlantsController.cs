@@ -21,12 +21,14 @@ namespace project_c.Controllers
         // GET: PlantsController
         public ActionResult Index(string naam)
         {
-            var plants = from p in _context.Plants select p;
+            var plants = from p in _context.Plants orderby p.PlantId descending select p;
             if (!String.IsNullOrEmpty(naam))
             {
                 naam = char.ToUpper(naam[0]) + naam.Substring(1);
-                plants = from p in _context.Plants where p.Name.Contains(naam) select p;
+                var plant = from p in _context.Plants where p.Name.Contains(naam) select p;
+                return View(plant);
             }
+
             return View(plants);
         }
 
