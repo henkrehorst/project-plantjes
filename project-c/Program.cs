@@ -11,6 +11,7 @@ namespace project_c
 {
     public class Program
     {
+        public static bool IsLoggedIn = false;
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();

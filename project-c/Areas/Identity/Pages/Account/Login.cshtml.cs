@@ -41,6 +41,8 @@ namespace project_c.Areas.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
+        public bool IsLoggedIn { get; set; }
+
         public class InputModel
         {
             [Required]
@@ -84,6 +86,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    Program.IsLoggedIn = true;
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
