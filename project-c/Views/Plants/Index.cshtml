@@ -6,6 +6,10 @@
 }
 
 <h2>Planten</h2>
+<form asp-action="Index" method="get">
+    <input type="text" name="naam" placeholder="Voer een plant naam in">
+    <button type="submit">Zoeken</button>
+</form>
 <div class="flex mb-4">
     @{
         foreach (var plant in Model)

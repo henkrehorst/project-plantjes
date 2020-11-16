@@ -18,9 +18,14 @@ namespace project_c.Controllers
         }
 
         // GET: PlantsController
-        public ActionResult Index()
+        public ActionResult Index(string naam)
         {
             var plants = from p in _context.Plants select p;
+            if (!String.IsNullOrEmpty(naam))
+            {
+                plants = from p in _context.Plants where p.Name == naam select p;
+            }
+            
             return View(plants);
         }
 
