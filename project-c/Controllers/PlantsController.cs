@@ -23,9 +23,9 @@ namespace project_c.Controllers
             var plants = from p in _context.Plants select p;
             if (!String.IsNullOrEmpty(naam))
             {
-                plants = from p in _context.Plants where p.Name == naam select p;
+                naam = char.ToUpper(naam[0]) + naam.Substring(1);
+                plants = from p in _context.Plants where p.Name.Contains(naam) select p;
             }
-            
             return View(plants);
         }
 
@@ -50,11 +50,15 @@ namespace project_c.Controllers
             try
             {
                 Plant plant = new Plant();
-                plant.Name = form["name"];
-                plant.Length = Convert.ToInt32(form["length"]);
-                plant.Description = form["description"];
-                _context.Add(plant);
-                _context.SaveChanges();
+                if (ModelState.IsValid)
+                {
+                    plant.Name = form["name"];
+                    plant.Length = Convert.ToInt32(form["length"]);
+                    plant.Description = form["description"];
+                    _context.Add(plant);
+                    _context.SaveChanges();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -62,14 +66,14 @@ namespace project_c.Controllers
                 return Content("Error probeer het opnieuw");
             }
         }
-        
+
         // // GET: PlantsController/Edit/5
         public ActionResult Edit(int id)
         {
             var plant = from p in _context.Plants where p.PlantId == id select p;
             return View(plant);
         }
-        
+
         // POST: PlantsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -78,7 +82,6 @@ namespace project_c.Controllers
             try
             {
                 var plant = _context.Plants.Find(id);
-                
                 plant.Name = form["name"];
                 plant.Length = Convert.ToInt32(form["length"]);
                 plant.Description = form["description"];
@@ -91,6 +94,7 @@ namespace project_c.Controllers
                 return View();
             }
         }
+
         // POST: PlantsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
