@@ -28,20 +28,21 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
                     @if (Program.IsLoggedIn == false)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/login">Login</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/manage/modify">Manage</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/logout">Logout</a>
-                            </li>
-                        }
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/identity/account/login">Login</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/identity/account/manage/modify">Manage</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/identity/account/logout">Logout</a>
+                        </li>
+                    }
+                </ul>
             </div>
         </div>
     </nav>
