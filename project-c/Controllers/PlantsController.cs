@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
 using project_c.Models.Plants;
 using project_c.Services;
@@ -41,6 +42,7 @@ namespace project_c.Controllers
         }
 
         // GET: PlantsController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -49,6 +51,7 @@ namespace project_c.Controllers
         // POST: PlantsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Create(IFormCollection form)
         {
             var name = form["name"].ToString();
@@ -78,6 +81,7 @@ namespace project_c.Controllers
         }
 
         // // GET: PlantsController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var plant = from p in _context.Plants where p.PlantId == id select p;
@@ -87,6 +91,7 @@ namespace project_c.Controllers
         // POST: PlantsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<ActionResult> Edit(int id, IFormCollection form)
         {
             var name = form["name"].ToString();
@@ -121,6 +126,7 @@ namespace project_c.Controllers
         // POST: PlantsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Delete(int id)
         {
             try
