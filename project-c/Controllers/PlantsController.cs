@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using project_c.Models.Plants;
+using project_c.Services;
 
 namespace project_c.Controllers
 {
@@ -47,18 +49,21 @@ namespace project_c.Controllers
         // POST: PlantsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection form)
+        public async Task<ActionResult> Create(IFormCollection form)
         {
             var name = form["name"].ToString();
             var description = form["description"].ToString();
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
+            IFormFile image = form.Files.GetFile("ImageUpload");
+            UploadService uploadService = new UploadService();
             try
             {
                 Plant plant = new Plant();
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
+                    plant.ImgUrl = await uploadService.UploadImage(image);
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
                     _context.Add(plant);
@@ -82,18 +87,27 @@ namespace project_c.Controllers
         // POST: PlantsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection form)
+        public async Task<ActionResult> Edit(int id, IFormCollection form)
         {
             var name = form["name"].ToString();
             var description = form["description"].ToString();
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
+            IFormFile image = form.Files.GetFile("ImageUpload");
+            UploadService uploadService = new UploadService();
+            
             try
             {
                 var plant = _context.Plants.Find(id);
                 plant.Name = name;
                 plant.Length = Convert.ToInt32(form["length"]);
                 plant.Description = description;
+                
+                if (image != null)
+                {
+                    plant.ImgUrl = await uploadService.UploadImage(image);
+                }
+
                 _context.Update(plant);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
