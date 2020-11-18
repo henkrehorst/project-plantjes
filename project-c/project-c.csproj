@@ -26,4 +26,12 @@
     <_ContentIncludedByDefault Remove="Pages\Plants\Index.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="frontend\src" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="frontend\src\scss\main.scss" />
+  </ItemGroup>
+
 </Project>
