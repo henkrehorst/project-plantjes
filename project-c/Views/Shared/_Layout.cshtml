@@ -11,44 +11,24 @@
 <body>
     <header>
         <div>
-            <nav class="bg-gray-800">
+            <nav class="bg-green-900">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex items-center justify-between h-16">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <img class="h-8 w-8" src="https://tailwindui.com/img/logos/v1/workflow-mark-on-dark.svg" alt="Workflow logo">
+                                <img class="h-8 w-8" src="https://www.flaticon.com/svg/static/icons/svg/1590/1590412.svg" alt="Workflow logo">
                             </div>
                             <div class="hidden md:block">
                                 <div class="ml-10 flex items-baseline space-x-4">
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
 
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
 
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
 
-
-                                    @if (Program.IsLoggedIn == false)
-                                    {
-                                <a class="nav-item">
-                                    
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" id="login" asp-area="Identity" asp-page="/Account/Login">Loginnetje</a>
-                                </a>
-                                    }
-                                    else
-                                    {
-                                        <a class="nav-item">
-                                            <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" href="/identity/account/manage/modify">Manage</a>
-                                        </a>
-                                        <a class="nav-item">
-                                            <a class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" href="/identity/account/logout">Logout</a>
-                                        </a>
-                                    }
-
-
-
-                                    <a href="../Areas/Identity/Pages/Account/Login.cshtml" class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Login</a>
+                                                                      
                                 </div>
                             </div>
                         </div>
@@ -63,9 +43,29 @@
                                 <!-- Profile dropdown -->
                                 <div class="ml-3 relative">
                                     <div>
-                                        <button class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
-                                            <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                                        </button>
+
+                                        @if (Program.IsLoggedIn == true)
+                                        {
+                                            <button class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
+                                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                            </button>
+                                            <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
+                                                <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700">Jouw profiel</a>
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" id="modify" asp-area="Identity" asp-page="/Account/modify">Instellingen</a>
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" id="logout" asp-area="Identity" asp-page="/Account/Logout">Uitloggen</a>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-gray-700" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                        }
+
                                     </div>
                                     <!--
                                       Profile dropdown panel, show/hide based on dropdown state.
@@ -77,15 +77,7 @@
                                         From: "transform opacity-100 scale-100"
                                         To: "transform opacity-0 scale-95"
                                     -->
-                                    <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-                                        <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-
-                                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -112,15 +104,14 @@
                 -->
                 <div class="hidden md:hidden">
                     <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700">Dashboard</a>
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white bg-green-800 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
 
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Team</a>
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Projects</a>
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
 
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Calendar</a>
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
 
-                        <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Reports</a>
                     </div>
                     <div class="pt-4 pb-3 border-t border-gray-700">
                         <div class="flex items-center px-5 space-x-3">
@@ -132,13 +123,13 @@
                                 <div class="text-sm font-medium leading-none text-gray-400">tom@example.com</div>
                             </div>
                         </div>
-                        <div class="mt-3 px-2 space-y-1">
-                            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Your Profile</a>
 
-                            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Settings</a>
+                       
 
-                            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Sign out</a>
-                        </div>
+                            
+                        }
+
+
                     </div>
                 </div>
             </nav>
@@ -152,43 +143,7 @@
                 </div>
             </main>
         </div>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">project_c</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        @if (Program.IsLoggedIn == false)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/login">Login</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/manage/modify">Manage</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/identity/account/logout">Logout</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
+       
     </header>
     <div class="container">
         <main role="main" class="pb-3">

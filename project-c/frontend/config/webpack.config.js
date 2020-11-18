@@ -12,7 +12,7 @@ module.exports = {
         filename: '[name].css'
     }),
         new extraWatchWebpackPlugin({
-            dirs: [paths.src]
+            dirs: [paths.src, paths.tail]
         })
     ],
     module: {
