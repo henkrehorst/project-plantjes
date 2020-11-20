@@ -25,6 +25,7 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public void OnGet()
         {
+            Program.IsLoggedIn = false;
         }
 
         public async Task<IActionResult> OnPost(string returnUrl = null)

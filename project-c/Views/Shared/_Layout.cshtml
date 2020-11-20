@@ -1,35 +1,142 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - project_c</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/main.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">project_c</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <div>
+            <nav class="bg-green-900">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <img class="h-8 w-8" src="https://www.flaticon.com/svg/static/icons/svg/1590/1590412.svg" alt="Workflow logo">
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="ml-10 flex items-baseline space-x-4">
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
+
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
+
+                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+
+                                                                      
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="ml-4 flex items-center md:ml-6">
+                                <button class="p-1 border-2 border-transparent text-green-500 rounded-full hover:text-white focus:outline-none focus:text-white focus: active:bg-green-800" aria-label="Notifications">
+                                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                </button>
+
+                                <!-- Profile dropdown -->
+                                <div class="ml-3 relative">
+                                    <div>
+
+                                        @if (Program.IsLoggedIn == true)
+                                        {
+                                            <button class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
+                                                <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                            </button>
+                                            <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
+                                                <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800">Jouw profiel</a>
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
+
+                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="logout" asp-area="Identity" asp-page="/Account/Logout">Uitloggen</a>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                        }
+
+                                    </div>
+                                    <!--
+                                      Profile dropdown panel, show/hide based on dropdown state.
+
+                                      Entering: "transition ease-out duration-100"
+                                        From: "transform opacity-0 scale-95"
+                                        To: "transform opacity-100 scale-100"
+                                      Leaving: "transition ease-in duration-75"
+                                        From: "transform opacity-100 scale-100"
+                                        To: "transform opacity-0 scale-95"
+                                    -->
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="-mr-2 flex md:hidden">
+                            <!-- Mobile menu button -->
+                            <button class="inline-flex items-center justify-center p-2 rounded-md text-green-500 hover:text-white hover:bg-green-800 focus:outline-none focus:bg-green-800 focus:text-white">
+                                <!-- Menu open: "hidden", Menu closed: "block" -->
+                                <svg class="block h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                                <!-- Menu open: "block", Menu closed: "hidden" -->
+                                <svg class="hidden h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </nav>
+
+                <!--
+                  Mobile menu, toggle classes based on menu state.
+
+                  Open: "block", closed: "hidden"
+                -->
+                <div class="hidden md:hidden">
+                    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
+
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
+
+                        <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
+
+                    </div>
+                    <div class="pt-4 pb-3 border-t border-green-800">
+                        <div class="flex items-center px-5 space-x-3">
+                            <div class="flex-shrink-0">
+                                <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="text-base font-medium leading-none text-white">Tom Cook</div>
+                                <div class="text-sm font-medium leading-none text-green-500">tom@example.com</div>
+                            </div>
+                        </div>
+
+                       
+
+                            
+                        }
+
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+       
     </header>
-    <div class="container">
+    <div class="container mx-auto">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -40,9 +147,7 @@
             &copy; 2020 - project_c - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/main.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

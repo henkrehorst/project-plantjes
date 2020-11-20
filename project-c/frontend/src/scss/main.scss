@@ -1,0 +1,16 @@
+﻿@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+@import "./color.scss";
+
+@import "./plant.scss";
+
+$brand-color: white;
+
+body{
+  background-color: $brand-color;
+}
+
