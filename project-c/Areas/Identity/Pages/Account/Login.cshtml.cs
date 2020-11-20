@@ -45,11 +45,11 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Geen Email ingevuld")]
             [EmailAddress]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
