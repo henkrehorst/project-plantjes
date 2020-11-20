@@ -53,7 +53,7 @@ namespace project_c.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Onthoud mij")]
             public bool RememberMe { get; set; }
         }
 
@@ -100,7 +100,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Het e-mailadres of wachtwoord is niet juist.");
                     return Page();
                 }
             }

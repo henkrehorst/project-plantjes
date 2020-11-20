@@ -2,81 +2,68 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "";
 }
 
 <h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Input.Email"></label>
-                    <input asp-for="Input.Email" class="form-control" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Input.Password"></label>
-                    <input asp-for="Input.Password" class="form-control" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
-                            <input asp-for="Input.RememberMe" />
-                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div class="form-group">
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to log in.</h4>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+<body class="font-normal bg-white">
+    <div class="bg-white h-screen w-screen">
+        <div class="items-center flex-1 justify-center px-6 sm:px-0">
+            <div class="h-8 w-102 flex rounded-lg shadow-lg w-full sm:w-3/4 lg:w-1/2 bg-white sm:mx-0" style="height: 600px">
+                <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://www.tuinen.nl/wp-content/uploads/sites/12/2019/01/planten_stekken_FMDB_0-730x413.jpg'); background-size: cover; background-position: center center;"></div>
+                <div class="flex flex-col w-full md:w-1/2 p-4">
+                    <div class="flex flex-col flex-1 justify-center mb-8">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h1 class="text-4xl text-center font-thin">Welcome Back</h1>
+                                <section>
+                                    <div class="w-full mt-4">
+                                        <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
+                                            <div class="flex flex-col mt-4">
+                                                <h4 class="text-black">Voer je inloggevens in</h4>
+                                                <hr />
+                                                <div asp-validation-summary="All" class="text-red-700"></div><!--Extra-->
+                                                <div class="form-group flex flex-col mt-4">
+                                                    <label asp-for="Input.Email"></label>
+                                                    <input asp-for="Input.Email" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                                                    <span asp-validation-for="Input.Email" class="text-red-700"></span>
+                                                </div>
+                                                <div class="form-group flex flex-col mt-4">
+                                                    <label asp-for="Input.Password">Wachtwoord</label>
+                                                    <input asp-for="Input.Password" class="flex-grow h-8 px-2 rounded border border-grey-400 form-control" />
+                                                    <span asp-validation-for="Input.Password" class="text-red-700"></span>
+                                                </div>
+                                                <div class="form-group flex items-center mt-4">
+                                                    <div class="checkbox">
+                                                        <label asp-for="Input.RememberMe">
+                                                            <input asp-for="Input.RememberMe" />
+                                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                                        </label>
+                                                        <a class=" flex items-end align-baseline font-normal text-sm text-blue-500 hover:text-blue-800" id="forgot-password " asp-page="./ForgotPassword">Wachtwoord vergeten?</a>
+                                                    </div>
+                                                </div>
+                                                <div class="flex flex-col mt-8 form-group">
+                                                    <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded">Inloggen</button>
+                                                </div>
+                                                <div class="mt-4 form-group">
+                                                    <p>
+                                                    <p class="text-black">
+                                                        Nog geen account?
+                                                        <a class="underline text-blue-500 hover:bg-blue-700" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
                         </div>
-                    </form>
-                }
-            }
-        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    </body>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
