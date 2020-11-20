@@ -6,8 +6,36 @@
 }
 
 <style>
+    h4{
+        padding-top: 15px;
+    }
     .infoformfields{
         background-color: #0094ff;
+    }
+
+    button {
+        padding-left: 15px;
+        padding-top: 20px;
+        padding-right: 15px;
+        padding-bottom: 20px;
+        text-align: center;
+        transition-duration:0.2s;
+        background-color: white;
+        border: 8px;
+        border-color: black;
+        border-radius: 4px;
+    }
+
+    button:hover {
+        background-color: #4CAF50;
+        text-decoration-color: white;
+     }
+
+    p{
+        text-align: left;
+    }
+    .input-group-append{
+        float: left;
     }
 </style>
 
@@ -56,7 +84,7 @@
                 else
                 {
                     <input asp-for="Email" class="form-control" disabled />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="savebutton">Send verification email</button>
                 }
             </div>
             <div class="form-group">
@@ -64,7 +92,7 @@
                 <input asp-for="EmailInput.NewEmail" class="form-control" />
                 <span asp-validation-for="EmailInput.NewEmail" class="text-danger"></span>
             </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="btn btn-primary">Verander email</button>
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail">Verander email</button>
         </form>
     </div>
 </div>
