@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
 using project_c.Models.Plants;
+using project_c.Models.Chat;
 
 namespace project_c
 {
@@ -24,5 +25,6 @@ namespace project_c
 
         //plant data tables
         public DbSet<Plant> Plants { get; set; }
+        public DbSet<Chat> Chats { get; set; } 
     }
 }
