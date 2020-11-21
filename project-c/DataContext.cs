@@ -25,6 +25,6 @@ namespace project_c
 
         //plant data tables
         public DbSet<Plant> Plants { get; set; }
-        public DbSet<Chat> Chats { get; set; } 
+        //public DbSet<Chat> Chats { get; set; } 
     }
 }

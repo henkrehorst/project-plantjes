@@ -15,11 +15,13 @@ namespace project_c.Models.Chat
 
         public DateTime Created { get; set; }
 
+        public List<Message> Messages {get; set;}
+
         public ChatData ChatData { get; set; }
 
-        public void Send(User user, Message msg)
-        {
+          public void Send(User user, Message msg)
+          {
             
-        }
-    }
+          }
+ }
 }

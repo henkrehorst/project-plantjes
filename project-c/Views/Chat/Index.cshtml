@@ -1,7 +1,28 @@
-﻿
+﻿@using project_c.Models.Chat
 @{
+    
     ViewData["Title"] = "Index";
 }
+    <style>
+        .newChats {
+            text-align: center;
+            height: 80px;
+            width: 50%;
+            background-color: forestgreen;
+        }
+        .startNew{
+
+        }
+    </style>
 
 <h1>Index</h1>
+
+<div class="newChats">
+    <div class="px-0 flex">
+        <div>
+            <h2 class="md:text-4xl text-xl font-medium text-white leading-6 text-gray-200">Chatten</h2>
+        </div>
+    </div>
+    <button class="startNew">Start een nieuwe chat</button>
+</div>
 

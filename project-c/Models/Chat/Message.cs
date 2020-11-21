@@ -9,7 +9,9 @@ namespace project_c.Models.Chat
 {
     public class Message
     {
+        public int ChatId { get; set; }
         public Chat Chat { get; set; }
+
         [Key]
         public int MessageId { get; set; }
 
