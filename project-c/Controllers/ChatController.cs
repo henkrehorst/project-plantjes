@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
+using project_c.Models.Chat;
 
 namespace project_c.Controllers
 {
@@ -22,9 +23,25 @@ namespace project_c.Controllers
             return View();
         }
 
-        public async void Send(int receiver)
+        public async Task<ActionResult> CreateChat(IFormCollection form, int receiver)
         {
             var msg = form["Message"].ToString();
+            DateTime created = DateTime.Today;
+            try
+            {
+                Chat chat = new Chat();
+                if (ModelState.IsValid)
+                {
+                    chat.Created = created;
+                    chat.ChatData = new ChatData();
+                    //chat.ChatData.Users.Add();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return Content("Er was een fout. Probeer het opnieuw.");
+            }
         }
     }
 }
