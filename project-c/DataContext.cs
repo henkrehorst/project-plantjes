@@ -25,6 +25,10 @@ namespace project_c
 
         //plant data tables
         public DbSet<Plant> Plants { get; set; }
-        //public DbSet<Chat> Chats { get; set; } 
+
+        //chat + message data tables
+        public DbSet<Chat> Chats { get; set; } 
+        public DbSet<ChatData> ChatDatasets { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }
