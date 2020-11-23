@@ -62,9 +62,26 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public EmailInputModel EmailInput { get; set; }
+        public UserData userData { get; set; }
 
         //User code.
+        private async Task LoadAsync(User user)
+        {
+            var userName = await _userManager.GetUserNameAsync(user);
+            var email = await _userManager.GetEmailAsync(user);
+            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
+            Fname = userData.FirstName;
+            Lname = userData.LastName;
+            Zipcode = userData.ZipCode;
+            Username = userName;
+            Email = email;
 
+            EmailInput = new EmailInputModel
+            {
+            };
+
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+        }
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -80,6 +97,11 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
+            userData.FirstName = Fname;
+            userData.LastName = Lname;
+            userData.ZipCode = Zipcode;
+            _context.Update(userData);
+            _context.SaveChanges();
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
@@ -91,24 +113,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             [EmailAddress]
             [Display(Name = "Nieuwe email")]
             public string NewEmail { get; set; }
-        }
-
-        private async Task LoadAsync(User user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            UserData userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
-            Fname = userData.FirstName;
-            Lname = userData.LastName;
-            Zipcode = userData.ZipCode;
-            Username = userName;
-            Email = email;
-
-            EmailInput = new EmailInputModel
-            {
-            };
-
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
 
         public async Task<IActionResult> OnGetAsync()
