@@ -24,5 +24,7 @@ namespace project_c
 
         //plant data tables
         public DbSet<Plant> Plants { get; set; }
+        public DbSet<Filter> Filters { get; set; }
+        public DbSet<Option> Options { get; set; }
     }
 }
