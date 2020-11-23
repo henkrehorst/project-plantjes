@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using project_c.Models.Plants;
 using project_c.Services;
 
@@ -15,10 +16,12 @@ namespace project_c.Controllers
     public class PlantsController : Controller
     {
         private readonly DataContext _context;
+        private readonly UploadService _uploadService;
 
-        public PlantsController(DataContext context)
+        public PlantsController(DataContext context, UploadService upload)
         {
             _context = context;
+            _uploadService = upload;
         }
 
         // GET: PlantsController
@@ -59,14 +62,14 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-            UploadService uploadService = new UploadService();
+            
             try
             {
                 Plant plant = new Plant();
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    plant.ImgUrl = await uploadService.UploadImage(image);
+                    plant.ImgUrl = await _uploadService.UploadImage(image);
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
                     _context.Add(plant);
@@ -99,8 +102,7 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-            UploadService uploadService = new UploadService();
-            
+
             try
             {
                 var plant = _context.Plants.Find(id);
@@ -110,7 +112,7 @@ namespace project_c.Controllers
                 
                 if (image != null)
                 {
-                    plant.ImgUrl = await uploadService.UploadImage(image);
+                    plant.ImgUrl = await _uploadService.UploadImage(image);
                 }
 
                 _context.Update(plant);

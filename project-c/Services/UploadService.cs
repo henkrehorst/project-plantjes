@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace project_c.Services
 {
@@ -12,12 +13,13 @@ namespace project_c.Services
     {
         private readonly BlobServiceClient _blobServiceClient;
         private readonly string _blobContainerName;
+        private readonly IConfiguration _configuration;
 
-        public UploadService(string container = "media")
+        public UploadService(IConfiguration configuration)
         {
-            this._blobContainerName = container;
-            this._blobServiceClient = new BlobServiceClient(
-                "DefaultEndpointsProtocol=https;AccountName=mediablob12;AccountKey=QeNYAzk+fVmlhpuRBgTCSBn/UWWrWdluox3gFU2LljFHD53qhkz0SoQHMELTlLt6f7iE7oyR9Qr8ld8dgOWypA==;EndpointSuffix=core.windows.net");
+            this._blobContainerName = "media";
+            this._configuration = configuration;
+            this._blobServiceClient = new BlobServiceClient(this._configuration.GetConnectionString("AzureBlobStorage"));
         }
 
         private BlobContainerClient GetBlobContainerClient()
