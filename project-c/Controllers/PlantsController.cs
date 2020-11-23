@@ -163,5 +163,11 @@ namespace project_c.Controllers
                 return RedirectToAction(nameof(Details));
             }
         }
+        public ActionResult MijnPlanten()
+        {
+            var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
+            
+            return View(plants);
+        }
     }
 }
