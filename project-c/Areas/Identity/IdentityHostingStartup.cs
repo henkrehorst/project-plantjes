@@ -19,8 +19,8 @@ namespace project_c.Areas.Identity
                     options.UseNpgsql(context.Configuration.GetConnectionString("PlantjesDataContext")));
 
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();
-                
             });
         }
     }
