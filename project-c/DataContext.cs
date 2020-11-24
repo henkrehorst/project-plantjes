@@ -9,7 +9,7 @@ namespace project_c
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) 
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
@@ -21,20 +21,8 @@ namespace project_c
         //added require tables for identity bundle
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
-        public DbSet<IdentityRole<string>> IdentityRoles { get; set; }
-        public DbSet<IdentityUserRole<string>> IdentityUserRoles { get; set; }
-        public DbSet<IdentityRoleClaim<string>> IdentityRoleClaim { get; set; }
 
         //plant data tables
         public DbSet<Plant> Plants { get; set; }
-        
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<IdentityRole>();
-            modelBuilder.Entity<IdentityUserRole<string>>()
-                .HasKey(r => new {r.UserId, r.RoleId});
-            
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }

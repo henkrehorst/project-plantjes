@@ -25,10 +25,6 @@
                                    
                                     <a class="@Html.IsSelected("Plants", "Index") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
 
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
-                                    
-                                    <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Administration" asp-action="ListRoles">Roles</a>
-
                                     <a class="@Html.IsSelected("Home", "Privacy") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 
                                                                       
@@ -47,22 +43,13 @@
                                 <div class="ml-3 relative">
                                     <div>
 
-                                        @if (Program.IsLoggedIn)
+                                        @if (Program.IsLoggedIn == true)
                                         {
                                             <button class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid" id="user-menu" aria-label="User menu" aria-haspopup="true">
                                                 <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
                                             </button>
                                             <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                                 <div class="py-1 rounded-md bg-white shadow-xs" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-
-
-                                                    <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="mijnPlanten">Mijn planten</a>
-                                                    
-                                                    @if (User.IsInRole("Admin"))
-                                                    {
-                                                        <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListUsers">Gebruikers wijzigen</a>
-                                                        <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListRoles">Rollen wijzigen</a>
-                                                    }
 
                                                     <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800">Jouw profiel</a>
 
