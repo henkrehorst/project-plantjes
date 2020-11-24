@@ -17,5 +17,8 @@ namespace project_c.Models.Plants
         public int  Length { get; set; }
         
         public string ImgUrl { get; set; }
+        
+        public string UserId { get; set; }
+        public User User { get; set; } 
     }
 }
