@@ -27,7 +27,7 @@ namespace project_c.Controllers
         {
             return View();
         }
-        [HttpPost]
+  /*      [HttpPost]
         public IActionResult Faq(EmailModel model)
         {
             using (MailMessage message = new MailMessage(model.FromEmail,  model.To))
@@ -51,7 +51,7 @@ namespace project_c.Controllers
             }    
                 return View();
         }
-
+*/
         /*public async Task<IActionResult> Privacy()
         {
             var email = new EmailSender();

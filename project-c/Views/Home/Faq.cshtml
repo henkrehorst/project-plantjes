@@ -1,78 +1,8 @@
-﻿@model EmailModel
+﻿
 
-<html>
-<head>
-    @{
-        ViewData["Title"] = "Frequently asked questions";
-    }
-</head>
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
 
-<body class="font-normal bg-white">
-    <h1>ASP.Net Core: Send Email</h1>
-    <div>
-        @using (Html.BeginForm("Faq", "Home", FormMethod.Post))
-        {
-
-        <table border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="width: 80px">
-                    To:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.To)
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Subject:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Subject)
-                </td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    Body:
-                </td>
-                <td>
-                    @Html.TextAreaFor(model => model.Body, new { rows = "3", cols = "20" })
-                </td>
-            </tr>
-            @*<tr>
-                    <td>
-                        File Atachment:
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.Attachment, new { type = "file" })
-                    </td>
-                </tr>*@
-            <tr>
-                <td>
-                    Gmail Email:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.FromEmail, new { type = "password" })
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Gmail Password:
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.FromPassword, new { type = "password" })
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <input type="submit" value="Send" />
-                </td>
-            </tr>
-        </table>
-        }
-    </div>
-</body>
-
-</html>
-
-
+<p>Use this page to detail your site's privacy policy.</p>
