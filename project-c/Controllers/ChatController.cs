@@ -27,14 +27,14 @@ namespace project_c.Controllers
             return View();
         }
 
-        //GET: ChatController/Create
+        //GET: ChatController/NewChat
         [Authorize]
         public ActionResult Create()
         {
-            return View();
+            return View("NewChat");
         }
 
-        //Post: ChatController/Create
+        //Post: ChatController/NewChat
         [Authorize]
         public async Task<ActionResult> Create(IFormCollection form, int receiverID)
         {
@@ -54,7 +54,7 @@ namespace project_c.Controllers
                     chat.Created = created;
                     chat.ChatData = new ChatData();
                     chat.ChatData.Users.Add(user);
-                    _context.Add(chat);
+                    _context.Chats.Add(chat);
                     _context.SaveChanges();
                 }
                 return RedirectToAction(nameof(Index));
