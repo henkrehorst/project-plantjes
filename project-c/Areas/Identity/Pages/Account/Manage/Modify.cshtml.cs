@@ -53,6 +53,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         [Display(Name = "Postcode")]
         public string Zipcode { get; set; }
 
+
+
         public string Email { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
@@ -63,6 +65,12 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public EmailInputModel EmailInput { get; set; }
         public UserData userData { get; set; }
+        public User usr { get; set; }
+        public string usrid { get; set; }
+        public double lat { get; set; }
+        public double lng { get; set; }
+        [DataType(DataType.Url)]
+        public string avatar { get; set; }
 
         //User code.
         private async Task LoadAsync(User user)
@@ -70,25 +78,35 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
+            usr = user;
+            lat = userData.Lat;
+            lng = userData.Lng;
+            usrid = userData.UserId;
+            avatar = userData.Avatar;
             Fname = userData.FirstName;
             Lname = userData.LastName;
             Zipcode = userData.ZipCode;
             Username = userName;
             Email = email;
 
-            EmailInput = new EmailInputModel
-            {
-            };
-
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(UserData userData, string Username, string Fname, string Lname, string Zipcode, User usr, string usrid, double lat, double lng, string avatar)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+            userData.FirstName = Fname;
+            userData.LastName = Lname;
+            userData.ZipCode = Zipcode;
+            userData.User = usr;
+            userData.UserId = usr.Id;
+            userData.Lat = lat;
+            userData.Lng = lng;
+            userData.Avatar = avatar;
+
+            //probleem - UserID wordt automatisch naar null gezet hier. Dit mag niet
 
             if (!ModelState.IsValid)
             {
@@ -97,9 +115,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            userData.FirstName = Fname;
-            userData.LastName = Lname;
-            userData.ZipCode = Zipcode;
             _context.Update(userData);
             _context.SaveChanges();
             StatusMessage = "Your profile has been updated";
@@ -178,7 +193,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();
