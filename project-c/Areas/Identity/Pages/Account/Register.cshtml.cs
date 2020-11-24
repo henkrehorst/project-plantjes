@@ -26,18 +26,18 @@ namespace project_c.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender _EmailModel;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender EmailModel)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _EmailModel = EmailModel;
         }
 
         [BindProperty]
@@ -109,13 +109,13 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                 
 
 
-                   /* var email = new EmailSender();
+
+                 /*   var email = new EmailModel();
                     await email.SendEmailAsync(Input.Email, "Hello, confirm your email",
-                        callbackUrl);*/
-
+                        callbackUrl);
+*/
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
