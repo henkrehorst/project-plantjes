@@ -51,13 +51,15 @@ namespace project_c.Controllers
             }    
                 return View();
         }
-
-        /*public async Task<IActionResult> Privacy()
+        public ViewResult Faq()
         {
-            var email = new EmailSender();
-            await email.SendEmailAsync("hhrehorst@gmail.com", "hoi Henkie", "<h1>hoooooi</h1>");
             return View();
-        }*/
+        }
+
+        public async Task<IActionResult> Privacy()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

@@ -13,13 +13,13 @@ namespace project_c.Models
         public string FromEmail { get; set; }
         public string FromPassword { get; set; }
 
-        public EmailModel(string to, string subject, string body, string fromEmail, string fromPassword)
+     /*   public EmailModel(string to, string subject, string body, string fromEmail, string fromPassword)
         {
             To = to;
             Subject = subject;
             Body = body;
             FromEmail = fromEmail;
             FromPassword = fromPassword;
-        }
+        }*/
     }
 }

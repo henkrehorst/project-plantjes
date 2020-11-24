@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using project_c.Models.Users;
 using project_c.Services;
+using System.Net;
+using System.Net.Mail;
 
 namespace project_c.Areas.Identity.Pages.Account
 {
@@ -107,12 +109,15 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    /*var email = new EmailSender();
+                 
+
+
+                   /* var email = new EmailSender();
                     await email.SendEmailAsync(Input.Email, "Hello, confirm your email",
                         callbackUrl);*/
 
-                    
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     
                 }
