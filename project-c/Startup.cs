@@ -30,8 +30,8 @@ namespace project_c
             services.AddRazorPages();
             services.AddDbContext<DataContext>(builder => 
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
-            services.AddRazorPages();
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddRazorPages();/*
+            services.AddTransient<IEmailSender, EmailSender>();*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

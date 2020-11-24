@@ -21,8 +21,8 @@ namespace project_c.Areas.Identity
                     options.UseNpgsql(context.Configuration.GetConnectionString("PlantjesDataContext")));
 
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<DataContext>();
-                services.AddTransient<IEmailSender, EmailSender>();
+                    .AddEntityFrameworkStores<DataContext>();/*
+                services.AddTransient<IEmailSender, EmailSender>();*/
                 
             });
         }

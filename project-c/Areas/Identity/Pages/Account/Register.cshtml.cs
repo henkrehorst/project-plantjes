@@ -107,9 +107,9 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    var email = new EmailSender();
+                    /*var email = new EmailSender();
                     await email.SendEmailAsync(Input.Email, "Hello, confirm your email",
-                        callbackUrl);
+                        callbackUrl);*/
 
                     
                         await _signInManager.SignInAsync(user, isPersistent: false);
