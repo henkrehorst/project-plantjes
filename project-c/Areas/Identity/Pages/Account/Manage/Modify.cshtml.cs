@@ -45,10 +45,10 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         public string Username { get; set; }
 
         [Display(Name = "Voornaam")]
-        public string Fname { get; set; }
+        public string FirstName { get; set; }
 
         [Display(Name = "Achternaam")]
-        public string Lname { get; set; }
+        public string LastName { get; set; }
 
         [Display(Name = "Postcode")]
         public string Zipcode { get; set; }
@@ -83,30 +83,28 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             lng = userData.Lng;
             usrid = userData.UserId;
             avatar = userData.Avatar;
-            Fname = userData.FirstName;
-            Lname = userData.LastName;
+            FirstName = userData.FirstName;
+            LastName = userData.LastName;
             Zipcode = userData.ZipCode;
             Username = userName;
             Email = email;
 
         }
-        public async Task<IActionResult> OnPostAsync(UserData userData, string Username, string Fname, string Lname, string Zipcode, User usr, string usrid, double lat, double lng, string avatar)
+        public async Task<IActionResult> OnPostAsync(UserData userData, string Username, string FirstName, string LastName, string Zipcode, double lat, double lng, string avatar)
         {
             var user = await _userManager.GetUserAsync(User);
+            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            userData.FirstName = Fname;
-            userData.LastName = Lname;
+            user.UserName = Username;
+            userData.FirstName = FirstName;
+            userData.LastName = LastName;
             userData.ZipCode = Zipcode;
-            userData.User = usr;
-            userData.UserId = usr.Id;
             userData.Lat = lat;
             userData.Lng = lng;
             userData.Avatar = avatar;
-
-            //probleem - UserID wordt automatisch naar null gezet hier. Dit mag niet
 
             if (!ModelState.IsValid)
             {
