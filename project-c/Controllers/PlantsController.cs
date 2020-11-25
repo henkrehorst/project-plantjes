@@ -4,27 +4,35 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using project_c.Models.Plants;
+using project_c.Models.Users;
 using project_c.Services;
+
 
 namespace project_c.Controllers
 {
     public class PlantsController : Controller
     {
         private readonly DataContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public PlantsController(DataContext context)
+        public PlantsController(DataContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: PlantsController
         public ActionResult Index(string naam)
         {
             var plants = from p in _context.Plants orderby p.PlantId descending select p;
+            
             if (!String.IsNullOrEmpty(naam))
             {
                 naam = char.ToUpper(naam[0]) + naam.Substring(1);
@@ -54,6 +62,7 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Create(IFormCollection form)
         {
+            
             var name = form["name"].ToString();
             var description = form["description"].ToString();
             description = char.ToUpper(description[0]) + description.Substring(1);
@@ -69,6 +78,7 @@ namespace project_c.Controllers
                     plant.ImgUrl = await uploadService.UploadImage(image);
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
+                    plant.UserId = _userManager.GetUserId(User);
                     _context.Add(plant);
                     _context.SaveChanges();
                 }
@@ -104,17 +114,22 @@ namespace project_c.Controllers
             try
             {
                 var plant = _context.Plants.Find(id);
-                plant.Name = name;
-                plant.Length = Convert.ToInt32(form["length"]);
-                plant.Description = description;
-                
-                if (image != null)
+                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
-                    plant.ImgUrl = await uploadService.UploadImage(image);
+                    plant.Name = name;
+                    plant.Length = Convert.ToInt32(form["length"]);
+                    plant.Description = description; 
+                    if (image != null)
+                    {
+                        plant.ImgUrl = await uploadService.UploadImage(image);
+                    }
+                    _context.Update(plant);
+                    _context.SaveChanges();
                 }
-
-                _context.Update(plant);
-                _context.SaveChanges();
+                else
+                {
+                    return Content("Your are not authorized to edit this plant");
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -132,14 +147,27 @@ namespace project_c.Controllers
             try
             {
                 var plant = _context.Plants.Find(id);
-                _context.Plants.Remove(plant);
-                _context.SaveChanges();
+                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
+                { 
+                    _context.Plants.Remove(plant);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to delete this plant");
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
                 return RedirectToAction(nameof(Details));
             }
+        }
+        public ActionResult MijnPlanten()
+        {
+            var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
+            
+            return View(plants);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
@@ -9,9 +10,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201122135014_IdentityRoleClaim")]
+    partial class IdentityRoleClaim
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,62 +109,6 @@ namespace project_c.Migrations
                     b.ToTable("IdentityUserClaim");
                 });
 
-            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
-                {
-                    b.Property<int>("ChatId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int?>("ChatDataInt")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("ChatId");
-
-                    b.HasIndex("ChatDataInt");
-
-                    b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("project_c.Models.Chat.ChatData", b =>
-                {
-                    b.Property<int>("ChatDataInt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.HasKey("ChatDataInt");
-
-                    b.ToTable("ChatDatasets");
-                });
-
-            modelBuilder.Entity("project_c.Models.Chat.Message", b =>
-                {
-                    b.Property<int>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int?>("ChatDataInt")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("MessageContent")
-                        .HasColumnType("character varying(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("MessageId");
-
-                    b.HasIndex("ChatDataInt");
-
-                    b.HasIndex("ChatId");
-
-                    b.ToTable("Messages");
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
@@ -213,9 +159,6 @@ namespace project_c.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ChatDataInt")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
@@ -256,8 +199,6 @@ namespace project_c.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChatDataInt");
 
                     b.ToTable("User");
                 });
@@ -303,31 +244,6 @@ namespace project_c.Migrations
                     b.ToTable("UserData");
                 });
 
-            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
-                {
-                    b.HasOne("project_c.Models.Chat.ChatData", "ChatData")
-                        .WithMany()
-                        .HasForeignKey("ChatDataInt");
-                });
-
-            modelBuilder.Entity("project_c.Models.Chat.Message", b =>
-                {
-                    b.HasOne("project_c.Models.Chat.ChatData", null)
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatDataInt");
-
-                    b.HasOne("project_c.Models.Chat.Chat", "Chat")
-                        .WithMany("Messages")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("project_c.Models.Users.User", b =>
-                {
-                    b.HasOne("project_c.Models.Chat.ChatData", null)
-                        .WithMany("Users")
-                        .HasForeignKey("ChatDataInt");
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole<string>");
