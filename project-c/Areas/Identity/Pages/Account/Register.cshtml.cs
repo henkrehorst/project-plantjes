@@ -47,36 +47,37 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Geen Email ingevuld")]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Geen voornaam ingevuld")]
             [DataType(DataType.Text)]
             [Display(Name = "Voornaam")]
             public string Voornaam { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Geen achternaam ingevuld")]
             [DataType(DataType.Text)]
             [Display(Name = "Achternaam")]
             public string Achternaam { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Geen postcode ingevuld")]
             [StringLength(6, ErrorMessage = "Ongeldige Postcode", MinimumLength = 6)]
             [DataType(DataType.Text)]
             [Display(Name = "Postcode")]
             public string PostCode { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
+            [StringLength(100, ErrorMessage = "Het wachtwoord {0} moet minstens {2} and maximaal {1} lang zijn.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
 
+            [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
             [DataType(DataType.Password)]
-            [Display(Name = "Verifiëer password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Verifieer wachtwoord")]
+            [Compare("Password", ErrorMessage = "De wachtwoorden zijn niet gelijk.")]
             public string ConfirmPassword { get; set; }
         }
 
