@@ -17,6 +17,7 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net;
 using System.Net.Mail;
+using EmailModel = project_c.Models.EmailModel;
 
 namespace project_c.Areas.Identity.Pages.Account
 {
@@ -109,15 +110,26 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
+                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
+                    {
+                        message.Subject = "Account verificatie";
+                        message.Body = "\nHey " + Input.Voornaam +" "+Input.Achternaam + ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
+                            "om je email te bevesitgen!\n\n" + callbackUrl + "Groetjes,\n\n\nHet hele Plantjes Team!";
+                        message.IsBodyHtml = false;
 
-
-
-                 /*   var email = new EmailModel();
-                    await email.SendEmailAsync(Input.Email, "Hello, confirm your email",
-                        callbackUrl);
-*/
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                        using (SmtpClient smtp = new SmtpClient())
+                        {
+                            smtp.Host = "smtp.gmail.com";
+                            smtp.EnableSsl = true;
+                            NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            smtp.UseDefaultCredentials = true;
+                            smtp.Credentials = cred;
+                            smtp.Port = 587;
+                            smtp.Send(message);
+                        }
+                    }
+                
+                            await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     
                 }

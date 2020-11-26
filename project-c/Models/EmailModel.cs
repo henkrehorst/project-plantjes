@@ -42,13 +42,6 @@ namespace project_c.Models
         [DataType(DataType.Password)]
         public string FromPassword { get; set; }
 
-     /*   public EmailModel(string to, string subject, string body, string fromEmail, string fromPassword)
-        {
-            To = to;
-            Subject = subject;
-            Body = body;
-            FromEmail = fromEmail;
-            FromPassword = fromPassword;
-        }*/
+     
     }
 }
