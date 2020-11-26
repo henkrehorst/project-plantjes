@@ -9,7 +9,7 @@ namespace project_c.Models.Plants
         public int OptionId { get; set; }
 
         [MaxLength(20, ErrorMessage = "Naam mag niet langer zijn dan 45 tekens!"), Required]
-        public string DisplayName;
+        public string DisplayName { get; set; }
         
         public int Position { get; set; }
         

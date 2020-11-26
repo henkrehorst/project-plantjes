@@ -45,6 +45,7 @@ namespace project_c.Controllers.admin
         // GET: Filter
         public ActionResult Index()
         {
+            ViewData["Filters"] = this._dbContext.Filters.ToList();
             return View("~/Views/Admin/Filter/Index.cshtml");
         }
 

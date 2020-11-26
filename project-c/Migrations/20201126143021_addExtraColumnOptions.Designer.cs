@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
@@ -9,9 +10,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201126143021_addExtraColumnOptions")]
+    partial class addExtraColumnOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,26 +137,6 @@ namespace project_c.Migrations
                     b.ToTable("Plants");
                 });
 
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.Property<int>("FilterId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OptionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FilterId", "PlantId");
-
-                    b.HasIndex("OptionId");
-
-                    b.HasIndex("PlantId");
-
-                    b.ToTable("PlantOptions");
-                });
-
             modelBuilder.Entity("project_c.Models.Users.User", b =>
                 {
                     b.Property<string>("Id")
@@ -253,27 +235,6 @@ namespace project_c.Migrations
                     b.HasOne("project_c.Models.Plants.Filter", "Filter")
                         .WithMany("Options")
                         .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Filter", "Filter")
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Option", "Option")
-                        .WithMany()
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany("PlantOptions")
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

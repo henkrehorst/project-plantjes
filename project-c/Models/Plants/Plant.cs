@@ -17,5 +17,7 @@ namespace project_c.Models.Plants
         public int  Length { get; set; }
         
         public string ImgUrl { get; set; }
+        
+        public ICollection<PlantOptions> PlantOptions { get; set; }
     }
 }

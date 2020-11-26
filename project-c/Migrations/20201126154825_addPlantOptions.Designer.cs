@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
@@ -9,9 +10,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201126154825_addPlantOptions")]
+    partial class addPlantOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,18 +139,18 @@ namespace project_c.Migrations
 
             modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
                 {
+                    b.Property<int>("OptionId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("FilterId")
                         .HasColumnType("integer");
 
                     b.Property<int>("PlantId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OptionId")
-                        .HasColumnType("integer");
+                    b.HasKey("OptionId", "FilterId", "PlantId");
 
-                    b.HasKey("FilterId", "PlantId");
-
-                    b.HasIndex("OptionId");
+                    b.HasIndex("FilterId");
 
                     b.HasIndex("PlantId");
 
@@ -272,7 +274,7 @@ namespace project_c.Migrations
                         .IsRequired();
 
                     b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany("PlantOptions")
+                        .WithMany()
                         .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
