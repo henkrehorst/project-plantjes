@@ -184,7 +184,7 @@ namespace project_c.Controllers
         {
             try
             {
-                var plant = _context.Plants.Find(id);
+                var plant = _context.Plants.Include(p => p.PlantOptions).FirstOrDefault(p => p.PlantId == id);
                 _context.Plants.Remove(plant);
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
