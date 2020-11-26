@@ -30,6 +30,9 @@ namespace project_c.Models
         public string Subject { get; set; }
         [Required]
         [DataType(DataType.Text)]
+        public string Username { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
         public string Body { get; set; }
         [Required]
         [EmailAddress]
