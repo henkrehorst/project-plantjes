@@ -16,7 +16,7 @@ namespace project_c.Models.Plants
 
         public int Position { get; set; }
         
-        public List<Option> Options { get; set; }
+        public ICollection<Option> Options { get; set; }
 
     }
 }

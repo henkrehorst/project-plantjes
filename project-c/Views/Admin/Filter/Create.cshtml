@@ -1,0 +1,49 @@
+﻿@using System.Collections.Specialized
+@model project_c.Controllers.admin.FilterController
+
+@{
+    ViewBag.Title = "Maak een nieuwe filter aan";
+    Layout = "_Layout";
+}
+
+<h2>Filter create</h2>
+<form asp-controller="Filter" asp-action="Create" method="post">
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+            Naam filter
+        </label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+               id="name" type="text" asp-for="FormInput.Name" placeholder="Naam filter">
+        <span class="text-red-500 text-xs italic" asp-validation-for="FormInput.Name"></span>
+    </div>
+    <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="discription">
+            Beschrijving
+        </label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+               id="discription" asp-for="FormInput.Description" type="text" placeholder="Beschrijving">
+        <span class="text-red-500 text-xs italic" asp-validation-for="FormInput.Description"></span>
+    </div>
+    <div class="mb-4">
+        <h3>Opties</h3>
+        <table id="optionForm">
+            @for(var i = 0; i < (int) ViewData["OptionCount"]; i++)
+            {
+                <tr>
+                    <td>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                               type="text" asp-for="FormInput.Options[i].DisplayName" placeholder="Optie">
+                        <span class="text-red-500 text-xs italic" asp-validation-for="FormInput.Options[i].DisplayName"></span>
+                        <input type="hidden" value="1" asp-for="FormInput.Options[i].Position"/>
+                    </td>
+                    <td>
+                        <button onclick="addField()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-3 rounded focus:outline-none focus:shadow-outline" type="button">+</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+        Create filter
+    </button>
+</form>
