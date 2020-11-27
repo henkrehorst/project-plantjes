@@ -36,7 +36,7 @@ namespace project_c.Controllers
 
         //Post: ChatController/NewChat
         [Authorize]
-        public async Task<ActionResult> Create(IFormCollection form, int receiverID)
+        public async Task<ActionResult> CreateNew(IFormCollection form, User otheruser)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -49,14 +49,16 @@ namespace project_c.Controllers
             try
             {
                 Chat chat = new Chat();
-                if (ModelState.IsValid)
+                chat.Created = created;
+                chat.ChatData = new ChatData();
+                chat.ChatData.Users.Add(user);
+                chat.ChatData.Users.Add(_context.User.Where(a => a.Id == otheruser.Id).Single());
+                if (!ModelState.IsValid)
                 {
-                    chat.Created = created;
-                    chat.ChatData = new ChatData();
-                    chat.ChatData.Users.Add(user);
-                    _context.Chats.Add(chat);
-                    _context.SaveChanges();
+                    return RedirectToAction(nameof(Index));
                 }
+                _context.Chats.Add(chat);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
