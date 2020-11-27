@@ -52,9 +52,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         [Display(Name = "Postcode")]
         public string Zipcode { get; set; }
-
-
-
+        
+        [Display(Name = "Huidig Emailadres")]
         public string Email { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
@@ -161,7 +160,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             var email = await _userManager.GetEmailAsync(user);
-            if (EmailInput.NewEmail != email)
+            if (EmailInput.NewEmail != email && EmailInput.NewEmail != null)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, EmailInput.NewEmail);

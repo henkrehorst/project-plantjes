@@ -9,20 +9,25 @@
     h4{
         padding-top: 15px;
     }
-    .infoformfields{
-        background-color: #0094ff;
+    input {
+        background-color: #4CAF50;
+        border: 1px;
+        border-radius: 2px;
+        border-color: #000000;
+    }
+
+    .separator{
+        text-align: left;
     }
 
     button {
-        padding-left: 15px;
-        padding-top: 20px;
-        padding-right: 15px;
-        padding-bottom: 20px;
+        padding: 10px 10px 10px 10px;
         text-align: center;
         transition-duration:0.2s;
         background-color: white;
-        border: 8px;
-        border-color: black;
+        border: 2px;
+        border-color: #000000;
+        border-style: solid;
         border-radius: 4px;
     }
 
@@ -31,11 +36,11 @@
         text-decoration-color: white;
      }
 
-    p{
-        text-align: left;
-    }
     .input-group-append{
         float: left;
+    }
+    form{
+        padding-bottom:80px;
     }
 </style>
 
@@ -44,13 +49,18 @@
 <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
+            <h6 class="separator">Algemeen</h6>
+            @if (!Model.IsEmailConfirmed)
+            {
+                <br />
+            }
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="infoformfields">
+            <div class="form-group">
                 <label asp-for="Username"></label>
                 <input asp-for="Username" class="form-control"  />
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="infoformfields">
+            <div class="form-group">
                 <label asp-for="FirstName"></label>
                 <input asp-for="FirstName" class="form-control"  />
             </div>
@@ -64,11 +74,11 @@
                 <label asp-for="Zipcode"></label>
                 <input asp-for="Zipcode" class="form-control" />
             </div>
+            <br />
             <button id="update-profile-button" type="submit" class="btn btn-primary">Opslaan</button>
         </form>
         <form id="email-form" method="post">
-            <p></p>
-            <p><b>Email</b></p>
+            <h6 class="separator">Email</h6>
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Email"></label>
@@ -92,6 +102,7 @@
                 <input asp-for="EmailInput.NewEmail" class="form-control" />
                 <span asp-validation-for="EmailInput.NewEmail" class="text-danger"></span>
             </div>
+            <br />
             <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail">Verander email</button>
         </form>
     </div>
