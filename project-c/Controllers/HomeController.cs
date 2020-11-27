@@ -47,7 +47,7 @@ namespace project_c.Controllers
                     smtp.Send(message);
                     ViewBag.Message = "Email Sent Successfully";
 
-                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", "mauricebunk@hotmail.com"))
+                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", "henkrehorst@outlook.com"))
                     {
                         aReply.Subject = "Wij hebben je mail ontvangen!";
                         aReply.Body = "\nHey " + model.Username + "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
