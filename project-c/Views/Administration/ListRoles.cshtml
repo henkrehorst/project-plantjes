@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewBag.Title = "All Roles";
+    Layout = "_Layout";
+}
+
+<h1 class="text-4xl text-center m-2">Alle Rollen</h1>
+
+@if (Model.Any())
+{
+    <table class="border-collapse w-full table-fixed">
+        <thead>
+        <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                Rol Id
+            </th>
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                Rol
+            </th>
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                Opties
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var role in Model)
+        {
+            <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+                <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                    <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">card-header</span>
+                    @role.Id
+                </td>
+                <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                    <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">card-name</span>
+                    @role.Name
+                </td>
+                <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                    <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
+                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="text-blue-400 hover:text-blue-600 underline">Bewerken</a>
+                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="inline-block mx-3">
+                        <button type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <table class="border-collapse w-full table-fixed">
+        <tbody>
+        <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">card-header</span>
+                Nog geen Roles toegevoegd.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+}
+<div class="flex justify-center">
+    <a class="bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto" asp-action="CreateRole">
+        Rol toevoegen
+    </a>
+</div>
