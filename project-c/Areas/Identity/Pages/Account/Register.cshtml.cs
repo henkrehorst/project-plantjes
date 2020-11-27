@@ -15,6 +15,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using project_c.Models.Users;
+using project_c.Services;
+using System.Net;
+using System.Net.Mail;
+using EmailModel = project_c.Models.EmailModel;
 
 namespace project_c.Areas.Identity.Pages.Account
 {
@@ -24,18 +28,18 @@ namespace project_c.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender _EmailModel;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender EmailModel)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _EmailModel = EmailModel;
         }
 
         [BindProperty]
@@ -108,18 +112,28 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync("mauricebunk@hotmail.com", "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
+                    {
+                        message.Subject = "Account verificatie";
+                        message.Body = "\nHey " + Input.Voornaam +" "+Input.Achternaam + ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
+                            "om je email te bevesitgen!\n\n" + callbackUrl + "Groetjes,\n\n\nHet hele Plantjes Team!";
+                        message.IsBodyHtml = false;
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        using (SmtpClient smtp = new SmtpClient())
+                        {
+                            smtp.Host = "smtp.gmail.com";
+                            smtp.EnableSsl = true;
+                            NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            smtp.UseDefaultCredentials = true;
+                            smtp.Credentials = cred;
+                            smtp.Port = 587;
+                            smtp.Send(message);
+                        }
                     }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                
+                            await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
-                    }
+                    
                 }
                 foreach (var error in result.Errors)
                 {

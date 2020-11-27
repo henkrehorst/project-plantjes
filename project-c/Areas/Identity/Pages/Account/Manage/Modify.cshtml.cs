@@ -45,14 +45,15 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         public string Username { get; set; }
 
         [Display(Name = "Voornaam")]
-        public string Fname { get; set; }
+        public string FirstName { get; set; }
 
         [Display(Name = "Achternaam")]
-        public string Lname { get; set; }
+        public string LastName { get; set; }
 
         [Display(Name = "Postcode")]
         public string Zipcode { get; set; }
-
+        
+        [Display(Name = "Huidig Emailadres")]
         public string Email { get; set; }
 
         public bool IsEmailConfirmed { get; set; }
@@ -62,16 +63,47 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public EmailInputModel EmailInput { get; set; }
+        public UserData userData { get; set; }
+        public User usr { get; set; }
+        public string usrid { get; set; }
+        public double lat { get; set; }
+        public double lng { get; set; }
+        [DataType(DataType.Url)]
+        public string avatar { get; set; }
 
         //User code.
+        private async Task LoadAsync(User user)
+        {
+            var userName = await _userManager.GetUserNameAsync(user);
+            var email = await _userManager.GetEmailAsync(user);
+            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
+            usr = user;
+            lat = userData.Lat;
+            lng = userData.Lng;
+            usrid = userData.UserId;
+            avatar = userData.Avatar;
+            FirstName = userData.FirstName;
+            LastName = userData.LastName;
+            Zipcode = userData.ZipCode;
+            Username = userName;
+            Email = email;
 
-        public async Task<IActionResult> OnPostAsync()
+        }
+        public async Task<IActionResult> OnPostAsync(UserData userData, string Username, string FirstName, string LastName, string Zipcode, double lat, double lng, string avatar)
         {
             var user = await _userManager.GetUserAsync(User);
+            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+            user.UserName = Username;
+            userData.FirstName = FirstName;
+            userData.LastName = LastName;
+            userData.ZipCode = Zipcode;
+            userData.Lat = lat;
+            userData.Lng = lng;
+            userData.Avatar = avatar;
 
             if (!ModelState.IsValid)
             {
@@ -80,6 +112,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
+            _context.Update(userData);
+            _context.SaveChanges();
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
@@ -91,24 +125,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             [EmailAddress]
             [Display(Name = "Nieuwe email")]
             public string NewEmail { get; set; }
-        }
-
-        private async Task LoadAsync(User user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
-            UserData userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
-            Fname = userData.FirstName;
-            Lname = userData.LastName;
-            Zipcode = userData.ZipCode;
-            Username = userName;
-            Email = email;
-
-            EmailInput = new EmailInputModel
-            {
-            };
-
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -144,7 +160,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             var email = await _userManager.GetEmailAsync(user);
-            if (EmailInput.NewEmail != email)
+            if (EmailInput.NewEmail != email && EmailInput.NewEmail != null)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateChangeEmailTokenAsync(user, EmailInput.NewEmail);
@@ -174,7 +190,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();

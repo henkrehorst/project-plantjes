@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using project_c.Services;
 using project_c.Controllers;
 using project_c.Models.Users;
 
@@ -31,7 +33,8 @@ namespace project_c
             services.AddRazorPages();
             services.AddDbContext<DataContext>(builder => 
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
-            services.AddRazorPages();
+            services.AddRazorPages();/*
+            services.AddTransient<IEmailSender, EmailSender>();*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
