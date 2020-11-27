@@ -24,7 +24,6 @@ namespace project_c.Areas.Identity
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();
                
-                services.AddTransient<IEmailSender, EmailSender>();
             });
         }
     }
