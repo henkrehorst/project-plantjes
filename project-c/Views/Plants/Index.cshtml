@@ -13,7 +13,27 @@
 </form>
 <div class="grid grid-cols-12">
     @* Filters in frontend *@
-    <div class="col-span-3"></div>
+    <div class="col-span-3">
+        <h2>Filters</h2>
+        @{ List<Filter> filters = (List<Filter>) ViewData["Filters"]; }
+        @foreach (Filter filter in filters)
+        {
+            <div class="block mb-4">
+                <span class="text-gray-700">@filter.Name</span>
+                <div class="mt-2">
+                    @foreach (Option filterOption  in filter.Options)
+                    {
+                        <div>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" class="form-checkbox">
+                                <span class="ml-2">@filterOption.DisplayName</span>
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
     @* Plant overview *@
     <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px">
         @{

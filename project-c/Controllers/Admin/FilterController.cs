@@ -107,20 +107,20 @@ namespace project_c.Controllers.admin
         }
 
         // POST: Filter/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        // [HttpPost]
+        // [ValidateAntiForgeryToken]
+        // public ActionResult Edit(int id, IFormCollection collection)
+        // {
+        //     try
+        //     {
+        //         // TODO: Add update logic here
+        //
+        //         return RedirectToAction(nameof(Index));
+        //     }
+        //     catch
+        //     {
+        //         return View();
+        //     }
+        // }
     }
 }

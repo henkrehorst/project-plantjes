@@ -33,6 +33,8 @@ namespace project_c.Controllers
                 return View(plant);
             }
 
+            ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
+
             return View(plants);
         }
 

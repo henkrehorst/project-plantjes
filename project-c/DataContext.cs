@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
 using project_c.Models.Plants;
