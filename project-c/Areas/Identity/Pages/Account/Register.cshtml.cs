@@ -18,6 +18,8 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using EmailModel = project_c.Models.EmailModel;
 
 namespace project_c.Areas.Identity.Pages.Account
@@ -25,6 +27,7 @@ namespace project_c.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
@@ -34,16 +37,18 @@ namespace project_c.Areas.Identity.Pages.Account
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender EmailModel)
+            IEmailSender EmailModel,
+            RoleManager<IdentityRole> roleManager
+        )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _EmailModel = EmailModel;
+            _roleManager = roleManager;
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [BindProperty] public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -73,7 +78,8 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -92,14 +98,36 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            if (!await _roleManager.RoleExistsAsync("Customer"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Customer"));
+            }
+
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Email, Email = Input.Email, 
-                    UserData = new UserData {FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode}};
+                var user = new User
+                {
+                    UserName = Input.Email, Email = Input.Email,
+                    UserData = new UserData
+                        {FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode}
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.AddToRoleAsync(user, "Customer");
+                if (_userManager.Users.Count() == 1)
+                {
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "Customer");
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -109,14 +137,16 @@ namespace project_c.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
                         protocol: Request.Scheme);
 
                     using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
                     {
                         message.Subject = "Account verificatie";
-                        message.Body = "\nHey " + Input.Voornaam +" "+Input.Achternaam + ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
-                            "om je email te bevesitgen!\n\n" + callbackUrl + "Groetjes,\n\n\nHet hele Plantjes Team!";
+                        message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
+                                       ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
+                                       "om je email te bevesitgen!\n\n" + callbackUrl +
+                                       "Groetjes,\n\n\nHet hele Plantjes Team!";
                         message.IsBodyHtml = false;
 
                         using (SmtpClient smtp = new SmtpClient())
@@ -130,11 +160,11 @@ namespace project_c.Areas.Identity.Pages.Account
                             smtp.Send(message);
                         }
                     }
-                
-                            await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
