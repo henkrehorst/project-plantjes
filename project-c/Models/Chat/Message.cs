@@ -11,6 +11,7 @@ namespace project_c.Models.Chat
     {
         public int ChatId { get; set; }
         public Chat Chat { get; set; }
+        public DateTime Timestamp { get; set; }
 
         [Key]
         public int MessageId { get; set; }
