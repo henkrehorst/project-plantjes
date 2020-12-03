@@ -29,7 +29,7 @@
                 </td>
             </tr>
             <tr class="bg-gray-400 lg:hover:bg-gray-500 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
-                <td colspan="2" class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">Users</td>
+                <th colspan="2" class="w-full lg:w-auto p-3 text-gray-800 text-center text-xl border border-b block lg:table-cell relative lg:static">Gebruikers in deze rol</th>
             </tr>
             @if (Model.Users.Any())
             {
@@ -51,6 +51,6 @@
     <div class="card-footer flex justify-center">
         <a asp-controller="Administration" asp-action="EditUsersInRole"
            asp-route-roleId="@Model.Id" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto">
-            Verwijder of voeg een gebruiker toe
+            Toevoegen of verwijderen gebruiker
         </a>
     </div>
