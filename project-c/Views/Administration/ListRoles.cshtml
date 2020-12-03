@@ -39,7 +39,10 @@
                     <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
                     <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="text-blue-400 hover:text-blue-600 underline">Bewerken</a>
                     <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="inline-block mx-3">
-                        <button type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
+                        @if (role.Name != "Admin" && role.Name != "Customer")
+                        {
+                            <button type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
+                        }        
                     </form>
                 </td>
             </tr>
