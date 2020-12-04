@@ -25,17 +25,21 @@
                     {
                         <div>
                             <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox">
+                                <input type="checkbox" class="form-checkbox filter-checkbox" data-category="@filter.SystemId" name="@filter.SystemId-@filterOption.OptionId" value="@filterOption.OptionId">
                                 <span class="ml-2">@filterOption.DisplayName</span>
                             </label>
                         </div>
                     }
                 </div>
+                
             </div>
         }
+        <a asp-controller="Plants" asp-action="Create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-4 mt-4 rounded">
+                                    Nieuwe plant
+                                </a>
     </div>
     @* Plant overview *@
-    <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px">
+    <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px" id="plantOverview">
         @{
             foreach (var plant in Model)
             {

@@ -25,12 +25,5 @@ namespace project_c
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
-        public DbSet<PlantOptions> PlantOptions { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<PlantOptions>()
-                .HasKey(p => new {p.FilterId, p.PlantId});
-        }
     }
 }

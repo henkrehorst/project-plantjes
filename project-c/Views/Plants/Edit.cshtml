@@ -57,26 +57,26 @@
         </div>
         
         @* Get list of selected options *@
-        @{ int[] selectedOptions = plant.PlantOptions.Select(option => option.OptionId).ToArray(); }
+        @{ int[] selectedOptions = new int[] {plant.Aanbod, plant.Soort, plant.Licht, plant.Water};  }
         @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
         {
             <div class="mb-4">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-@filter.FilterId">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-@filter.SystemId">
                     @filter.Name
                 </label>
                 <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        id="filter-@filter.FilterId" name="filters[]">
+                        id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
                     @foreach (Option option in filter.Options)
                     {
                         @if (selectedOptions.Contains(option.OptionId))
                         {
-                            <option value="@filter.FilterId-@option.OptionId" selected="selected">
+                            <option value="@option.OptionId" selected="selected">
                                 @option.DisplayName
                             </option>
                         }
                         else
                         {
-                            <option value="@filter.FilterId-@option.OptionId">
+                            <option value="@option.OptionId">
                                 @option.DisplayName
                             </option>
                         }

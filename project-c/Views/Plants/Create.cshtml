@@ -51,14 +51,14 @@
         @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
         {
             <div class="mb-4">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-@filter.FilterId">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-@filter.SystemId">
                     @filter.Name
                 </label>
                 <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                        id="filter-@filter.FilterId" name="filters[]">
+                        id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
                     @foreach (Option option in filter.Options)
                     {
-                        <option value="@filter.FilterId-@option.OptionId">@option.DisplayName</option>
+                        <option value="@option.OptionId">@option.DisplayName</option>
                     }
                 </select>
             </div>

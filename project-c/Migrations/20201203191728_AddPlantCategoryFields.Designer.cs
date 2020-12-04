@@ -10,8 +10,8 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201126171206_fixPrimaryKeyPlantOptions")]
-    partial class fixPrimaryKeyPlantOptions
+    [Migration("20201203191728_AddPlantCategoryFields")]
+    partial class AddPlantCategoryFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,10 +65,8 @@ namespace project_c.Migrations
 
             modelBuilder.Entity("project_c.Models.Plants.Filter", b =>
                 {
-                    b.Property<int>("FilterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                    b.Property<int>("SystemId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -83,7 +81,7 @@ namespace project_c.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer");
 
-                    b.HasKey("FilterId");
+                    b.HasKey("SystemId");
 
                     b.ToTable("Filters");
                 });
@@ -120,6 +118,9 @@ namespace project_c.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int>("Aanbod")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -129,32 +130,21 @@ namespace project_c.Migrations
                     b.Property<int>("Length")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Licht")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
+
+                    b.Property<int>("Soort")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Water")
+                        .HasColumnType("integer");
 
                     b.HasKey("PlantId");
 
                     b.ToTable("Plants");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.Property<int>("FilterId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OptionId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("FilterId", "PlantId");
-
-                    b.HasIndex("OptionId");
-
-                    b.HasIndex("PlantId");
-
-                    b.ToTable("PlantOptions");
                 });
 
             modelBuilder.Entity("project_c.Models.Users.User", b =>
@@ -255,27 +245,6 @@ namespace project_c.Migrations
                     b.HasOne("project_c.Models.Plants.Filter", "Filter")
                         .WithMany("Options")
                         .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Filter", "Filter")
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Option", "Option")
-                        .WithMany()
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany("PlantOptions")
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

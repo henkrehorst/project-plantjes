@@ -13,7 +13,7 @@ namespace project_c.Models.Plants
         
         public int Position { get; set; }
         
-        public int FilterId { get; set; }
+        public Filter.FilterSystemId FilterId { get; set; }
         
         public Filter Filter { get; set; }
     }

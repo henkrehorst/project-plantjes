@@ -18,22 +18,24 @@ namespace project_c.Controllers.api
             this._dataContext = context;
         }
 
-        // Get plants
+        //Get plants
         [HttpGet]
-        public async Task<ActionResult<List<Plant>>> GetPlants()
+        public async Task<ActionResult<List<Plant>>> GetPlants(
+            [FromQuery(Name = "Aanbod")] int[] aanbod,
+            [FromQuery(Name = "Soort")] int[] soort,
+            [FromQuery(Name = "Licht")] int[] licht,
+            [FromQuery(Name = "Water")] int[] water
+        )
         {
-            var result = await (_dataContext.Plants
-                .Join(_dataContext.PlantOptions, p => p.PlantId, o => o.PlantId, (p, o) => new {p, o})
-                .Where(@t => @t.o.OptionId == 23)
-                .Select(@t => new Plant()
-                {
-                    PlantId = @t.p.PlantId, Name = @t.p.Name, ImgUrl = @t.p.ImgUrl, Description = @t.p.Description
-                })).ToListAsync();
+            var query = _dataContext.Plants.Select(p => p);
+
+            //build query
+            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
+            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
+            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
+            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
             
-            //no plant fond return not found
-            if (result.Count == 0) return NotFound();
-            
-            return result;
+            return await query.ToListAsync();
         }
     }
 }

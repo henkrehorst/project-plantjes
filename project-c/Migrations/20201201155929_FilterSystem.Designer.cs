@@ -10,8 +10,8 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201126154825_addPlantOptions")]
-    partial class addPlantOptions
+    [Migration("20201201155929_FilterSystem")]
+    partial class FilterSystem
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,10 +65,8 @@ namespace project_c.Migrations
 
             modelBuilder.Entity("project_c.Models.Plants.Filter", b =>
                 {
-                    b.Property<int>("FilterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                    b.Property<int>("SystemId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -83,7 +81,7 @@ namespace project_c.Migrations
                     b.Property<int>("Position")
                         .HasColumnType("integer");
 
-                    b.HasKey("FilterId");
+                    b.HasKey("SystemId");
 
                     b.ToTable("Filters");
                 });
@@ -135,26 +133,6 @@ namespace project_c.Migrations
                     b.HasKey("PlantId");
 
                     b.ToTable("Plants");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.Property<int>("OptionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FilterId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OptionId", "FilterId", "PlantId");
-
-                    b.HasIndex("FilterId");
-
-                    b.HasIndex("PlantId");
-
-                    b.ToTable("PlantOptions");
                 });
 
             modelBuilder.Entity("project_c.Models.Users.User", b =>
@@ -255,27 +233,6 @@ namespace project_c.Migrations
                     b.HasOne("project_c.Models.Plants.Filter", "Filter")
                         .WithMany("Options")
                         .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantOptions", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Filter", "Filter")
-                        .WithMany()
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Option", "Option")
-                        .WithMany()
-                        .HasForeignKey("OptionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

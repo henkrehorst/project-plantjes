@@ -20,24 +20,12 @@ namespace project_c.Controllers.admin
             this._dbContext = dataContext;
         }
 
-        [BindProperty] public InputModel FormInput { get; set; }
-
-        public class InputModel
+        [BindProperty] public FilterInput FormInput { get; set; }
+        
+        public class FilterInput : Filter
         {
-            [Required, MinLength(5)] public string Name { get; set; }
-
-            [Required] public string Description { get; set; }
-
-            [Required] public List<OptionInput> Options { get; set; }
-        }
-
-        public class OptionInput
-        {
-            [Required, MinLength(4)] public string DisplayName { get; set; }
-
-            public int Position { get; set; }
-
-            public int OptionId { get; set; }
+            [Required]
+            public int FilterId { get; set; }
         }
 
 
@@ -67,6 +55,7 @@ namespace project_c.Controllers.admin
             {
                 Filter filter = new Filter()
                 {
+                    SystemId = (Filter.FilterSystemId) FormInput.FilterId,
                     Name = FormInput.Name,
                     Description = FormInput.Description,
                     Position = _dbContext.Filters.Count(),
