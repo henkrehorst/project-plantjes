@@ -9,10 +9,10 @@
     <table class="border-collapse w-full table-fixed">
         <thead>
             <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
-                <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                <th class="w-full lg:w-auto p-3 bg-green-500 text-white text-center border border-b block lg:table-cell relative lg:static">
                     Rol Id
                 </th>
-                <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <th class="w-full lg:w-auto p-3 bg-green-500 text-white text-center border border-b text-center block lg:table-cell relative lg:static">
                     Rol
                 </th>
             </tr>
@@ -29,7 +29,7 @@
                 </td>
             </tr>
             <tr class="bg-gray-400 lg:hover:bg-gray-500 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
-                <th colspan="2" class="w-full lg:w-auto p-3 text-gray-800 text-center text-xl border border-b block lg:table-cell relative lg:static">Gebruikers in deze rol</th>
+                <th colspan="2" class="w-full lg:w-auto p-3 bg-green-500 text-white text-center text-xl border border-b block lg:table-cell relative lg:static">Gebruikers in deze rol</th>
             </tr>
             @if (Model.Users.Any())
             {
@@ -43,7 +43,7 @@
             else
             {
                 <tr>
-                    <td>Geen gebruikers in deze rol</td>
+                    <td colspan="2" class="text-center py-5">Geen gebruikers in deze rol</td>
                 </tr>
             }
         </tbody>
@@ -51,6 +51,6 @@
     <div class="card-footer flex justify-center">
         <a asp-controller="Administration" asp-action="EditUsersInRole"
            asp-route-roleId="@Model.Id" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto">
-            Toevoegen of verwijderen gebruiker
+            Toevoegen of verwijderen gebruiker 
         </a>
     </div>

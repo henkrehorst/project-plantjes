@@ -41,8 +41,8 @@
                     <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="inline-block mx-3">
                         @if (role.Name != "Admin" && role.Name != "Customer")
                         {
-                            <button type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
-                        }        
+                            <button onclick="if(!confirm('Weet u zeker dat u de rol @role.Name wilt verwijderen?')){return false;}" type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
+                        }
                     </form>
                 </td>
             </tr>
