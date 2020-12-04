@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace project_c.Migrations
 {
-    public partial class PlantFilters : Migration
+    public partial class FilterSystem : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,15 +11,14 @@ namespace project_c.Migrations
                 name: "Filters",
                 columns: table => new
                 {
-                    FilterId = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SystemId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 45, nullable: false),
                     Description = table.Column<string>(maxLength: 45, nullable: false),
                     Position = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Filters", x => x.FilterId);
+                    table.PrimaryKey("PK_Filters", x => x.SystemId);
                 });
 
             migrationBuilder.CreateTable(
@@ -28,6 +27,7 @@ namespace project_c.Migrations
                 {
                     OptionId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DisplayName = table.Column<string>(maxLength: 20, nullable: false),
                     Position = table.Column<int>(nullable: false),
                     FilterId = table.Column<int>(nullable: false)
                 },
@@ -38,7 +38,7 @@ namespace project_c.Migrations
                         name: "FK_Options_Filters_FilterId",
                         column: x => x.FilterId,
                         principalTable: "Filters",
-                        principalColumn: "FilterId",
+                        principalColumn: "SystemId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
