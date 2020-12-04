@@ -31,8 +31,9 @@ namespace project_c.Controllers
         // GET: PlantsController
         public ActionResult Index(string naam)
         {
+            var a = _context.User.Count();
+
             var plants = from p in _context.Plants orderby p.PlantId descending select p;
-            
             if (!String.IsNullOrEmpty(naam))
             {
                 naam = char.ToUpper(naam[0]) + naam.Substring(1);
@@ -163,6 +164,31 @@ namespace project_c.Controllers
                 return RedirectToAction(nameof(Details));
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Approve(int id) 
+        {
+            try
+            {
+                var plant = _context.Plants.Find(id);
+                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
+                {
+                    plant.HasBeenApproved = true;
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to delete this plant");
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Details));
+            }
+        }
+
         public ActionResult MijnPlanten()
         {
             var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
