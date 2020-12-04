@@ -3,30 +3,36 @@
 @{
     var roleId = ViewBag.roleId;
 }
-
-<form method="post">
-    <div class="card">
-        <div class="card-header">
-            <h2>Add or remove users from this role</h2>
-        </div>
-        <div class="card-body">
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <div class="form-check m-1">
-                    <input type="hidden" asp-for="@Model[i].UserId" />
-                    <input type="hidden" asp-for="@Model[i].UserName" />
-                    <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                    <label class="form-check-label" asp-for="@Model[i].IsSelected">
-                        @Model[i].UserName
-                    </label>
+<div class="bg-white h-screen w-screen">
+    <div class="items-center flex-1 justify-center px-6 sm:px-0">
+        <form method="post">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="text-4xl m-2">Gebruikers beheren</h1>
                 </div>
-            }
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Update" class="btn btn-primary"
-                   style="width:auto" />
-            <a asp-action="EditRole" asp-route-id="@roleId"
-               class="btn btn-primary" style="width:auto">Cancel</a>
+                <div class="card-body justify-center">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <div class="form-check m-1 justify-center">
+                            <label class="inline-flex items-center mt-2">
+                                <input type="hidden" asp-for="@Model[i].UserId" />
+                            </label>
+                            <input type="hidden" asp-for="@Model[i].UserName" />
+                            <input type="checkbox" asp-for="@Model[i].IsSelected" class="form-checkbox h-5 w-5" />
+                            <span class="ml-2"></span>
+                            <label class="form-check-label text-xl" asp-for="@Model[i].IsSelected">
+                                @Model[i].UserName
+                            </label>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <input type="submit" value="Update" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded"
+                           style="width:auto" />
+                    <a asp-action="EditRole" asp-route-id="@roleId"
+                       class="btn btn-primary bg-red-500 text-white p-2 px-8 mt-6 hover:bg-red-700 rounded" style="width:auto">Cancel</a>
+                </div>
+            </div>
+        </form>
         </div>
     </div>
-</form>

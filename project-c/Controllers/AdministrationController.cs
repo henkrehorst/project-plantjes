@@ -13,6 +13,7 @@ using SQLitePCL;
 
 namespace project_c.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
