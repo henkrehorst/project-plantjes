@@ -19,5 +19,8 @@ namespace project_c.Models.Plants
 
         public int Water { get; set; }
         //End Category fields
+        
+        public string UserId { get; set; }
+        public User User { get; set; }
     }
 }

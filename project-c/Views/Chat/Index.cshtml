@@ -1,0 +1,52 @@
+﻿@model IQueryable<Chat>
+@using project_c.Models.Chat
+@{
+
+    ViewData["Title"] = "Index";
+}
+<style>
+    .mainheader {
+        background-color: #33cc33;
+        padding: 20px 20px 20px 20px;
+        text-align: center;
+        text-decoration-color: #000000;
+    }
+    .chatList{
+        background-color: white;
+        border-color: black;
+        border-width: thin;
+        padding-left: 5px;
+        padding-right: 5px;
+        width: 200%;
+        border-radius: 2px;
+    }
+</style>
+
+<h2 class="mainheader">Chats</h2>
+<div class="main">
+    <div class="px-0 flex">
+        <div>
+            @try
+            {
+                if (Model == null)
+                {
+                    <div class="chatList">U heeft nog geen chats gestart.</div>
+                }
+                else
+                {
+                    foreach (Chat chat in Model)
+                    {
+                        <div class="chatList">
+                            <button>chat.ChatData.Users(FirstName)</button>
+                        </div>
+                    }
+                }
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+        </div>
+    </div>
+</div>
+
