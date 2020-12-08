@@ -78,7 +78,7 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
-            [StringLength(100, ErrorMessage = "Het wachtwoord {0} moet minstens {2} en maximaal {1} lang zijn.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
