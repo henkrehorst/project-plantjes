@@ -26,9 +26,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - bash: |
-    ls -all
     cd project-c/frontend
-    ls -all
     npm i
     npm run build:prod
   displayName: 'Build frontend'
@@ -39,3 +37,20 @@ steps:
     command: build
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+
+- bash: |
+    cp -r project-c/wwwroot/ project-c/bin/Release/wwwroot
+  displayName: Copy wwwroot in artifact
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(system.defaultWorkingDirectory)/project-c/bin/Release'
+    includeRootFolder: true
+    archiveType: 'tar'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
