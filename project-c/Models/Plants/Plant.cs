@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using project_c.Models.Users;
 
 namespace project_c.Models.Plants
 {

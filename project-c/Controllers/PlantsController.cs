@@ -148,7 +148,6 @@ namespace project_c.Controllers
                     plant.ImgUrl = await _uploadService.UploadImage(image);
 				}
 				
-                var plant = _context.Plants.Find(id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
@@ -156,7 +155,7 @@ namespace project_c.Controllers
                     plant.Description = description; 
                     if (image != null)
                     {
-                        plant.ImgUrl = await uploadService.UploadImage(image);
+                        plant.ImgUrl = await _uploadService.UploadImage(image);
                     }
                     _context.Update(plant);
                     _context.SaveChanges();
