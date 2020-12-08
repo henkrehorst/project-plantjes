@@ -26,17 +26,31 @@ steps:
       restoreSolution: '$(solution)'
 
   - bash: |
-      ls -all
-    displayName: 'show files in dir'
+      cd project-c/frontend
+      npm i
+      npm run build:prod
+    displayName: 'Build frontend'
 
-  - task: VSBuild@1
+  - task: DotNetCoreCLI@2
+    displayName: Build
     inputs:
-      solution: '$(solution)'
-      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
+      command: build
+      projects: '**/*.csproj'
+      arguments: '--configuration $(buildConfiguration)'
 
-  - task: VSTest@2
+  - bash: |
+      cp -r project-c/wwwroot/ project-c/bin/Release/wwwroot
+    displayName: Copy wwwroot in artifact
+
+  - task: ArchiveFiles@2
     inputs:
-      platform: '$(buildPlatform)'
-      configuration: '$(buildConfiguration)'
+      rootFolderOrFile: '$(system.defaultWorkingDirectory)/project-c/bin/Release'
+      includeRootFolder: true
+      archiveType: 'tar'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'

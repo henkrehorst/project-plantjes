@@ -49,7 +49,15 @@ namespace project_c
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            if (Configuration.GetConnectionString("Environment") == "Prod")
+            {
+                UpdateDatabase(app);
+            }
+            else
+            {
+                app.UseHttpsRedirection();
+            }
+            
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -65,6 +73,19 @@ namespace project_c
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+        
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<DataContext>())
+                {
+                    context.Database.Migrate();
+                }
+            }
         }
     }
 }
