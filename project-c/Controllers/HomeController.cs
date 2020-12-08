@@ -71,14 +71,19 @@ namespace project_c.Controllers
 
                 }
             }    
-                return View();
+            return View();
         }
         public ViewResult Faq()
         {
             return View();
         }
 
-        public async Task<IActionResult> Privacy()
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Routes()
         {
             return View();
         }

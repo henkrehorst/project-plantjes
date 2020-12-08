@@ -1,4 +1,5 @@
-﻿@{
+﻿@using project_c.Models.Plants
+@{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
@@ -11,30 +12,30 @@
     </div>
 </div>
 
-        <div class="w-full mx-auto max-w-3xl bg-white shadow p-8 text-gray-700">
-            <form asp-action="Create" enctype="multipart/form-data" method="POST" class="bg-white">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Naam">
-                        Naam
-                    </label>
-                    <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline    " id="Naam" type="text" placeholder="Naam" name="name" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Lengte">
-                        Lengte
-                    </label>
-                    <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Lengte" type="number" min="1" placeholder="Lengte in mm" name="length" required>
-                </div>
-                <div class="mb-4">
-                    <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
-                        <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-                        </svg>
-                        <span class="mt-2 text-base leading-normal">Select a file</span>
-                        <span id="file-name"></span>
-                        <input type='file' id="FileUpload_FormFile" class="hidden" name="ImageUpload" accept="image/*" required />
-                        <!-- Script voor filename change -->
-                        <script>
+<div class="w-full mx-auto max-w-3xl bg-white shadow p-8 text-gray-700">
+    <form asp-action="Create" enctype="multipart/form-data" method="POST" class="bg-white">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="Naam">
+                Naam
+            </label>
+            <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline    " id="Naam" type="text" placeholder="Naam" name="name" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="Lengte">
+                Lengte
+            </label>
+            <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Lengte" type="number" min="1" placeholder="Lengte in mm" name="length" required>
+        </div>
+        <div class="mb-4">
+            <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
+                <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"/>
+                </svg>
+                <span class="mt-2 text-base leading-normal">Select a file</span>
+                <span id="file-name"></span>
+                <input type='file' id="FileUpload_FormFile" class="hidden" name="ImageUpload" accept="image/*"/>
+                <!-- Script voor filename change -->
+                <script>
                             let inputFile = document.getElementById('FileUpload_FormFile');
                             let fileNameField = document.getElementById('file-name');
                             inputFile.addEventListener('change', function (event) {
@@ -42,22 +43,37 @@
                                 fileNameField.textContent = uploadedFileName;
                             })
                         </script>
-                        <label class="text-xs text-gray-500">
-                            PNG, JPG, GIF up to 10MB
-                        </label>
-                    </label>
-                    </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="Beschrijving">
-                            Beschrijving
-                        </label>
-                        <textarea class="form-textarea shadow appearance-none border border-blue-500 rounded h-32 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Beschrijving" type="text" placeholder="Beschrijving" name="description" required></textarea>
-                    </div>
-                    <p class="mt-1 text-sm text-gray-500">Een korte beschrijving over jouw stekje!</p>
-                    <div class="flex items-center justify-between">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                            Toevoegen
-                        </button>
-                    </div>
-</form>
+                <label class="text-xs text-gray-500">
+                    PNG, JPG, GIF up to 10MB
+                </label>
+            </label>
         </div>
+        @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
+        {
+            <div class="mb-4">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-@filter.SystemId">
+                    @filter.Name
+                </label>
+                <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                        id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
+                    @foreach (Option option in filter.Options)
+                    {
+                        <option value="@option.OptionId">@option.DisplayName</option>
+                    }
+                </select>
+            </div>
+        }
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="Beschrijving">
+                Beschrijving
+            </label>
+            <textarea class="form-textarea shadow appearance-none border border-blue-500 rounded h-32 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Beschrijving" type="text" placeholder="Beschrijving" name="description" required></textarea>
+        </div>
+        <p class="mt-1 text-sm text-gray-500">Een korte beschrijving over jouw stekje!</p>
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Toevoegen
+            </button>
+        </div>
+    </form>
+</div>
