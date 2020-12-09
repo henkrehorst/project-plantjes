@@ -151,7 +151,8 @@
     </div>
 
 </header>
-<div class="container mx-auto">
+@{ string container = ViewData["ContainerClass"] != null ? "" : "container ";}
+<div class="@container mx-auto">
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
