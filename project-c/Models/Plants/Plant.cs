@@ -16,6 +16,16 @@ namespace project_c.Models.Plants
         public string Description { get; set; }
         public int Length { get; set; }
         
+        //Category fields
+        public int Aanbod { get; set; }
+
+        public int Soort { get; set; }
+
+        public int Licht { get; set; }
+
+        public int Water { get; set; }
+        //End Category fields
+        
         public string ImgUrl { get; set; }
         public bool HasBeenApproved { get; set; }
         public string UserId { get; set; }
