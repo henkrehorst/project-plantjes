@@ -1,6 +1,7 @@
-﻿@model IQueryable<Plant>;
+﻿@model IQueryable<Plant>; 
 @using project_c.Models.Plants;
 @using Microsoft.AspNetCore.Identity
+@using static project_c.Controllers.PlantsController;
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
@@ -43,6 +44,7 @@
         @{
             foreach (var plant in Model)
             {
+                if (plant.HasBeenApproved) {
                 <div class="max-w-sm rounded overflow-hidden shadow-lg">
                     <a href="/plants/details/@plant.PlantId">
                         <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
@@ -51,7 +53,8 @@
                         </div>
                     </a>
                 </div>
+                    }
+                }
             }
-        }
     </div>
 </div>
