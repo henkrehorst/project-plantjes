@@ -28,7 +28,7 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public string EmailConfirmationUrl { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
+        public IActionResult OnGetAsync(string email, string returnUrl = null)
         {
             return Page();
         }

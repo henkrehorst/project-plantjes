@@ -34,8 +34,8 @@ namespace project_c.Controllers.api
             if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
             if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
             if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            
-            return await query.ToListAsync();
+
+            return await query.Where(p => p.HasBeenApproved).ToListAsync();
         }
     }
 }

@@ -1,21 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using project_c.Models.Plants;
 using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 
 namespace project_c.Controllers
 {
@@ -38,13 +33,13 @@ namespace project_c.Controllers
 
             var a = _context.User.Count();
 
-            var plants = from p in _context.Plants orderby p.PlantId descending select p;
+            var plants = _context.Plants.OrderBy(p => p.PlantId).ToList();
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
             
             if (!String.IsNullOrEmpty(naam))
             {
                 naam = char.ToUpper(naam[0]) + naam.Substring(1);
-                var plant = from p in _context.Plants where p.Name.Contains(naam) select p;
+                var plant = _context.Plants.Where(p => p.Name.Contains(naam)).ToList();
                 return View(plant);
             }
 
