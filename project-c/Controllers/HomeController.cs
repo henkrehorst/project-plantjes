@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using project_c.Models;
 using project_c.Services;
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace project_c.Controllers
@@ -18,25 +19,53 @@ namespace project_c.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly DataContext _dataContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
         {
             _logger = logger;
+            _dataContext = dataContext;
         }
-        public ViewResult Index()
+
+        public async Task<ViewResult> Index(
+            [FromQuery(Name = "Aanbod")] int[] aanbod,
+            [FromQuery(Name = "Soort")] int[] soort,
+            [FromQuery(Name = "Licht")] int[] licht,
+            [FromQuery(Name = "Water")] int[] water,
+            [FromQuery(Name = "Naam")] string name)
         {
-            return View();
+            //get filters 
+            ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
+            
+            var query = _dataContext.Plants.Select(p => p);
+            
+            //build query
+            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
+            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
+            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
+            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
+            if (name != null)
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
+            
+            //show onlu approved plants
+            query = query.Where(p => p.HasBeenApproved);
+
+            ViewData["stekCount"] = query.Count();
+
+            return View(await query.ToListAsync());
         }
+
         [HttpPost]
         public IActionResult Faq(EmailModel model)
         {
-            using (MailMessage message = new MailMessage("projectplantjes@gmail.com",  "projectplantjes@gmail.com"))
+            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
             {
                 message.Subject = "User: " + model.Username + " Subj: " + model.Subject;
                 message.Body = "\n" + model.Username + " zegt het volgende:\n\n" + model.Body;
                 message.IsBodyHtml = false;
 
-                using(SmtpClient smtp = new SmtpClient())
+                using (SmtpClient smtp = new SmtpClient())
                 {
                     smtp.Host = "smtp.gmail.com";
                     smtp.EnableSsl = true;
@@ -50,29 +79,32 @@ namespace project_c.Controllers
                     using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", "henkrehorst@outlook.com"))
                     {
                         aReply.Subject = "Wij hebben je mail ontvangen!";
-                        aReply.Body = "\nHey " + model.Username + "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
-                            "\n\n Jij zei het volgende:\n\n" + model.Subject + "\n\n" + model.Body + "\n________________________________________________\n\n" + 
-                            "Wij verwachten je bericht uiterlijk binnnen 3 werkdagen te beantwoorden." +
-                            "\n\n Groetjes!\n\n\n Het hele team van Planjes";
+                        aReply.Body = "\nHey " + model.Username +
+                                      "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
+                                      "\n\n Jij zei het volgende:\n\n" + model.Subject + "\n\n" + model.Body +
+                                      "\n________________________________________________\n\n" +
+                                      "Wij verwachten je bericht uiterlijk binnnen 3 werkdagen te beantwoorden." +
+                                      "\n\n Groetjes!\n\n\n Het hele team van Planjes";
                         aReply.IsBodyHtml = false;
 
                         using (SmtpClient smtpReply = new SmtpClient())
                         {
                             smtpReply.Host = "smtp.gmail.com";
                             smtpReply.EnableSsl = true;
-                            NetworkCredential credReply = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            NetworkCredential credReply =
+                                new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
                             smtpReply.UseDefaultCredentials = true;
                             smtpReply.Credentials = credReply;
                             smtpReply.Port = 587;
                             smtpReply.Send(aReply);
-
                         }
                     }
-
                 }
-            }    
+            }
+
             return View();
         }
+
         public ViewResult Faq()
         {
             return View();
@@ -91,7 +123,7 @@ namespace project_c.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }

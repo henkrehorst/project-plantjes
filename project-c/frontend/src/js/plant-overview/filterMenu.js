@@ -63,5 +63,11 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         }).catch(err => {
             console.log(err)
         });
+
+        //modify url
+        if(history.pushState){
+            let url = window.location.origin + window.location.pathname + (searchUlr.toString().length > 0 ? "?" : "") + searchUlr.toString();
+            window.history.pushState({path: url}, '', url);
+        }
     }
 }

@@ -1,7 +1,5 @@
 ﻿@model List<Plant>; 
 @using project_c.Models.Plants;
-@using Microsoft.AspNetCore.Identity
-@using static project_c.Controllers.PlantsController;
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
@@ -40,7 +38,7 @@
                                 </a>
     </div>
     @* Plant overview *@
-    <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px" id="plantOverview">
+    <div class="col-span-9 grid grid-cols-3 gap-4 h-fit" id="plantOverview">
         @{
             foreach (var plant in Model)
             {
