@@ -108,7 +108,8 @@ namespace project_c.Areas.Identity.Pages.Account
                 await _roleManager.CreateAsync(new IdentityRole("Customer"));
             }
 
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl = returnUrl ?? Url.Content("~/Identity/Account/RegisterConfirmation");
+            ReturnUrl = Url.Content("~/Identity/Account/RegisterConfirmation");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -162,7 +163,7 @@ namespace project_c.Areas.Identity.Pages.Account
                     }
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    return LocalRedirect(ReturnUrl);
                 }
 
                 foreach (var error in result.Errors)
