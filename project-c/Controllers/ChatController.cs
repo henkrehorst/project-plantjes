@@ -17,11 +17,11 @@ namespace project_c.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly DataContext _context;
-
+        
         [BindProperty] public ChatContent FormInput { get; set; }
         public class ChatContent
         {
-            public string message { get; set; }
+            public string Message { get; set; }
         }
         public ChatController(UserManager<User> usr, DataContext context)
         {
@@ -33,12 +33,19 @@ namespace project_c.Controllers
             return View();
         }
 
-        //GET: ChatController/NewChat
-/*        [Authorize]*/
-      /*  public ActionResult Create()
+        [HttpPost]
+        public IActionResult Create()
         {
-            return View("NewChat");
-        }*/
+            Console.WriteLine(FormInput.Message);
+            return View("Index");
+        }
+
+        // //GET: ChatController/NewChat
+        // [Authorize]
+        // public ActionResult Create()
+        // {
+        //     return View("NewChat");
+        // }
 
         //Post: ChatController/NewChat
         [Authorize]
@@ -72,14 +79,5 @@ namespace project_c.Controllers
                 return Content("Er was een fout. Probeer het opnieuw.");
             }
         }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            Console.WriteLine(FormInput.message);
-            return View();
-        }
-
     }
 }
