@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -22,11 +22,14 @@ namespace project_c.Controllers
     public class PlantsController : Controller
     {
         private readonly DataContext _context;
+        private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
-        public PlantsController(DataContext context, UserManager<User> userManager)
+
+        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
         {
             _context = context;
             _userManager = userManager;
+            _uploadService = upload;
         }
 
         // GET: PlantsController
@@ -36,12 +39,15 @@ namespace project_c.Controllers
             var a = _context.User.Count();
 
             var plants = from p in _context.Plants orderby p.PlantId descending select p;
+            ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
+            
             if (!String.IsNullOrEmpty(naam))
             {
                 naam = char.ToUpper(naam[0]) + naam.Substring(1);
                 var plant = from p in _context.Plants where p.Name.Contains(naam) select p;
                 return View(plant);
             }
+
             return View(plants);
         }
 
@@ -56,6 +62,7 @@ namespace project_c.Controllers
         [Authorize]
         public ActionResult Create()
         {
+            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }
 
@@ -71,16 +78,23 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-            UploadService uploadService = new UploadService();
+
             try
             {
                 Plant plant = new Plant();
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    plant.ImgUrl = await uploadService.UploadImage(image);
+                    plant.ImgUrl = await _uploadService.UploadImage(image);
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
+                    
+                    //added categories of plant
+                    plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
+                    plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
+                    plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
+                    plant.Water = Convert.ToInt32(form["filter[Water]"]);
+
                     plant.UserId = _userManager.GetUserId(User);
                     UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
                     if (plantuserdata.Karma >= 3)
@@ -89,7 +103,12 @@ namespace project_c.Controllers
                     }
                     _context.Add(plant);
                     _context.SaveChanges();
+                    
+
+                    _context.SaveChanges();
                 }
+
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -108,7 +127,8 @@ namespace project_c.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            var plant = from p in _context.Plants where p.PlantId == id select p;
+            Plant plant = _context.Plants.First(p => p.PlantId == id);
+            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View(plant);
         }
 
@@ -123,11 +143,27 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-            UploadService uploadService = new UploadService();
-            
+
             try
             {
-                var plant = _context.Plants.Find(id);
+
+                var plant = _context.Plants.First(p => p.PlantId == id);
+
+                plant.Name = name;
+                plant.Length = Convert.ToInt32(form["length"]);
+                plant.Description = description;
+                
+                //added categories of plant
+                plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
+                plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
+                plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
+                plant.Water = Convert.ToInt32(form["filter[Water]"]);
+                
+                if (image != null)
+                {
+                    plant.ImgUrl = await _uploadService.UploadImage(image);
+				}
+				
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
@@ -135,7 +171,7 @@ namespace project_c.Controllers
                     plant.Description = description; 
                     if (image != null)
                     {
-                        plant.ImgUrl = await uploadService.UploadImage(image);
+                        plant.ImgUrl = await _uploadService.UploadImage(image);
                     }
                     _context.Update(plant);
                     _context.SaveChanges();
