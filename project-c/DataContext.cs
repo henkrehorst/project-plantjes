@@ -33,6 +33,7 @@ namespace project_c
         public DbSet<Chat> Chats { get; set; } 
         public DbSet<ChatData> ChatDatasets { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PlantRating> Ratings { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
