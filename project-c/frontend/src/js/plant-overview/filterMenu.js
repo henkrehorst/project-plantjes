@@ -2,6 +2,8 @@
 if (document.getElementsByClassName('filter-checkbox').length > 0) {
     //store selected checkboxes
     let filterState = parseSearchParams();
+    //fill search field
+    fillSearch();
 
     Array.from(document.getElementsByClassName('filter-checkbox')).forEach(function (element) {
         //make checkboxes in url filter selected
@@ -33,6 +35,49 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
             }
         );
     });
+    
+    //connect search function with search button
+    if(document.getElementById("search-button")){
+        document.getElementById("search-button").addEventListener('click', useSearchField)
+    }
+    
+    //run search function on enter
+    if(document.getElementById("search-field")){
+        document.getElementById("search-field").addEventListener("keyup", (e) => {
+            if(e.key === "Enter"){
+                e.preventDefault();
+                useSearchField();
+            }
+        });
+        //use search on clear
+        document.getElementById("search-field").addEventListener("search", () => {
+            if(document.getElementById("search-field").value === ""){
+                useSearchField();
+            }
+        });
+    }
+    
+    
+    function useSearchField(){
+        //get search value
+        const searchVal = document.getElementById("search-field").value;
+        
+        if(searchVal.trim().length > 0){
+            filterState['naam'] = {searchVal: searchVal};     
+        }else if (Object.keys(filterState['naam']).length > 0) {
+            delete filterState['naam'];
+        }
+
+        refreshPlants(false)
+    }
+
+    function fillSearch(){
+        if(filterState['naam'] !== undefined){
+        document.getElementById("search-field").value =  filterState['naam'][Object.keys(filterState["naam"])[0]];
+        }else{
+            document.getElementById("search-field").value = "";
+        }
+    }
 
     async function refreshPlants(backReturn) {
         hideOrShowLoader();
@@ -47,17 +92,17 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
         //request plants form backend
         await fetch(window.location.origin + '/api/plants?' + searchUlr.toString()).then(async response => {
-            const plants = await response.json();
+            const data = await response.json();
 
-            if (plants.length === 0) {
+            if (data["plants"].length === 0) {
                 document.getElementById('plantOverview').innerHTML = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
                     "            </div><h1>Geen planten gevonden</h1>";
             } else {
                 let plantOverview = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
-                    "            </div>";
-                Object.entries(plants).forEach(([key, plant]) => {
+                    "            </div><h2 class=\"col-span-3 text-2xl font-semibold text-green-500\">"+ data["count"] +" Stekjes</h2>";
+                Object.entries(data["plants"]).forEach(([key, plant]) => {
                     plantOverview +=
                         `<div class="max-w-sm rounded overflow-hidden shadow-lg">
                             <a href="/plants/details/${plant.plantId}">
@@ -118,6 +163,8 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         filterState = parseSearchParams();
         //select checkboxes from filter
         makeSelectedCheckboxes();
+        //add correct content in search
+        fillSearch();
         //refresh content
         await refreshPlants(true);
     };

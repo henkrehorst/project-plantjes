@@ -17,14 +17,22 @@ namespace project_c.Controllers.api
         {
             this._dataContext = context;
         }
+        
+        public class PlantResponse
+        {
+            public int Count { get; set; }
+            
+            public List<Plant> Plants { get; set; }
+        }
 
         //Get plants
         [HttpGet]
-        public async Task<ActionResult<List<Plant>>> GetPlants(
+        public async Task<PlantResponse> GetPlants(
             [FromQuery(Name = "Aanbod")] int[] aanbod,
             [FromQuery(Name = "Soort")] int[] soort,
             [FromQuery(Name = "Licht")] int[] licht,
-            [FromQuery(Name = "Water")] int[] water
+            [FromQuery(Name = "Water")] int[] water,
+            [FromQuery(Name = "Naam")] string name
         )
         {
             var query = _dataContext.Plants.Select(p => p);
@@ -34,8 +42,15 @@ namespace project_c.Controllers.api
             if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
             if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
             if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
+            if (name != null)
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
 
-            return await query.Where(p => p.HasBeenApproved).ToListAsync();
+            return new PlantResponse()
+            {
+                Plants = await query.Where(p => p.HasBeenApproved).ToListAsync(),
+                Count =  query.Count(p => p.HasBeenApproved)
+            };
         }
     }
 }
