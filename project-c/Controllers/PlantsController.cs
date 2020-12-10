@@ -185,6 +185,7 @@ namespace project_c.Controllers
             var data = from r in _context.Ratings where r.UserId == userId select r;
             var ratingValue = Convert.ToInt32(form["rating"]);
             var comment = form["comment"].ToString();
+            var routingID = id;
             var noRating = true;
 
             PlantRating rating = new PlantRating();
@@ -214,7 +215,7 @@ namespace project_c.Controllers
                 return Content("You already voted");
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new{id = routingID }); 
         }
     }
 }
