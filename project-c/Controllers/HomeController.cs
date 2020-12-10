@@ -12,6 +12,8 @@ using project_c.Models;
 using project_c.Services;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using project_c.Helpers;
+using project_c.Models.Plants;
 
 
 namespace project_c.Controllers
@@ -32,7 +34,8 @@ namespace project_c.Controllers
             [FromQuery(Name = "Soort")] int[] soort,
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
-            [FromQuery(Name = "Naam")] string name)
+            [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
             ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
@@ -53,7 +56,7 @@ namespace project_c.Controllers
 
             ViewData["stekCount"] = query.Count();
 
-            return View(await query.ToListAsync());
+            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 6));
         }
 
         [HttpPost]
