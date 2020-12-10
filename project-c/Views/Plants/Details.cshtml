@@ -22,45 +22,64 @@
                 <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                     <div class="text-green-700 text-3xl title-font font-bold mb-1">@plant.Name</div>
                     <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
-                    <div class="text-gray-600 ml-3">3 Reviews</div>
-                    <div class="rounded-full bg-green-400 duration-200 focus:outline-none focus:shadow-outline font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-16">
-                            <span>
-                                @plant.Length&nbsp;cm
-                            </span>
-                    </div>
-                    <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
-                        @plant.Description
-                    </p>
-                    <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
-                    <button type="submit" class="rounded-full bg-green-500 duration-200 focus:outline-none focus:shadow-outline text-xl font-bold h-24 hover:bg-green-700 inline-flex items-center justify-center px-6 text-white tracking-wide transition w-48">
-                        <div class="bg-blue-light shadow-border">
-                            <svg class="message-icon" width="65" height="40" viewBox="0 0 20 20">
-                                <path fill="currentcolor" d="M17.659,3.681H8.468c-0.211,0-0.383,0.172-0.383,0.383v2.681H2.341c-0.21,0-0.383,0.172-0.383,0.383v6.126c0,0.211,0.172,0.383,0.383,0.383h1.532v2.298c0,0.566,0.554,0.368,0.653,0.27l2.569-2.567h4.437c0.21,0,0.383-0.172,0.383-0.383v-2.681h1.013l2.546,2.567c0.242,0.249,0.652,0.065,0.652-0.27v-2.298h1.533c0.211,0,0.383-0.172,0.383-0.382V4.063C18.042,3.853,17.87,3.681,17.659,3.681 M11.148,12.87H6.937c-0.102,0-0.199,0.04-0.27,0.113l-2.028,2.025v-1.756c0-0.211-0.172-0.383-0.383-0.383H2.724V7.51h5.361v2.68c0,0.21,0.172,0.382,0.383,0.382h2.68V12.87z M17.276,9.807h-1.533c-0.211,0-0.383,0.172-0.383,0.383v1.755L13.356,9.92c-0.07-0.073-0.169-0.113-0.27-0.113H8.851v-5.36h8.425V9.807z"></path>
-                                <span>Bericht</span>
+                    <div class="flex mb-4">
+                        <div class="flex items-center">
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-8 h-8 text-green-500" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                             </svg>
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-8 h-8 text-green-500" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-8 h-8 text-green-500" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-8 h-8 text-green-500" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-8 h-8 text-green-500" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                            </svg>
+                            <span class="text-gray-600 font-weight-light text-lg ml-2">3 Reviews</span>
                         </div>
-                    </button>
-                    <script>
-                        function goBack() {
-                            window.history.back();
-                        }
-                    </script>
-                    @{
-                        if (User.IsInRole("Admin"))
-                        {<div class="flex items-center space-x-4">
-                                <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                   href="/plants/edit/@plant.PlantId">Edit</a>
-                                @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
-                                {
-                                    <button class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                            type="submit">
-                                        Delete
-                                    </button>
-                                }
+                        </div>
+                            <div class="rounded-full bg-green-400 duration-200 focus:outline-none focus:shadow-outline font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-16">
+                                <span>
+                                    @plant.Length&nbsp;cm
+                                </span>
                             </div>
-                        }
-                    }
-                </div>
+                            <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
+                                @plant.Description
+                            </p>
+                            <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
+                            <button type="submit" class="rounded-full bg-green-500 duration-200 focus:outline-none focus:shadow-outline text-xl font-bold h-24 hover:bg-green-700 inline-flex items-center justify-center px-6 text-white tracking-wide transition w-48">
+                                <div class="bg-blue-light shadow-border">
+                                    <svg class="message-icon" width="65" height="40" viewBox="0 0 20 20">
+                                        <path fill="currentcolor" d="M17.659,3.681H8.468c-0.211,0-0.383,0.172-0.383,0.383v2.681H2.341c-0.21,0-0.383,0.172-0.383,0.383v6.126c0,0.211,0.172,0.383,0.383,0.383h1.532v2.298c0,0.566,0.554,0.368,0.653,0.27l2.569-2.567h4.437c0.21,0,0.383-0.172,0.383-0.383v-2.681h1.013l2.546,2.567c0.242,0.249,0.652,0.065,0.652-0.27v-2.298h1.533c0.211,0,0.383-0.172,0.383-0.382V4.063C18.042,3.853,17.87,3.681,17.659,3.681 M11.148,12.87H6.937c-0.102,0-0.199,0.04-0.27,0.113l-2.028,2.025v-1.756c0-0.211-0.172-0.383-0.383-0.383H2.724V7.51h5.361v2.68c0,0.21,0.172,0.382,0.383,0.382h2.68V12.87z M17.276,9.807h-1.533c-0.211,0-0.383,0.172-0.383,0.383v1.755L13.356,9.92c-0.07-0.073-0.169-0.113-0.27-0.113H8.851v-5.36h8.425V9.807z"></path>
+                                        <span>Bericht</span>
+                                    </svg>
+                                </div>
+                            </button>
+                            <script>
+                                function goBack() {
+                                    window.history.back();
+                                }
+                            </script>
+                            @{
+                                if (User.IsInRole("Admin"))
+                                {<div class="flex items-center space-x-4">
+                                        <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                           href="/plants/edit/@plant.PlantId">Edit</a>
+                                        @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
+                                        {
+                                            <button class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                                    type="submit">
+                                                Delete
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
             </div>
         </div>
         }
