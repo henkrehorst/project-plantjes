@@ -28,3 +28,30 @@ main{
 .h-fit{
   height: fit-content;
 }
+
+.overlay{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.72);
+  z-index: 999;
+  display: none;
+}
+
+.loader {
+  margin: 320px auto;
+  border: 10px solid rgba(164, 164, 164, 0.41);
+  border-radius: 50%;
+  border-top: 10px solid #48BB78;
+  width: 50px;
+  height: 50px;
+  -webkit-animation: spin 0.7s linear infinite; /* Safari */
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

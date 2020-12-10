@@ -48,7 +48,7 @@ namespace project_c.Controllers
                 query = query.Where(p =>
                     EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
             
-            //show onlu approved plants
+            //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
 
             ViewData["stekCount"] = query.Count();
