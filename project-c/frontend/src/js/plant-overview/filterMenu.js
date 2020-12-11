@@ -191,6 +191,8 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     window.navigateToPage = async function navigateToPage(page) {
         filterState["Page"] = {page: page};
         await refreshPlants(false);
+        //scroll to highste row of plants
+        window.scrollTo(0,426);
     }
 
     function hideOrShowLoader() {
@@ -207,7 +209,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     }
 
     function removePaging() {
-        if (Object.keys(filterState["Page"]).length === 0) {
+        if (filterState["Page"] !== undefined) {
             delete filterState["Page"];
         }
     }

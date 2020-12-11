@@ -56,7 +56,7 @@ namespace project_c.Controllers
 
             ViewData["stekCount"] = query.Count();
 
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 6));
+            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
 
         [HttpPost]

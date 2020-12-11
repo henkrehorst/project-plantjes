@@ -45,7 +45,7 @@ namespace project_c.Controllers.api
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
             
-            return await PaginatedResponse<Plant>.CreateAsync(query, page, 6);
+            return await PaginatedResponse<Plant>.CreateAsync(query, page, 15);
         }
     }
 }
