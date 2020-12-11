@@ -24,6 +24,7 @@ namespace project_c.Controllers
 
             public ActionResult RegisterConfirmation()
             {
+                // ReSharper disable once Mvc.ViewNotResolved
                 return View();
             }
     }

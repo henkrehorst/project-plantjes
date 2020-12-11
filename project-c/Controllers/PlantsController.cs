@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using project_c.Models.Plants;
 using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.EntityFrameworkCore;
+using project_c.Helpers;
 
 namespace project_c.Controllers
 {
@@ -33,24 +29,35 @@ namespace project_c.Controllers
         }
 
         // GET: PlantsController
-        public ActionResult Index(string naam)
+        public async Task<ViewResult> Index(
+            [FromQuery(Name = "Aanbod")] int[] aanbod,
+            [FromQuery(Name = "Soort")] int[] soort,
+            [FromQuery(Name = "Licht")] int[] licht,
+            [FromQuery(Name = "Water")] int[] water,
+            [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "Page")] int page = 1)
         {
-
-            var a = _context.User.Count();
-
-            var plants = from p in _context.Plants orderby p.PlantId descending select p;
+            //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
             
-            if (!String.IsNullOrEmpty(naam))
-            {
-                naam = char.ToUpper(naam[0]) + naam.Substring(1);
-                var plant = from p in _context.Plants where p.Name.Contains(naam) select p;
-                return View(plant);
-            }
+            var query = _context.Plants.Select(p => p);
+            
+            //build query
+            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
+            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
+            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
+            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
+            if (name != null)
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
+            
+            //show only approved plants
+            query = query.Where(p => p.HasBeenApproved);
 
-            return View(plants);
+            ViewData["stekCount"] = query.Count();
+
+            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
-
         // GET: PlantsController/Details/5
         public ActionResult Details(int id)
         {

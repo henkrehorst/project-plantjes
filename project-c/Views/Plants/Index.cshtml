@@ -1,60 +1,117 @@
-﻿@model IQueryable<Plant>; 
+﻿@model project_c.Helpers.PaginatedResponse<Plant>; 
 @using project_c.Models.Plants;
-@using Microsoft.AspNetCore.Identity
-@using static project_c.Controllers.PlantsController;
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
 
-<h2>Planten</h2>
-<form asp-action="Index" method="get">
-    <input type="text" name="naam" placeholder="Voer een plant naam in">
-    <button type="submit">Zoeken</button>
-</form>
 <div class="grid grid-cols-12">
-    @* Filters in frontend *@
-    <div class="col-span-3">
-        <h2>Filters</h2>
-        @{ List<Filter> filters = (List<Filter>) ViewData["Filters"]; }
-        @foreach (Filter filter in filters)
-        {
-            <div class="block mb-4">
-                <span class="text-gray-700">@filter.Name</span>
-                <div class="mt-2">
-                    @foreach (Option filterOption  in filter.Options)
-                    {
-                        <div>
-                            <label class="inline-flex items-center">
-                                <input type="checkbox" class="form-checkbox filter-checkbox" data-category="@filter.SystemId" name="@filter.SystemId-@filterOption.OptionId" value="@filterOption.OptionId">
-                                <span class="ml-2">@filterOption.DisplayName</span>
-                            </label>
-                        </div>
-                    }
+        @* Filters in frontend *@
+        <div class="col-span-3">
+            <h2 class="text-3xl mb-4">Filter</h2>
+            <div class="block mb-4 w-4/5">
+                <span class="text-xl text-bold">Zoeken</span>
+                <div class="pt-2 relative mx-auto text-gray-600">
+                    <input class="border border-black bg-white h-10 px-5 pr-16 text-sm focus:outline-none w-full"
+                           type="search" name="search" placeholder="Zoeken" id="search-field">
+                    <button type="submit" class="absolute right-0 top-0 mt-5 mr-4" id="search-button">
+                        <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+                             viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                             width="512px" height="512px">
+                            <path
+                                d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
+                        </svg>
+                    </button>
                 </div>
-                
             </div>
-        }
-        <a asp-controller="Plants" asp-action="Create" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-4 mt-4 rounded">
-                                    Nieuwe plant
-                                </a>
-    </div>
-    @* Plant overview *@
-    <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px" id="plantOverview">
-        @{
-            foreach (var plant in Model)
+            @{ List<Filter> filters = (List<Filter>) ViewData["Filters"]; }
+            @foreach (Filter filter in filters)
             {
-                if (plant.HasBeenApproved) {
-                <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                    <a href="/plants/details/@plant.PlantId">
-                        <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
-                        <div class="px-6 py-4">
-                            <div class="font-bold text-xl mb-2">@plant.Name</div>
-                        </div>
-                    </a>
+                <div class="block mb-4">
+                    <span class="text-xl text-bold">@filter.Name</span>
+                    <div class="mt-2">
+                        @foreach (Option filterOption  in filter.Options)
+                        {
+                            <div>
+                                <label class="inline-flex items-center w-full cursor-pointer">
+                                    <input type="checkbox" class="form-checkbox filter-checkbox h-5 w-5 checked:bg-green-500 cursor-pointer" data-category="@filter.SystemId" name="@filter.SystemId-@filterOption.OptionId" value="@filterOption.OptionId">
+                                    <span class="ml-2 cursor-pointer">@filterOption.DisplayName</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+
                 </div>
-                    }
+            }
+        </div>
+        @* Plant overview *@
+        <div class="col-span-9 grid grid-cols-3 gap-4 h-fit relative" id="plantOverview">
+            <div class="overlay" id="overlay">
+                <div class="loader"></div>
+            </div>
+            <h2 class="col-span-3 text-2xl font-semibold text-green-500">@ViewData["stekCount"] Stekjes</h2>
+            @{
+                foreach (var plant in Model.Items)
+                {
+                    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                        <a href="/plants/details/@plant.PlantId">
+                            <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
+                            <div class="px-6 py-4">
+                                <div class="font-medium text-xl mb-2">@plant.Name</div>
+                            </div>
+                        </a>
+                    </div>
                 }
             }
+            @if (Model.HasMultiplePages)
+            {
+                <div class="col-span-3">
+                    <div class="pt-4 flex justify-center">
+                        <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <button onclick="navigateToPage(@(Model.PageIndex - 1))" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Vorige
+                                </button>
+                            }
+                            @{
+                                foreach (var leftPagingNumber in Model.LeftPagingNumbers)
+                                {
+                                    <button onclick="navigateToPage(@leftPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == leftPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                        @leftPagingNumber
+                                    </button>
+                                }
+                            }
+                            @if (Model.HiddenPages && Model.LeftPagingNumbers.Last() + 1 != Model.RightPagingNumbers[0])
+                            {
+                                <span class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                    ...
+                                </span>
+                            }
+                            @{
+                                foreach (var rightPagingNumber in Model.RightPagingNumbers)
+                                {
+                                    <button onclick="navigateToPage(@rightPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == rightPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                        @rightPagingNumber
+                                    </button>
+                                }
+                            }
+                            @if (Model.HasNextPage)
+                            {
+                                <button onclick="navigateToPage(@(Model.PageIndex + 1))" class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Volgende
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-</div>
