@@ -185,11 +185,11 @@ namespace project_c.Controllers
             var data = from r in _context.Ratings where r.UserId == userId select r;
             var ratingValue = Convert.ToInt32(form["rating"]);
             var comment = form["comment"].ToString();
-            var routingID = id;
+            var routingId = id;
             var noRating = true;
 
             PlantRating rating = new PlantRating();
-            
+
             if (ModelState.IsValid)
             {
                 rating.Rating = ratingValue;
@@ -197,14 +197,15 @@ namespace project_c.Controllers
                 rating.PlantId = id;
                 rating.UserId = userId;
             }
+
             foreach (var plantRating in data)
             {
                 if (plantRating.PlantId == id)
                 {
                     noRating = false;
                 }
-                
             }
+
             if (noRating)
             {
                 _context.Add(rating);
@@ -215,7 +216,60 @@ namespace project_c.Controllers
                 return Content("You already voted");
             }
 
-            return RedirectToAction("Details", new{id = routingID }); 
+            return RedirectToAction("Details", new {id = routingId});
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
+        {
+            var ratingValue = Convert.ToInt32(form["rating"]);
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    rating.Rating = ratingValue;
+                    _context.Update(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to edit rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch 
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
+        {
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    
+                    _context.Ratings.Remove(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to delete this rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch 
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
         }
     }
 }

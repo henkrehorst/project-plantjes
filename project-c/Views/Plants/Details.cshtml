@@ -70,7 +70,7 @@
                                         var userRating = item;
                                         var defaultRating = 5 - userRating.Rating;
                                         <div class="my-3" id="user-rating">
-                                            <span>Your Rating:</span>
+                                            <span>Mijn Rating:</span>
                                             <span style="color: #10B981">
                                                 @for (int i = 1; i <= userRating.Rating; i++)
                                                 {
@@ -81,7 +81,43 @@
                                                     <i class="far fa-star"></i>
                                                 }
                                             </span>
+                                            <button class="mx-2" id="editFormButton" onclick="showEditForm()">Edit</button>
+                                            <div class="inline-block">
+                                                @using (Html.BeginForm("DeleteRating", "Plants", new {id = item.Id, routingId = plant.PlantId}, FormMethod.Post))
+                                                {
+                                                    <span>
+                                                        <button type="submit">Delete</button>
+                                                    </span>
+                                                }
+                                            </div>
                                         </div>
+                                        @using (Html.BeginForm("EditRating", "Plants", new {id = item.Id, routingId = plant.PlantId}, FormMethod.Post))
+                                        {
+                                            <div id="editForm" class="flex flex-wrap -mx-3 mb-6">
+                                                <h2 class="px-2 pt-3 pb-2 text-gray-800 text-m">Edit rating</h2>
+                                                <div class="w-full md:w-full px-3 mb-2 mt-2">
+                                                    @if (item.UserId == Model.UserId)
+                                                    {
+                                                        <div class="my-3" id="user-rating">
+                                                            <span>Mijn Rating:</span>
+                                                            <span style="color: #10B981">
+                                                                <i class="ratingStar far fa-star" data-value="1"></i>
+                                                                <i class="ratingStar far fa-star" data-value="2"></i>
+                                                                <i class="ratingStar far fa-star" data-value="3"></i>
+                                                                <i class="ratingStar far fa-star" data-value="4"></i>
+                                                                <i class="ratingStar far fa-star" data-value="5"></i>
+                                                            </span>
+                                                        </div>
+                                                        <input type="hidden" name="rating" id="ratingsValue" required>
+                                                    }
+                                                </div>
+                                                <div class="w-full md:w-full flex items-start md:w-full px-3">
+                                                    <div class="-mr-1">
+                                                        <button onsubmit="checkUserRating()" type='submit' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                     }
                                 }
                                 @foreach (var item in @Model.Plant)
@@ -110,7 +146,7 @@
                                             </div>
                                             <div class="w-full md:w-full flex items-start md:w-full px-3">
                                                 <div class="-mr-1">
-                                                    <input onsubmit="checkUserRating()" type='submit' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100">
+                                                    <button onsubmit="checkUserRating()" type='submit' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100">Submit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -174,12 +210,24 @@
     
     var yourRating = document.getElementById("user-rating");
     var ratingButton = document.getElementById("rating-button");
-   
+    var editButton = document.getElementById("editFormButton");
+    var editForm = document.getElementById("editForm");
+    
     if(yourRating == null) 
     {
-       ratingButton.style.display = "show";   
+       ratingButton.style.display = "show";
+       
     } else {
         ratingButton.style.display = "none";
+    }
+    
+    editForm.style.display = "none";
+    function showEditForm() {
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+        } else {
+            editForm.style.display = "none";
+        }
     }
    
     function goBack() {
