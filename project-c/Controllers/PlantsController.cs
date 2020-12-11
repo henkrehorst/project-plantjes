@@ -110,9 +110,6 @@ namespace project_c.Controllers
                     }
                     _context.Add(plant);
                     _context.SaveChanges();
-                    
-
-                    _context.SaveChanges();
                 }
 
 

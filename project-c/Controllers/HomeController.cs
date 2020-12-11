@@ -112,6 +112,11 @@ namespace project_c.Controllers
         {
             return View();
         }
+        
+        public async Task<IActionResult> Profiel()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
