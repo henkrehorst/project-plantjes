@@ -64,8 +64,8 @@ namespace project_c.Controllers
         {
             using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
             {
-                message.Subject = "User: " + model.Username + " Subj: " + model.Subject;
-                message.Body = "\n" + model.Username + " zegt het volgende:\n\n" + model.Body;
+                message.Subject = "User: " + model.To + " Subj: " + model.Subject;
+                message.Body = "\n" + model.To + " zegt het volgende:\n\n" + model.Body;
                 message.IsBodyHtml = false;
 
                 using (SmtpClient smtp = new SmtpClient())
@@ -79,10 +79,10 @@ namespace project_c.Controllers
                     smtp.Send(message);
                     ViewBag.Message = "Email Sent Successfully";
 
-                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", "henkrehorst@outlook.com"))
+                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", model.To))
                     {
                         aReply.Subject = "Wij hebben je mail ontvangen!";
-                        aReply.Body = "\nHey " + model.Username +
+                        aReply.Body = "\nHey " + model.To +
                                       "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
                                       "\n\n Jij zei het volgende:\n\n" + model.Subject + "\n\n" + model.Body +
                                       "\n________________________________________________\n\n" +
@@ -105,7 +105,7 @@ namespace project_c.Controllers
                 }
             }
 
-            return View();
+            return RedirectToAction("Index");
         }
 
         public ViewResult Faq()
