@@ -4,41 +4,29 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using project_c.Models.Plants;
 using project_c.Models.Users;
 using project_c.Services;
 using project_c.ViewModels;
-using System.Net.Mail;
-using System.Net;
-using project_c.Helpers;
+
 
 namespace project_c.Controllers
 {
     public class PlantsController : Controller
     {
         private readonly DataContext _context;
-        private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
 
-        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
+        public PlantsController(DataContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _uploadService = upload;
         }
 
         // GET: PlantsController
-        public async Task<ViewResult> Index(
-            [FromQuery(Name = "Aanbod")] int[] aanbod,
-            [FromQuery(Name = "Soort")] int[] soort,
-            [FromQuery(Name = "Licht")] int[] licht,
-            [FromQuery(Name = "Water")] int[] water,
-            [FromQuery(Name = "Naam")] string name,
-            [FromQuery(Name = "Page")] int page = 1)
+        public ActionResult Index(string naam)
         {
-
             var plants = from p in _context.Plants orderby p.PlantId descending select p;
 
             if (!String.IsNullOrEmpty(naam))
@@ -51,32 +39,9 @@ namespace project_c.Controllers
             return View(plants);
         }
 
-            //get filters 
-            ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-            
-            var query = _context.Plants.Select(p => p);
-            
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
-
-
-            ViewData["stekCount"] = query.Count();
-
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
-        }
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-
             var plant = (from p in this._context.Plants where p.PlantId == id select p).ToList();
             var ratings = from r in _context.Ratings where r.PlantId == id select r;
 
@@ -86,16 +51,12 @@ namespace project_c.Controllers
             plantViewModel.UserId = _userManager.GetUserId(User);
 
             return View(plantViewModel);
-
-            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ThenInclude(u => u.UserData);
-            return View(plant);
         }
 
         // GET: PlantsController/Create
         [Authorize]
         public ActionResult Create()
         {
-            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }
 
@@ -110,29 +71,17 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-
+            UploadService uploadService = new UploadService();
             try
             {
                 Plant plant = new Plant();
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
+                    plant.ImgUrl = await uploadService.UploadImage(image);
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
-                    
-                    //added categories of plant
-                    plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
-                    plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
-                    plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
-                    plant.Water = Convert.ToInt32(form["filter[Water]"]);
-
                     plant.UserId = _userManager.GetUserId(User);
-                    UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
-                    if (plantuserdata.Karma >= 3)
-                    {
-                        plant.HasBeenApproved = true;
-                    }
                     _context.Add(plant);
                     _context.SaveChanges();
                 }
@@ -145,18 +94,11 @@ namespace project_c.Controllers
             }
         }
 
-        public string FetchUser(Plant plant)
-        {
-            User usr = _context.User.Single(x => x.Id == plant.UserId);
-            return usr.UserName;
-        }
-
         // // GET: PlantsController/Edit/5
         [Authorize]
         public ActionResult Edit(int id)
         {
-            Plant plant = _context.Plants.First(p => p.PlantId == id);
-            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
+            var plant = from p in _context.Plants where p.PlantId == id select p;
             return View(plant);
         }
 
@@ -171,29 +113,11 @@ namespace project_c.Controllers
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
-          
             UploadService uploadService = new UploadService();
 
             try
             {
-
-                var plant = _context.Plants.First(p => p.PlantId == id);
-
-                plant.Name = name;
-                plant.Length = Convert.ToInt32(form["length"]);
-                plant.Description = description;
-                
-                //added categories of plant
-                plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
-                plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
-                plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
-                plant.Water = Convert.ToInt32(form["filter[Water]"]);
-                
-                if (image != null)
-                {
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
-				}
-				
+                var plant = _context.Plants.Find(id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
@@ -201,7 +125,7 @@ namespace project_c.Controllers
                     plant.Description = description;
                     if (image != null)
                     {
-                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                        plant.ImgUrl = await uploadService.UploadImage(image);
                     }
 
                     _context.Update(plant);
@@ -231,69 +155,12 @@ namespace project_c.Controllers
                 var plant = _context.Plants.Find(id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
-
-                User usr = _context.User.Single(y => y.Id == plant.UserId);
-                UserData usrdat = _context.UserData.Single(y => y.UserId == usr.Id);
-                if (User.IsInRole("Admin"))
-                { 
-                    //send email here
-                    using(MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
-                    {
-                        message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
-                        message.Body = $"Beste {usrdat.FirstName} , \n\n\n" +
-                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                            "Groetjes, Het Plantjes Team";
-                        message.IsBodyHtml = false;
-                        using (SmtpClient smtp = new SmtpClient())
-                        {
-                            smtp.Host = "smtp.gmail.com";
-                            smtp.EnableSsl = true;
-                            NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
-                            smtp.UseDefaultCredentials = true;
-                            smtp.Credentials = cred;
-                            smtp.Port = 587;
-                            smtp.Send(message);
-                        }
-                    }
-                    _context.Plants.Remove(plant);
-                    usrdat.Karma--;
-                    _context.SaveChanges();
-                }
-                else if(_userManager.GetUserId(User) == plant.UserId){
                     _context.Plants.Remove(plant);
                     _context.SaveChanges();
                 }
                 else
                 {
-                    return Content("You are not authorized to perform this action.");
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(Details));
-            }
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Approve(int id) 
-        {
-            try
-            {
-                var plant = _context.Plants.Find(id);
-                User plantuser = _context.User.Single(y => y.Id == plant.UserId);
-                UserData plantuserdata = _context.UserData.Single(z => z.UserId == plantuser.Id);
-                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
-                {
-                    plant.HasBeenApproved = true;
-                    plantuserdata.Karma++;
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    return Content("You are not authorized to perform this action");
+                    return Content("Your are not authorized to delete this plant");
                 }
 
                 return RedirectToAction(nameof(Index));

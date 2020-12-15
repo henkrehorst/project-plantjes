@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -24,16 +23,16 @@ namespace project_c.Models
     public class EmailModel
     {
         [Required]
-        [EmailAddress, DisplayName("Email")]
+        [EmailAddress]
         public string To { get; set; }
         [Required]
-        [DataType(DataType.Text, ErrorMessage = "Please fill in your subject"), DisplayName("Onderwerp")]
+        [DataType(DataType.Text, ErrorMessage = "Please fill in your subject")]
         public string Subject { get; set; }
         [Required]
         [DataType(DataType.Text)]
         public string Username { get; set; }
         [Required]
-        [DataType(DataType.Text), DisplayName("Bericht")]
+        [DataType(DataType.Text)]
         public string Body { get; set; }
         [Required]
         [EmailAddress]

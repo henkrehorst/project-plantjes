@@ -78,7 +78,7 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
-            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Het wachtwoord {0} moet minstens {2} en maximaal {1} lang zijn.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -108,8 +108,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 await _roleManager.CreateAsync(new IdentityRole("Customer"));
             }
 
-            returnUrl = returnUrl ?? Url.Content("~/Identity/Account/RegisterConfirmation");
-            ReturnUrl = Url.Content("~/Identity/Account/RegisterConfirmation");
+            returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -163,7 +162,7 @@ namespace project_c.Areas.Identity.Pages.Account
                     }
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(ReturnUrl);
+                    return LocalRedirect(returnUrl);
                 }
 
                 foreach (var error in result.Errors)

@@ -1,7 +1,6 @@
 ﻿const paths = require('./paths');
 const miniCssExtractPlugin = require('mini-css-extract-plugin');
 const extraWatchWebpackPlugin = require('extra-watch-webpack-plugin');
-const fs = require('fs');
 
 module.exports = {
     entry: [paths.js,paths.scss],
@@ -29,9 +28,6 @@ module.exports = {
                         loader: 'css-loader',
                         options: {
                             importLoaders: 1,
-                            url (url) {
-                                return fs.existsSync(url)
-                            }
                         }
                     },
                     {

@@ -4,19 +4,4 @@
     ViewData["Title"] = "Confirm email";
 }
 
-<h1></h1>
-<body class="font-normal bg-white">
-    <div class="bg-white mt-6">
-        <div class="items-center my-auto justify-center flex-1 px-6 sm:px-0">
-            <div class="h-8 w-102 flex rounded-lg shadow-lg bg-white sm:mx-0" style="height: 400px">
-                <div class="flex flex-col m-auto w-full md:w-1/2 p-4">
-                    <div class="flex flex-col text-center flex-1 justify-center mb-8">
-                        <div class="text-2xl"><b>Uw account is bevestigt.</b></div>
-                        <div>U kan nu inloggen op uw Plantjes account.</div>
-                         <a class="px-5 py-3 mt-4 border border-transparent text-base font-medium rounded-md bg-green-500 text-white" id="login" asp-area="Identity" asp-page="/Account/Login">Klik hier om in te loggen</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+<h1>@ViewData["Title"]</h1>

@@ -15,7 +15,7 @@ namespace project_c.Models.Users
         public double Lng { get; set; }
         [DataType(DataType.Url)]
         public string Avatar { get; set; }
-        public int Karma { get; set; }
+
         public string UserId { get; set; }
         public User User { get; set; }
 

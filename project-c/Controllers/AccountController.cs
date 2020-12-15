@@ -21,11 +21,5 @@ namespace project_c.Controllers
                 Program.IsLoggedIn = false;
                 return RedirectToAction("Index", "Home");
             }
-
-            public ActionResult RegisterConfirmation()
-            {
-                // ReSharper disable once Mvc.ViewNotResolved
-                return View();
-            }
     }
 }

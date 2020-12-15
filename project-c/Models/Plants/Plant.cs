@@ -14,20 +14,10 @@ namespace project_c.Models.Plants
         public int PlantId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Length { get; set; }
-        
-        //Category fields
-        public int Aanbod { get; set; }
-
-        public int Soort { get; set; }
-
-        public int Licht { get; set; }
-
-        public int Water { get; set; }
-        //End Category fields
+        public int  Length { get; set; }
         
         public string ImgUrl { get; set; }
-        public bool HasBeenApproved { get; set; }
+        
         public string UserId { get; set; }
         public User User { get; set; } 
     }

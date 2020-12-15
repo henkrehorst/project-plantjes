@@ -5,8 +5,8 @@
     ViewBag.Title = "Mijn planten";
     Layout = "_Layout";
 }
-<h1></h1>
-<div class="flex mb-4 space-x-3">
+<h1>Mijn Planten</h1>
+<div class="flex mb-4">
     @foreach (var plant in Model)
     {
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
@@ -18,17 +18,15 @@
                 <div class="font-bold text-xl mb-2">@plant.Length&nbsp;mm</div>
                 <h6>Beschrijving:</h6>
                 <p class="text-gray-700 text-base">@plant.Description</p>
-                <div class="flex space-x-3">
-                    <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                       href="/plants/edit/@plant.PlantId">Edit</a>
-                    @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
-                    {
-                        <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                type="submit">
-                            Verwijderen
-                        </button>
-                    }
-                </div>
+                <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                   href="/plants/edit/@plant.PlantId">Edit</a>
+                @using (Html.BeginForm("Delete", "Plants", new {id = plant.PlantId}, FormMethod.Post))
+                {
+                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                            type="submit">
+                        Delete
+                    </button>
+                }
             </div>
         </div>
     }
