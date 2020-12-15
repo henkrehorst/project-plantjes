@@ -1,0 +1,29 @@
+﻿@model IQueryable<Plant>
+@using project_c.Models.Plants;
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    //host/Administration/ApprovePlants
+}
+
+<h1 class="text-4xl text-center m-2">Nog niet goedgekeurde planten</h1>
+<div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px">
+    @if (User.IsInRole("Admin"))
+    {
+        <div></div>
+        foreach (var plant in Model)
+        {
+            if (!plant.HasBeenApproved)
+            {
+                <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                    <a href="/plants/details/@plant.PlantId">
+                        <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
+                        <div class="px-6 py-4">
+                            <div class="font-bold text-xl mb-2">@plant.Name</div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    }
+</div>

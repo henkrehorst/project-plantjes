@@ -106,6 +106,12 @@ namespace project_c.Controllers
             return View(model);
         }
 
+        public IActionResult ApprovePlants()
+        {
+            var plants = from p in _context.Plants orderby p.PlantId descending select p;
+            return View(plants);
+        }
+
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {

@@ -18,7 +18,7 @@
     <div>
         <nav class="bg-green-500 text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
+                <div class="container mx-auto flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <img class="h-8 w-8" src="https://www.flaticon.com/svg/static/icons/svg/1590/1590412.svg" alt="Workflow logo">
@@ -49,7 +49,7 @@
                             </button>
 
                             <!-- Profile dropdown -->
-                            <div class="ml-3 relative">
+                            <div class="ml-3 z-50 relative">
                                 <div>
 
                                     @if (Program.IsLoggedIn)
@@ -69,7 +69,7 @@
                                                     <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListRoles">Rollen wijzigen</a>
                                                 }
 
-                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800">Jouw profiel</a>
+                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Home" asp-action="Profiel">Jouw profiel</a>
 
                                                 <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
 
@@ -153,16 +153,15 @@
     </div>
 
 </header>
-<div class="container mx-auto">
+@{ string container = ViewData["ContainerClass"] != null ? "" : "container ";}
+<div class="@container mx-auto">
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2020 - project_c - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
+<footer class="w-full h-60 bg-green-500" style="height: 200px">
+    
 </footer>
 <script src="~/main.js" asp-append-version="true"></script>
 <script>
