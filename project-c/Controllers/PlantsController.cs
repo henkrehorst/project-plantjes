@@ -113,7 +113,7 @@ namespace project_c.Controllers
                 }
 
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MijnPlanten");
             }
             catch
             {
@@ -184,7 +184,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to edit this plant");
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new {id});
             }
             catch
             {
@@ -228,6 +228,7 @@ namespace project_c.Controllers
                     _context.Plants.Remove(plant);
                     usrdat.Karma--;
                     _context.SaveChanges();
+                    return RedirectToAction("Index");
                 }
                 else if(_userManager.GetUserId(User) == plant.UserId){
                     _context.Plants.Remove(plant);
@@ -237,11 +238,11 @@ namespace project_c.Controllers
                 {
                     return Content("You are not authorized to perform this action.");
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MijnPlanten");
             }
             catch
             {
-                return RedirectToAction(nameof(Details));
+                return RedirectToAction("MijnPlanten");
             }
         }
         [HttpPost]
