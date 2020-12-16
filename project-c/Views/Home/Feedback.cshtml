@@ -1,0 +1,46 @@
+﻿@model FeedbackModel
+
+@{
+    ViewData["Title"] = "Frequently asked questions";
+}
+
+<div class="bg-white mt-6">
+    <div class="items-center flex-1 justify-center px-6 sm:px-0">
+        <div class="h-8 w-102 flex rounded-lg shadow-lg bg-white sm:mx-0" style="height: 580px">
+            <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://images.unsplash.com/photo-1511978360799-4149696253a1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80'); background-size: cover; background-position: center center;"></div>
+            <div class="flex flex-col w-full md:w-full p-4">
+                <div class="flex flex-col flex-1 justify-center mb-8">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h1 class="text-4xl text-center font-thin">Neem contact met ons op!</h1>
+                            <section>
+                                <div class="w-full mt-4">
+                                    <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
+                                        <h4>Bedankt dat je wat tijd vrij maakt om ons een stukje verder te helpen!</h4>
+                                        <hr/>
+                                        <div class="form-group flex flex-col mt-4">
+                                            <label asp-for="To"></label>
+                                            <input asp-for="To" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
+                                            <span asp-validation-for="To" class="text-danger"></span>
+                                            
+                                            <div class="form-group flex flex-col mt-4">
+                                                <label asp-for="Body"></label>
+                                                <input asp-for="Body" class="box-border h-40 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
+                                                <span asp-validation-for="Body" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="flex flex-col mt-8 form-group">
+                                                <button type="submit" class="btn btn-primary bg-green-500 hover:bg-green-700 text-white text-sm font-semibold py-2 px-4 rounded" asp-page="">Verzenden</button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
