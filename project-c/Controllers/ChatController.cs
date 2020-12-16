@@ -64,7 +64,7 @@ namespace project_c.Controllers
                 Chat chat = new Chat();
                 chat.Created = created;
                 chat.ChatData = new ChatData();
-                chat.ChatData.Users.Add(user);
+                chat.ChatData.Users = new List<User> { user };
                 chat.ChatData.Users.Add(_context.User.Where(a => a.Id == otheruser.Id).Single());
                 if (!ModelState.IsValid)
                 {
