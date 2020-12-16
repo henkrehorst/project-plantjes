@@ -5,6 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using project_c.Services;
+using project_c.Services.GeoRegister.Client;
+using project_c.Services.GeoRegister.Endpoint;
+using project_c.Services.GeoRegister.Handler;
+using project_c.Services.GeoRegister.Service;
 
 namespace project_c
 {
@@ -26,6 +30,9 @@ namespace project_c
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
             services.AddRazorPages();
             services.AddTransient<UploadService>();
+            services.AddTransient<ZipCodeService>();
+            services.AddTransient<ZipCodeHandler>();
+            services.AddTransient<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
