@@ -113,8 +113,8 @@ namespace project_c.Controllers
         {
             using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
             {
-                message.Subject = "Feedback van user: " + model.To;
-                message.Body = "\n" + model.To + "Geeft als feedback"  + model.Body;
+                message.Subject = "Feedback: " + model.To;
+                message.Body = "\n" + model.To + " geeft als feedback:\n\n"  + model.Body;
                 message.IsBodyHtml = false;
 
                 using (SmtpClient smtp = new SmtpClient())

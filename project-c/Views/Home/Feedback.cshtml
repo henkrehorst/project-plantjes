@@ -12,20 +12,24 @@
                 <div class="flex flex-col flex-1 justify-center mb-8">
                     <div class="row">
                         <div class="col-md-4">
-                            <h1 class="text-4xl text-center font-thin">Neem contact met ons op!</h1>
+                            <h1 class="text-4xl text-center font-thin">Feedback achterlaten</h1>
                             <section>
                                 <div class="w-full mt-4">
                                     <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
                                         <h4>Bedankt dat je wat tijd vrij maakt om ons een stukje verder te helpen!</h4>
                                         <hr/>
                                         <div class="form-group flex flex-col mt-4">
+                                            <label asp-for="Naam"></label>
+                                            <input asp-for="Naam" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                                            <span asp-validation-for="Naam" class="text-danger"></span>
+
                                             <label asp-for="To"></label>
-                                            <input asp-for="To" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
+                                            <input asp-for="To" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
                                             <span asp-validation-for="To" class="text-danger"></span>
-                                            
+
                                             <div class="form-group flex flex-col mt-4">
                                                 <label asp-for="Body"></label>
-                                                <input asp-for="Body" class="box-border h-40 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
+                                                <input asp-for="Body" class="box-border h-40 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
                                                 <span asp-validation-for="Body" class="text-danger"></span>
                                             </div>
 
