@@ -61,7 +61,7 @@ namespace project_c.Controllers
         // GET: PlantsController/Details/5
         public ActionResult Details(int id)
         {
-            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ThenInclude(u => u.UserData);
+            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User);
             return View(plant);
         }
 
@@ -103,8 +103,8 @@ namespace project_c.Controllers
                     plant.Water = Convert.ToInt32(form["filter[Water]"]);
 
                     plant.UserId = _userManager.GetUserId(User);
-                    UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
-                    if (plantuserdata.Karma >= 3)
+                    User plantuser = _context.User.First(u => u.Id == plant.UserId);
+                    if (plantuser.Karma >= 3)
                     {
                         plant.HasBeenApproved = true;
                     }
@@ -202,14 +202,13 @@ namespace project_c.Controllers
             {
                 var plant = _context.Plants.Find(id);
                 User usr = _context.User.Single(y => y.Id == plant.UserId);
-                UserData usrdat = _context.UserData.Single(y => y.UserId == usr.Id);
                 if (User.IsInRole("Admin"))
                 { 
                     //send email here
                     using(MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
-                        message.Body = $"Beste {usrdat.FirstName} , \n\n\n" +
+                        message.Body = $"Beste {usr.FirstName} , \n\n\n" +
                             $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
                             "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
                             "Groetjes, Het Plantjes Team";
@@ -226,7 +225,7 @@ namespace project_c.Controllers
                         }
                     }
                     _context.Plants.Remove(plant);
-                    usrdat.Karma--;
+                    usr.Karma--;
                     _context.SaveChanges();
                 }
                 else if(_userManager.GetUserId(User) == plant.UserId){
@@ -253,11 +252,10 @@ namespace project_c.Controllers
             {
                 var plant = _context.Plants.Find(id);
                 User plantuser = _context.User.Single(y => y.Id == plant.UserId);
-                UserData plantuserdata = _context.UserData.Single(z => z.UserId == plantuser.Id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.HasBeenApproved = true;
-                    plantuserdata.Karma++;
+                    plantuser.Karma++;
                     _context.SaveChanges();
                 }
                 else

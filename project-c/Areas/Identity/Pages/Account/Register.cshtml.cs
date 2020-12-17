@@ -78,7 +78,8 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
-            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -116,8 +117,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 var user = new User
                 {
                     UserName = Input.Email, Email = Input.Email,
-                    UserData = new UserData
-                        {FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode}
+                    FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (_userManager.Users.Count() == 1)

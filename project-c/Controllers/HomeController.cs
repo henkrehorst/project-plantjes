@@ -14,6 +14,7 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using project_c.Helpers;
 using project_c.Models.Plants;
+using project_c.Services.GeoRegister.Service;
 
 
 namespace project_c.Controllers
@@ -22,11 +23,14 @@ namespace project_c.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _dataContext;
+        private readonly ZipCodeService _zipCodeService;
 
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext, ZipCodeService zipCodeService)
         {
             _logger = logger;
             _dataContext = dataContext;
+            _zipCodeService = zipCodeService;
+
         }
 
         public async Task<ViewResult> Index(
@@ -50,7 +54,6 @@ namespace project_c.Controllers
             if (name != null)
                 query = query.Where(p =>
                     EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
 
@@ -113,7 +116,7 @@ namespace project_c.Controllers
             return View();
         }
         
-        public async Task<IActionResult> Profiel()
+        public IActionResult Profiel()
         {
             return View();
         }

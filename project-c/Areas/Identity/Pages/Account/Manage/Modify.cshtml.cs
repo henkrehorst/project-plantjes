@@ -63,7 +63,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public EmailInputModel EmailInput { get; set; }
-        public UserData userData { get; set; }
         public User usr { get; set; }
         public string usrid { get; set; }
         public double lat { get; set; }
@@ -76,34 +75,33 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
-            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
             usr = user;
-            lat = userData.Lat;
-            lng = userData.Lng;
-            usrid = userData.UserId;
-            avatar = userData.Avatar;
-            FirstName = userData.FirstName;
-            LastName = userData.LastName;
-            Zipcode = userData.ZipCode;
+            lat = user.Lat;
+            lng = user.Lng;
+            usrid = user.Id;
+            avatar = user.Avatar;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Zipcode = user.ZipCode;
             Username = userName;
             Email = email;
 
         }
-        public async Task<IActionResult> OnPostAsync(UserData userData, string Username, string FirstName, string LastName, string Zipcode, double lat, double lng, string avatar)
+        public async Task<IActionResult> OnPostAsync(string Username, string FirstName, string LastName, string Zipcode, double lat, double lng, string avatar)
         {
             var user = await _userManager.GetUserAsync(User);
-            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
+            
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
             user.UserName = Username;
-            userData.FirstName = FirstName;
-            userData.LastName = LastName;
-            userData.ZipCode = Zipcode;
-            userData.Lat = lat;
-            userData.Lng = lng;
-            userData.Avatar = avatar;
+            user.FirstName = FirstName;
+            user.LastName = LastName;
+            user.ZipCode = Zipcode;
+            user.Lat = lat;
+            user.Lng = lng;
+            user.Avatar = avatar;
 
             if (!ModelState.IsValid)
             {
@@ -112,7 +110,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            _context.Update(userData);
+            _context.Add(user);
             _context.SaveChanges();
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
