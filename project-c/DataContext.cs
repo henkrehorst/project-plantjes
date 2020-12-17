@@ -4,19 +4,14 @@ using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
 using project_c.Models.Plants;
 using project_c.Models.Chat;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Text;
 
 namespace project_c
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) 
         {
         }
-
 
         //add models to database with: public DbSet<modelName> name {get; set;}
         public DbSet<User> User { get; set; }
@@ -35,7 +30,11 @@ namespace project_c
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
 
-       
+        //chat + message data tables
+        public DbSet<Chat> Chats { get; set; } 
+        public DbSet<ChatData> ChatDatasets { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityRole>();
@@ -43,16 +42,6 @@ namespace project_c
                 .HasKey(r => new {r.UserId, r.RoleId});
             
             base.OnModelCreating(modelBuilder);
-
-            //  Voor de chat
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Message>()
-                .HasOne<AppUser>(a => a.Sender)
-                .WithMany(d => d.Messages)
-                .HasForeignKey(d => d.UserId);
-
         }
-             
-       
     }
 }
