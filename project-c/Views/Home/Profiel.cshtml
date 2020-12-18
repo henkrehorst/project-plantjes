@@ -1,5 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Your profile";
+    @using project_c.Models.Users
+    @using Microsoft.AspNetCore.Identity
+    @inject UserManager<User> _userManager;
+    @inject DataContext _context;
+    ViewData["Title"] = "Uw profiel";
 }
 
 <!-- eslint-disable -->
@@ -9,7 +13,16 @@
         <img class="absolute h-full w-full object-cover" src="https://www.groenrijk.nl/files/images/news/bijenvrienden-tuinplanten-van-de-maand-juli-2019-1560423371-1560423518_n.jpg">
     </div>
     <div class="relative shadow mx-auto h-24 w-24 -my-12 border-white rounded-full overflow-hidden border-4">
-        <img class="profile-pic object-cover w-full h-full" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
+        @if (Program.IsLoggedIn)
+        {
+            var usr = await _userManager.GetUserAsync(User);
+            var usrdta = _context.UserData.FirstOrDefault(u => u.UserId == "" + usr.Id);
+            <img class="profile-pic object-cover w-full h-full" src="@usrdta.Avatar" alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
+        }
+        else
+        {
+            <img class="profile-pic object-cover w-full h-full" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
+        }
     </div>
     <div class="mt-16">
         <h1 class="text-lg text-center font-semibold">
@@ -30,9 +43,9 @@
         </div>
     </div>
 </div>
-        <div class="justify-center text-center items-center inline-flex grid grid-cols-12">
-            <div class="gap-4 inline-block" style="min-height: 100px">
-                <div class="max-w-sm rounded overflow-hidden shadow-lg inline-block">
-                </div>
-            </div>
+<div class="justify-center text-center items-center inline-flex grid grid-cols-12">
+    <div class="gap-4 inline-block" style="min-height: 100px">
+        <div class="max-w-sm rounded overflow-hidden shadow-lg inline-block">
         </div>
+    </div>
+</div>
