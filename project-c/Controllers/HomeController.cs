@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_c.Models;
-using project_c.Services;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using project_c.Helpers;
 using project_c.Models.Plants;
 using project_c.Services.GeoRegister.Service;
+using NetTopologySuite.Geometries;
 
 
 namespace project_c.Controllers
@@ -56,6 +52,9 @@ namespace project_c.Controllers
                     EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
+
+            var users = await _dataContext.User.
+                OrderBy(u => u.Location.Distance(new Point( 4.48062326,51.92811794))).ToListAsync();                 
 
             ViewData["stekCount"] = query.Count();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Newtonsoft.Json;
 
 namespace project_c.Services.GeoRegister.Model
@@ -21,18 +22,24 @@ namespace project_c.Services.GeoRegister.Model
         {
             get
             {
-                if(CentroideLl != null) return Convert.ToDouble(CentroideLl.Split(" ")[0].Replace("POINT(", ""));
+                if (CentroideLl != null)
+                    return Convert.ToDouble(
+                        CentroideLl.Split(" ")[0].Replace("POINT(", ""),
+                        CultureInfo.InvariantCulture);
                 return 0.0;
             }
         }
-        
+
         public double Latitude
         {
             get
             {
-                if(CentroideLl != null) return Convert.ToDouble(CentroideLl.Split(" ")[1].Replace(")", ""));
+                if (CentroideLl != null)
+                    return Convert.ToDouble(
+                        CentroideLl.Split(" ")[1].Replace(")", ""),
+                        CultureInfo.InvariantCulture);
                 return 0.0;
             }
-        } 
+        }
     }
 }

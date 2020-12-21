@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using NetTopologySuite.Geometries;
 
 namespace project_c.Models.Users
 {
@@ -10,8 +12,10 @@ namespace project_c.Models.Users
         public string LastName { get; set; }
         [DataType(DataType.PostalCode), Required]
         public string ZipCode { get; set; }
-        public double Lat { get; set; }
-        public double Lng { get; set; }
+        
+        [Column(TypeName = "geography")]
+        public Point Location { get; set; }
+        
         [DataType(DataType.Url)]
         public string Avatar { get; set; }
         public int Karma { get; set; }

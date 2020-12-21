@@ -35,11 +35,14 @@ namespace project_c
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresExtension("postgis");
             modelBuilder.Entity<IdentityRole>();
             modelBuilder.Entity<IdentityUserRole<string>>()
                 .HasKey(r => new {r.UserId, r.RoleId});
-            
+
             base.OnModelCreating(modelBuilder);
         }
+        
+        
     }
 }

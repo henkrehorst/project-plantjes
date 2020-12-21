@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -10,9 +7,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 using project_c.Models.Users;
+using project_c.Services.GeoRegister.Service;
 
 namespace project_c.Areas.Identity.Pages.Account.Manage
 {
@@ -25,6 +23,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         private readonly ILogger<ChangePasswordModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly DataContext _context;
+        private readonly ZipCodeService _zipCodeService;
         
 
         public ModifyModel(
@@ -32,7 +31,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             SignInManager<User> signInManager,
             ILogger<ChangePasswordModel> logger,
             IEmailSender emailSender,
-            DataContext context)
+            DataContext context,
+            ZipCodeService zipCodeService)
 
         {
             _userManager = userManager;
@@ -40,6 +40,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _zipCodeService = zipCodeService;
         }
         [Display(Name = "Gebruikersnaam")]
         public string Username { get; set; }
@@ -76,8 +77,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
             usr = user;
-            lat = user.Lat;
-            lng = user.Lng;
             usrid = user.Id;
             avatar = user.Avatar;
             FirstName = user.FirstName;
@@ -95,13 +94,22 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            user.UserName = Username;
-            user.FirstName = FirstName;
-            user.LastName = LastName;
-            user.ZipCode = Zipcode;
-            user.Lat = lat;
-            user.Lng = lng;
-            user.Avatar = avatar;
+            
+            //get zipcode information
+            var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(Zipcode);
+            //check zipcode is valid
+            if (zipCodeInformation == null)
+            {
+                ModelState.AddModelError("Input.PostCode", "Deze postcode is ongeldig, probeer een andere!");
+            }
+            else
+            {
+                user.FirstName = FirstName;
+                user.LastName = LastName;
+                user.ZipCode = Zipcode;
+                user.Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude);
+                user.Avatar = avatar;
+            }
 
             if (!ModelState.IsValid)
             {

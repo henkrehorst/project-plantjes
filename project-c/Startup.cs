@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using project_c.Services;
 using project_c.Services.GeoRegister.Client;
-using project_c.Services.GeoRegister.Endpoint;
 using project_c.Services.GeoRegister.Handler;
 using project_c.Services.GeoRegister.Service;
 
@@ -27,7 +26,8 @@ namespace project_c
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddDbContext<DataContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
+                builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext"), 
+                    o => o.UseNetTopologySuite()));
             services.AddRazorPages();
             services.AddTransient<UploadService>();
             services.AddTransient<ZipCodeService>();
