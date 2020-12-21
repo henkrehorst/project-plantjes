@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using project_c.Hubs;
 using project_c.Services;
 
 namespace project_c
@@ -26,9 +27,11 @@ namespace project_c
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
             services.AddRazorPages();
             services.AddTransient<UploadService>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [System.Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -56,7 +59,10 @@ namespace project_c
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSignalR(route =>
+            {
+                route.MapHub<ChatHub>("/Chat/ChatIndex");
+            });
 
             app.UseEndpoints(endpoints =>
             {
