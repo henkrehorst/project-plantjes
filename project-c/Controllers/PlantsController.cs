@@ -21,6 +21,7 @@ namespace project_c.Controllers
         private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
 
+        //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
         public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
         {
             _context = context;
@@ -82,6 +83,7 @@ namespace project_c.Controllers
             
             var name = form["name"].ToString();
             var description = form["description"].ToString();
+            var quantity = form["quantity"];
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
@@ -92,9 +94,13 @@ namespace project_c.Controllers
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
+                    if (image != null)
+                    {
+                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                    }
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
+                    plant.Quantity = Convert.ToInt32(form["quantity"]);
                     
                     //added categories of plant
                     plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
@@ -102,6 +108,7 @@ namespace project_c.Controllers
                     plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
                     plant.Water = Convert.ToInt32(form["filter[Water]"]);
 
+                    plant.Creation = DateTime.Today;
                     plant.UserId = _userManager.GetUserId(User);
                     UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
                     if (plantuserdata.Karma >= 3)
@@ -155,6 +162,7 @@ namespace project_c.Controllers
 
                 plant.Name = name;
                 plant.Length = Convert.ToInt32(form["length"]);
+                plant.Quantity = Convert.ToInt32(form["quantity"]);
                 plant.Description = description;
                 
                 //added categories of plant

@@ -42,17 +42,20 @@
                             </svg>
                             <span class="text-gray-600 font-weight-light text-lg ml-2">3 Reviews</span>
                         </div>
-                        </div>
-                            <div class="rounded-full bg-green-400 duration-200 focus:outline-none focus:shadow-outline font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-16">
-                                <span>
-                                    @plant.Length&nbsp;cm
-                                </span>
-                            </div>
-                            <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
-                                @plant.Description
-                            </p>
-                            <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
-                            <h6>Geupload door:</h6><div class="font-bold text-l mb-2">@plant.User.UserName</div>
+                    </div>
+                    <div class="rounded-full bg-green-400 duration-200 focus:outline-none focus:shadow-outline font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-16">
+                        <span>
+                            @plant.Length&nbsp;cm
+                        </span>
+                    </div>
+                    <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
+                        @plant.Description
+                    </p>
+                    <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
+                        Huidig Aanbod: @plant.Quantity
+                    </p>
+                    <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
+                    <h6>Geupload door:</h6><div class="font-bold text-l mb-2">@plant.User.UserName op @plant.Creation.ToString("dd MMMM, yyyy")</div>
                     @{
                         if (User.IsInRole("Admin"))
                         {
@@ -63,8 +66,7 @@
                                    href="/plants/edit/@plant.PlantId">Edit</a>
                                 @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
                                 {
-                                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                            type="submit">
+                                    <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="submit">
                                         Verwijderen
                                     </button>
                                 }
@@ -81,7 +83,7 @@
                             </div>
                         }
                     }
-                    </div>
+                </div>
                             <button type="submit" class="rounded-full bg-green-500 duration-200 focus:outline-none focus:shadow-outline text-xl font-bold h-24 hover:bg-green-700 inline-flex items-center justify-center px-6 text-white tracking-wide transition w-48">
                                 <div class="bg-blue-light shadow-border">
                                     <svg class="message-icon" width="65" height="40" viewBox="0 0 20 20">
