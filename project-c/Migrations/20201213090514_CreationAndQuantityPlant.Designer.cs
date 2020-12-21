@@ -2,21 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
 
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201213090514_CreationAndQuantityPlant")]
+    partial class CreationAndQuantityPlant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:PostgresExtension:postgis", ",,")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -235,9 +235,6 @@ namespace project_c.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Aanbod")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("Creation")
                         .HasColumnType("timestamp without time zone");
 
@@ -253,60 +250,20 @@ namespace project_c.Migrations
                     b.Property<int>("Length")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Licht")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Soort")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
                     b.Property<string>("UserId")
                         .HasColumnType("text");
-
-                    b.Property<int>("Water")
-                        .HasColumnType("integer");
 
                     b.HasKey("PlantId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Plants");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("project_c.Models.Users.User", b =>
@@ -316,9 +273,6 @@ namespace project_c.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Avatar")
-                        .HasColumnType("text");
 
                     b.Property<int?>("ChatDataInt")
                         .HasColumnType("integer");
@@ -331,20 +285,6 @@ namespace project_c.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Karma")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("character varying(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<Point>("Location")
-                        .HasColumnType("geography");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -376,15 +316,55 @@ namespace project_c.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("text");
 
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChatDataInt");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("project_c.Models.Users.UserData", b =>
+                {
+                    b.Property<int>("UserDataId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("character varying(45)")
+                        .HasMaxLength(45);
+
+                    b.Property<int>("Karma")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("character varying(45)")
+                        .HasMaxLength(45);
+
+                    b.Property<double>("Lat")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Lng")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserDataId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserData");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -430,24 +410,18 @@ namespace project_c.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("project_c.Models.Users.User", b =>
                 {
                     b.HasOne("project_c.Models.Chat.ChatData", null)
                         .WithMany("Users")
                         .HasForeignKey("ChatDataInt");
+                });
+
+            modelBuilder.Entity("project_c.Models.Users.UserData", b =>
+                {
+                    b.HasOne("project_c.Models.Users.User", "User")
+                        .WithOne("UserData")
+                        .HasForeignKey("project_c.Models.Users.UserData", "UserId");
                 });
 #pragma warning restore 612, 618
         }

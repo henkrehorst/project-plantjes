@@ -2,15 +2,20 @@
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
 using project_c.Models.Users;
 using project_c.Services.GeoRegister.Service;
+using project_c.Services;
 
 namespace project_c.Areas.Identity.Pages.Account.Manage
 {
@@ -24,6 +29,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         private readonly IEmailSender _emailSender;
         private readonly DataContext _context;
         private readonly ZipCodeService _zipCodeService;
+        private readonly UploadService _uploadService;
         
 
         public ModifyModel(
@@ -32,7 +38,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             ILogger<ChangePasswordModel> logger,
             IEmailSender emailSender,
             DataContext context,
-            ZipCodeService zipCodeService)
+            ZipCodeService zipCodeService,
+            UploadService uploadService)
 
         {
             _userManager = userManager;
@@ -41,6 +48,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             _emailSender = emailSender;
             _context = context;
             _zipCodeService = zipCodeService;
+            _uploadService = uploadService;
         }
         [Display(Name = "Gebruikersnaam")]
         public string Username { get; set; }
@@ -69,6 +77,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         public double lat { get; set; }
         public double lng { get; set; }
         [DataType(DataType.Url)]
+        [Display(Name = "Profielfoto")]
         public string avatar { get; set; }
 
         //User code.
@@ -86,7 +95,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             Email = email;
 
         }
-        public async Task<IActionResult> OnPostAsync(string Username, string FirstName, string LastName, string Zipcode, double lat, double lng, string avatar)
+
+        public async Task<IActionResult> OnPostAsync(double lat, double lng, IFormCollection form)
         {
             var user = await _userManager.GetUserAsync(User);
             
@@ -94,7 +104,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            
             //get zipcode information
             var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(Zipcode);
             //check zipcode is valid
@@ -109,6 +118,17 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                 user.ZipCode = Zipcode;
                 user.Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude);
                 user.Avatar = avatar;
+            try
+            {
+                IFormFile image = form.Files.GetFile("ImageUpload");
+                if (image != null)
+                {
+                    user.Avatar = await _uploadService.UploadImage(image);
+                }
+            }
+            catch
+            {
+                return Content("Error - Probeer het opnieuw.");
             }
 
             if (!ModelState.IsValid)
@@ -124,6 +144,11 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
+        [HttpPost]
+        public ActionResult UploadAvatar()
+        {
+            return RedirectToPage();
+        }
 
         //Email code.
         public class EmailInputModel
@@ -186,6 +211,28 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
             StatusMessage = "Your email is unchanged.";
             return RedirectToPage();
+        }
+
+        //Avatar.
+        public async Task<IActionResult> SetAvatar(IFormCollection form)
+        {
+            var user = _userManager.GetUserAsync(User);
+            var userdata = _context.UserData.FirstOrDefault(ud => ud.UserId == "" + user.Id);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    IFormFile image = form.Files.GetFile("AvatarUpload");
+                    userdata.Avatar = await _uploadService.UploadImage(image);
+                    _context.Update(userdata);
+                    _context.SaveChanges();
+                }
+                return RedirectToAction(nameof(System.Index));
+            }
+            catch
+            {
+                return Content("Error - Probeer het opnieuw.");
+            }
         }
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()

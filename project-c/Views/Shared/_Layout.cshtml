@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using project_c.Helpers
+@using project_c.Helpers 
+@using project_c.Models.Users
+@inject UserManager<User> _userManager;
+@inject DataContext _context;     
 @addTagHelper *, HtmlHelpers
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +12,8 @@
     <title>@ViewData["Title"] - project_c</title>
     <link rel="stylesheet" href="sweetalert2/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/d8d93d0727.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="~/main.css"/>
 </head>
 <body>
@@ -27,11 +32,11 @@
 
                                 <a class="@Html.IsSelected("Plants", "Index") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Plants" asp-action="Index">Plants</a>
 
-                                <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Privacy</a>
-
                                 <a class="px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800 active:bg-green-800" asp-area="" asp-controller="Administration" asp-action="ListRoles">Roles</a>
 
-                                <a class="@Html.IsSelected("Home", "Privacy") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                <a class="@Html.IsSelected("Home", "Ons") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
+                                
+                                <a class="@Html.IsSelected("Home", "Voorwaarden") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Voorwaarden">Voorwaarden</a>
 
                                 <a class="@Html.IsSelected("Home", "Faq") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Faq">Faq</a>
 
@@ -49,12 +54,20 @@
                             <!-- Profile dropdown -->
                             <div class="ml-3 z-50 relative">
                                 <div>
-
+                                    <!--hieronder de avatar code-->
                                     @if (Program.IsLoggedIn)
                                     {
-                                        <button onclick="showMenu()" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
+                                        var usr = await _userManager.GetUserAsync(User);
+                                        var usrdta = _context.UserData.FirstOrDefault(u => u.UserId == "" + usr.Id);
+                                    <button onclick="showMenu()" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
+                                        @if (usrdta.Avatar != null) {
+                                            <img class="h-8 w-8 rounded-full" src="@usrdta.Avatar" alt="">
+                                        }
+                                        else
+                                        {
                                             <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                                        </button>
+                                        }
+                                    </button>
                                         <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                             <div id="show-menu" class="py-1 rounded-md bg-white shadow-xs" role="menu">
 
@@ -135,7 +148,6 @@
                 <div class="pt-4 pb-3 border-t border-green-800">
                     <div class="flex items-center px-5 space-x-3">
                         <div class="flex-shrink-0">
-                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
                         </div>
                         <div class="space-y-1">
                             <div class="text-base font-medium leading-none text-white">Tom Cook</div>
