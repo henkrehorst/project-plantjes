@@ -41,9 +41,9 @@ namespace project_c.Controllers
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-            
+
             var query = _context.Plants.Select(p => p);
-            
+
             //build query
             if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
             if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
@@ -52,7 +52,7 @@ namespace project_c.Controllers
             if (name != null)
                 query = query.Where(p =>
                     EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            
+
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
 
@@ -60,10 +60,12 @@ namespace project_c.Controllers
 
             return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
+
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var plant = (from p in this._context.Plants where p.PlantId == id select p).ToList();
+            var plant = (from p in this._context.Plants where p.PlantId == id select p).Include(p => p.User)
+                .ThenInclude(u => u.UserData).ToList();
             var ratings = from r in _context.Ratings where r.PlantId == id select r;
 
             var plantViewModel = new PlantViewModel();
@@ -105,10 +107,11 @@ namespace project_c.Controllers
                     {
                         plant.ImgUrl = await _uploadService.UploadImage(image);
                     }
+
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
                     plant.Quantity = Convert.ToInt32(form["quantity"]);
-                    
+
                     //added categories of plant
                     plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
                     plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
@@ -122,6 +125,7 @@ namespace project_c.Controllers
                     {
                         plant.HasBeenApproved = true;
                     }
+
                     _context.Add(plant);
                     _context.SaveChanges();
                 }
@@ -163,25 +167,24 @@ namespace project_c.Controllers
 
             try
             {
-
                 var plant = _context.Plants.First(p => p.PlantId == id);
 
                 plant.Name = name;
                 plant.Length = Convert.ToInt32(form["length"]);
                 plant.Quantity = Convert.ToInt32(form["quantity"]);
                 plant.Description = description;
-                
+
                 //added categories of plant
                 plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
                 plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
                 plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
                 plant.Water = Convert.ToInt32(form["filter[Water]"]);
-                
+
                 if (image != null)
                 {
                     plant.ImgUrl = await _uploadService.UploadImage(image);
-				}
-				
+                }
+
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
@@ -220,15 +223,15 @@ namespace project_c.Controllers
                 User usr = _context.User.Single(y => y.Id == plant.UserId);
                 UserData usrdat = _context.UserData.Single(y => y.UserId == usr.Id);
                 if (User.IsInRole("Admin"))
-                { 
+                {
                     //send email here
-                    using(MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
+                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
                         message.Body = $"Beste {usrdat.FirstName} , \n\n\n" +
-                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                            "Groetjes, Het Plantjes Team";
+                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                                       "Groetjes, Het Plantjes Team";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
@@ -241,34 +244,19 @@ namespace project_c.Controllers
                             smtp.Send(message);
                         }
                     }
+
                     _context.Plants.Remove(plant);
                     usrdat.Karma--;
                     _context.SaveChanges();
                 }
-                else if(_userManager.GetUserId(User) == plant.UserId){
+                else if (_userManager.GetUserId(User) == plant.UserId)
+                {
                     _context.Plants.Remove(plant);
                     _context.SaveChanges();
                 }
                 else
                 {
                     return Content("You are not authorized to perform this action.");
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return RedirectToAction(nameof(Details));
-            }
-        }
-                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
-                {
-                    _context.Plants.Remove(plant);
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    return Content("Your are not authorized to delete this plant");
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -328,6 +316,35 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public ActionResult Approve(int id)
+        {
+            try
+            {
+                var plant = _context.Plants.Find(id);
+                User plantuser = _context.User.Single(y => y.Id == plant.UserId);
+                UserData plantuserdata = _context.UserData.Single(z => z.UserId == plantuser.Id);
+                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
+                {
+                    plant.HasBeenApproved = true;
+                    plantuserdata.Karma++;
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("You are not authorized to perform this action");
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Details));
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
         {
             var ratingValue = Convert.ToInt32(form["rating"]);
@@ -348,12 +365,12 @@ namespace project_c.Controllers
 
                 return RedirectToAction("Details", new {id = routingId});
             }
-            catch 
+            catch
             {
                 return RedirectToAction("Details", new {id = routingId});
             }
         }
-        
+
         [HttpPost]
         public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
         {
@@ -363,7 +380,6 @@ namespace project_c.Controllers
 
                 if (_userManager.GetUserId(User) == rating.UserId)
                 {
-                    
                     _context.Ratings.Remove(rating);
                     _context.SaveChanges();
                 }
@@ -374,7 +390,7 @@ namespace project_c.Controllers
 
                 return RedirectToAction("Details", new {id = routingId});
             }
-            catch 
+            catch
             {
                 return RedirectToAction("Details", new {id = routingId});
             }
