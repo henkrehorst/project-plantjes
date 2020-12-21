@@ -12,6 +12,6 @@ namespace project_c.Models.Chat
         [Key]
         public int ChatDataInt { get; set; }
         public ICollection<Message> Messages { get; set; }
-        public ICollection<User> Users { get; set; }
+        public List<User> Users { get; set; }
     }
 }
