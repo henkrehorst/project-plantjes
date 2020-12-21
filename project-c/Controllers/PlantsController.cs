@@ -12,6 +12,7 @@ using project_c.Services;
 using System.Net.Mail;
 using System.Net;
 using project_c.Helpers;
+using project_c.ViewModels;
 
 namespace project_c.Controllers
 {
@@ -21,6 +22,7 @@ namespace project_c.Controllers
         private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
 
+        //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
         public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
         {
             _context = context;
@@ -39,9 +41,9 @@ namespace project_c.Controllers
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-            
+
             var query = _context.Plants.Select(p => p);
-            
+
             //build query
             if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
             if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
@@ -50,7 +52,7 @@ namespace project_c.Controllers
             if (name != null)
                 query = query.Where(p =>
                     EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            
+
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
 
@@ -58,11 +60,20 @@ namespace project_c.Controllers
 
             return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
+
         // GET: PlantsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ThenInclude(u => u.UserData);
-            return View(plant);
+            var plant = (from p in this._context.Plants where p.PlantId == id select p).Include(p => p.User)
+                .ThenInclude(u => u.UserData).ToList();
+            var ratings = from r in _context.Ratings where r.PlantId == id select r;
+
+            var plantViewModel = new PlantViewModel();
+            plantViewModel.Plant = plant;
+            plantViewModel.Rating = ratings;
+            plantViewModel.UserId = _userManager.GetUserId(User);
+
+            return View(plantViewModel);
         }
 
         // GET: PlantsController/Create
@@ -79,9 +90,9 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Create(IFormCollection form)
         {
-            
             var name = form["name"].ToString();
             var description = form["description"].ToString();
+            var quantity = form["quantity"];
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
             IFormFile image = form.Files.GetFile("ImageUpload");
@@ -92,26 +103,32 @@ namespace project_c.Controllers
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
+                    if (image != null)
+                    {
+                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                    }
+
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
-                    
+                    plant.Quantity = Convert.ToInt32(form["quantity"]);
+
                     //added categories of plant
                     plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
                     plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
                     plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
                     plant.Water = Convert.ToInt32(form["filter[Water]"]);
 
+                    plant.Creation = DateTime.Today;
                     plant.UserId = _userManager.GetUserId(User);
                     UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
                     if (plantuserdata.Karma >= 3)
                     {
                         plant.HasBeenApproved = true;
                     }
+
                     _context.Add(plant);
                     _context.SaveChanges();
                 }
-
 
                 return RedirectToAction(nameof(Index));
             }
@@ -150,33 +167,34 @@ namespace project_c.Controllers
 
             try
             {
-
                 var plant = _context.Plants.First(p => p.PlantId == id);
 
                 plant.Name = name;
                 plant.Length = Convert.ToInt32(form["length"]);
+                plant.Quantity = Convert.ToInt32(form["quantity"]);
                 plant.Description = description;
-                
+
                 //added categories of plant
                 plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
                 plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
                 plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
                 plant.Water = Convert.ToInt32(form["filter[Water]"]);
-                
+
                 if (image != null)
                 {
                     plant.ImgUrl = await _uploadService.UploadImage(image);
-				}
-				
+                }
+
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
                     plant.Length = Convert.ToInt32(form["length"]);
-                    plant.Description = description; 
+                    plant.Description = description;
                     if (image != null)
                     {
                         plant.ImgUrl = await _uploadService.UploadImage(image);
                     }
+
                     _context.Update(plant);
                     _context.SaveChanges();
                 }
@@ -184,6 +202,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to edit this plant");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -204,15 +223,15 @@ namespace project_c.Controllers
                 User usr = _context.User.Single(y => y.Id == plant.UserId);
                 UserData usrdat = _context.UserData.Single(y => y.UserId == usr.Id);
                 if (User.IsInRole("Admin"))
-                { 
+                {
                     //send email here
-                    using(MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
+                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
                         message.Body = $"Beste {usrdat.FirstName} , \n\n\n" +
-                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                            "Groetjes, Het Plantjes Team";
+                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                                       "Groetjes, Het Plantjes Team";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
@@ -225,11 +244,13 @@ namespace project_c.Controllers
                             smtp.Send(message);
                         }
                     }
+
                     _context.Plants.Remove(plant);
                     usrdat.Karma--;
                     _context.SaveChanges();
                 }
-                else if(_userManager.GetUserId(User) == plant.UserId){
+                else if (_userManager.GetUserId(User) == plant.UserId)
+                {
                     _context.Plants.Remove(plant);
                     _context.SaveChanges();
                 }
@@ -237,6 +258,7 @@ namespace project_c.Controllers
                 {
                     return Content("You are not authorized to perform this action.");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -244,10 +266,59 @@ namespace project_c.Controllers
                 return RedirectToAction(nameof(Details));
             }
         }
+
+        public ActionResult MijnPlanten()
+        {
+            var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
+
+            return View(plants);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddRating(int id, IFormCollection form)
+        {
+            var userId = _userManager.GetUserId(User);
+            var data = from r in _context.Ratings where r.UserId == userId select r;
+            var ratingValue = Convert.ToInt32(form["rating"]);
+            var comment = form["comment"].ToString();
+            var routingId = id;
+            var noRating = true;
+
+            PlantRating rating = new PlantRating();
+
+            if (ModelState.IsValid)
+            {
+                rating.Rating = ratingValue;
+                rating.Comment = comment;
+                rating.PlantId = id;
+                rating.UserId = userId;
+            }
+
+            foreach (var plantRating in data)
+            {
+                if (plantRating.PlantId == id)
+                {
+                    noRating = false;
+                }
+            }
+
+            if (noRating)
+            {
+                _context.Add(rating);
+                _context.SaveChanges();
+            }
+            else
+            {
+                return Content("You already voted");
+            }
+
+            return RedirectToAction("Details", new {id = routingId});
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public ActionResult Approve(int id) 
+        public ActionResult Approve(int id)
         {
             try
             {
@@ -264,6 +335,7 @@ namespace project_c.Controllers
                 {
                     return Content("You are not authorized to perform this action");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -272,11 +344,56 @@ namespace project_c.Controllers
             }
         }
 
-        public ActionResult MijnPlanten()
+        [HttpPost]
+        public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
         {
-            var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
-            
-            return View(plants);
+            var ratingValue = Convert.ToInt32(form["rating"]);
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    rating.Rating = ratingValue;
+                    _context.Update(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to edit rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
+        {
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    _context.Ratings.Remove(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to delete this rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
         }
     }
 }

@@ -17,6 +17,12 @@ namespace project_c.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly DataContext _context;
+        
+        [BindProperty] public ChatContent FormInput { get; set; }
+        public class ChatContent
+        {
+            public string Message { get; set; }
+        }
         public ChatController(UserManager<User> usr, DataContext context)
         {
             _userManager = usr;
@@ -27,12 +33,19 @@ namespace project_c.Controllers
             return View();
         }
 
-        //GET: ChatController/NewChat
-        [Authorize]
-        public ActionResult Create()
+        [HttpPost]
+        public IActionResult Create()
         {
-            return View("NewChat");
+            Console.WriteLine(FormInput.Message);
+            return View("Index");
         }
+
+        // //GET: ChatController/NewChat
+        // [Authorize]
+        // public ActionResult Create()
+        // {
+        //     return View("NewChat");
+        // }
 
         //Post: ChatController/NewChat
         [Authorize]
@@ -51,7 +64,7 @@ namespace project_c.Controllers
                 Chat chat = new Chat();
                 chat.Created = created;
                 chat.ChatData = new ChatData();
-                chat.ChatData.Users.Add(user);
+                chat.ChatData.Users = new List<User> { user };
                 chat.ChatData.Users.Add(_context.User.Where(a => a.Id == otheruser.Id).Single());
                 if (!ModelState.IsValid)
                 {
