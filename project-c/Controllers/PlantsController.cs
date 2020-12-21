@@ -64,7 +64,7 @@ namespace project_c.Controllers
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User);
+            var plant = await _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ToListAsync();
             var ratings = from r in _context.Ratings where r.PlantId == id select r;
 
             var plantViewModel = new PlantViewModel();
@@ -273,7 +273,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddRating(int id, IFormCollection form)
+        public ActionResult AddRating(int id, IFormCollection form)
         {
             var userId = _userManager.GetUserId(User);
             var data = from r in _context.Ratings where r.UserId == userId select r;
@@ -342,7 +342,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
+        public ActionResult EditRating(int id, int routingId, IFormCollection form)
         {
             var ratingValue = Convert.ToInt32(form["rating"]);
             try
@@ -369,7 +369,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
+        public ActionResult DeleteRating(int id, int routingId, IFormCollection form)
         {
             try
             {

@@ -99,13 +99,14 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync(double lat, double lng, IFormCollection form)
         {
             var user = await _userManager.GetUserAsync(User);
-            
+
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
             //get zipcode information
-            var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(Zipcode);
+            var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(form["Zipcode"].ToString());
             //check zipcode is valid
             if (zipCodeInformation == null)
             {
@@ -113,43 +114,39 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
             else
             {
-                user.FirstName = FirstName;
-                user.LastName = LastName;
-                user.ZipCode = Zipcode;
+                user.UserName = form["Username"].ToString();
+                user.FirstName = form["FirstName"].ToString();
+                user.LastName = form["LastName"].ToString();
+                user.ZipCode = form["Zipcode"].ToString();
                 user.Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude);
-                user.Avatar = avatar;
-            try
-            {
-                IFormFile image = form.Files.GetFile("ImageUpload");
-                if (image != null)
+                try
                 {
-                    user.Avatar = await _uploadService.UploadImage(image);
+                    IFormFile image = form.Files.GetFile("ImageUpload");
+                    if (image != null)
+                    {
+                        user.Avatar = await _uploadService.UploadImage(image);
+                    }
                 }
-            }
-            catch
-            {
-                return Content("Error - Probeer het opnieuw.");
-            }
+                catch
+                {
+                    return Content("Error - Probeer het opnieuw.");
+                }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(user);
+                    return Page();
+                }
 
-            await _signInManager.RefreshSignInAsync(user);
-            _context.Add(user);
-            _context.SaveChanges();
-            StatusMessage = "Your profile has been updated";
+                await _signInManager.RefreshSignInAsync(user);
+                // _context.Add(user);
+                _context.SaveChanges();
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
+            }
             return RedirectToPage();
         }
-
-        [HttpPost]
-        public ActionResult UploadAvatar()
-        {
-            return RedirectToPage();
-        }
-
+        
         //Email code.
         public class EmailInputModel
         {
@@ -216,15 +213,14 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         //Avatar.
         public async Task<IActionResult> SetAvatar(IFormCollection form)
         {
-            var user = _userManager.GetUserAsync(User);
-            var userdata = _context.UserData.FirstOrDefault(ud => ud.UserId == "" + user.Id);
+            var user = await _userManager.GetUserAsync(User);
             try
             {
                 if (ModelState.IsValid)
                 {
                     IFormFile image = form.Files.GetFile("AvatarUpload");
-                    userdata.Avatar = await _uploadService.UploadImage(image);
-                    _context.Update(userdata);
+                    user.Avatar = await _uploadService.UploadImage(image);
+                    _context.Update(user);
                     _context.SaveChanges();
                 }
                 return RedirectToAction(nameof(System.Index));

@@ -58,10 +58,9 @@
                                     @if (Program.IsLoggedIn)
                                     {
                                         var usr = await _userManager.GetUserAsync(User);
-                                        var usrdta = _context.UserData.FirstOrDefault(u => u.UserId == "" + usr.Id);
-                                    <button onclick="showMenu()" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
-                                        @if (usrdta.Avatar != null) {
-                                            <img class="h-8 w-8 rounded-full" src="@usrdta.Avatar" alt="">
+                                        <button onclick="showMenu()" class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
+                                        @if (usr.Avatar != null) {
+                                            <img class="h-8 w-8 rounded-full" src="@usr.Avatar" alt="">
                                         }
                                         else
                                         {
