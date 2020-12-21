@@ -55,7 +55,7 @@
                             <div class="ml-3 z-50 relative">
                                 <div>
                                     <!--hieronder de avatar code-->
-                                    @if (Program.IsLoggedIn)
+                                    @if (User.Identity.IsAuthenticated)
                                     {
                                         var usr = await _userManager.GetUserAsync(User);
                                         var usrdta = _context.UserData.FirstOrDefault(u => u.UserId == "" + usr.Id);
