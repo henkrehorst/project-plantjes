@@ -4,13 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using project_c.Models.Users;
 
 
 namespace project_c.Models.Chat
 {
     public class Message
     {
-        public int Id { get; set; }
+        [Key]
+        public int MessageId { get; set; }
 
         [Required]
         public string UserName { get; set; }
@@ -19,6 +21,6 @@ namespace project_c.Models.Chat
         public DateTime When { get; set; }
 
         public string UserId { get; set; }
-        public virtual AppUser Sender { get; set; }
+        public virtual User User { get; set; }
     }
 }

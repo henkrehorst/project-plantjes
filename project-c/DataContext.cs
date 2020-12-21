@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace project_c
 {
@@ -33,6 +34,7 @@ namespace project_c
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         //chat + message data tables
        
@@ -48,7 +50,7 @@ namespace project_c
             //  Voor de chat
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Message>()
-                .HasOne<AppUser>(a => a.Sender)
+                .HasOne<User>(a => a.User)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.UserId);
         }
