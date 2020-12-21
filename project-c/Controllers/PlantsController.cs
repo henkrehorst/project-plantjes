@@ -12,6 +12,7 @@ using project_c.Services;
 using System.Net.Mail;
 using System.Net;
 using project_c.Helpers;
+using project_c.ViewModels;
 
 namespace project_c.Controllers
 {
@@ -60,10 +61,17 @@ namespace project_c.Controllers
             return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
         // GET: PlantsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            var plant = _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ThenInclude(u => u.UserData);
-            return View(plant);
+            var plant = (from p in this._context.Plants where p.PlantId == id select p).ToList();
+            var ratings = from r in _context.Ratings where r.PlantId == id select r;
+
+            var plantViewModel = new PlantViewModel();
+            plantViewModel.Plant = plant;
+            plantViewModel.Rating = ratings;
+            plantViewModel.UserId = _userManager.GetUserId(User);
+
+            return View(plantViewModel);
         }
 
         // GET: PlantsController/Create
@@ -80,7 +88,6 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Create(IFormCollection form)
         {
-            
             var name = form["name"].ToString();
             var description = form["description"].ToString();
             var quantity = form["quantity"];
@@ -118,7 +125,6 @@ namespace project_c.Controllers
                     _context.Add(plant);
                     _context.SaveChanges();
                 }
-
 
                 return RedirectToAction(nameof(Index));
             }
@@ -180,11 +186,12 @@ namespace project_c.Controllers
                 {
                     plant.Name = name;
                     plant.Length = Convert.ToInt32(form["length"]);
-                    plant.Description = description; 
+                    plant.Description = description;
                     if (image != null)
                     {
                         plant.ImgUrl = await _uploadService.UploadImage(image);
                     }
+
                     _context.Update(plant);
                     _context.SaveChanges();
                 }
@@ -192,6 +199,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to edit this plant");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -245,6 +253,7 @@ namespace project_c.Controllers
                 {
                     return Content("You are not authorized to perform this action.");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -252,26 +261,16 @@ namespace project_c.Controllers
                 return RedirectToAction(nameof(Details));
             }
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public ActionResult Approve(int id) 
-        {
-            try
-            {
-                var plant = _context.Plants.Find(id);
-                User plantuser = _context.User.Single(y => y.Id == plant.UserId);
-                UserData plantuserdata = _context.UserData.Single(z => z.UserId == plantuser.Id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
-                    plant.HasBeenApproved = true;
-                    plantuserdata.Karma++;
+                    _context.Plants.Remove(plant);
                     _context.SaveChanges();
                 }
                 else
                 {
-                    return Content("You are not authorized to perform this action");
+                    return Content("Your are not authorized to delete this plant");
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -283,8 +282,102 @@ namespace project_c.Controllers
         public ActionResult MijnPlanten()
         {
             var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
-            
+
             return View(plants);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddRating(int id, IFormCollection form)
+        {
+            var userId = _userManager.GetUserId(User);
+            var data = from r in _context.Ratings where r.UserId == userId select r;
+            var ratingValue = Convert.ToInt32(form["rating"]);
+            var comment = form["comment"].ToString();
+            var routingId = id;
+            var noRating = true;
+
+            PlantRating rating = new PlantRating();
+
+            if (ModelState.IsValid)
+            {
+                rating.Rating = ratingValue;
+                rating.Comment = comment;
+                rating.PlantId = id;
+                rating.UserId = userId;
+            }
+
+            foreach (var plantRating in data)
+            {
+                if (plantRating.PlantId == id)
+                {
+                    noRating = false;
+                }
+            }
+
+            if (noRating)
+            {
+                _context.Add(rating);
+                _context.SaveChanges();
+            }
+            else
+            {
+                return Content("You already voted");
+            }
+
+            return RedirectToAction("Details", new {id = routingId});
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
+        {
+            var ratingValue = Convert.ToInt32(form["rating"]);
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    rating.Rating = ratingValue;
+                    _context.Update(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to edit rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch 
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
+        {
+            try
+            {
+                var rating = _context.Ratings.Find(id);
+
+                if (_userManager.GetUserId(User) == rating.UserId)
+                {
+                    
+                    _context.Ratings.Remove(rating);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    return Content("Your are not authorized to delete this rating");
+                }
+
+                return RedirectToAction("Details", new {id = routingId});
+            }
+            catch 
+            {
+                return RedirectToAction("Details", new {id = routingId});
+            }
         }
     }
 }
