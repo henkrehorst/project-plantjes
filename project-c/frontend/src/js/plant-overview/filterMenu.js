@@ -3,7 +3,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     //store selected checkboxes
     let filterState = parseSearchParams();
     //fill search field
-    fillSearch();
+    fillSearchZipcode();
 
     Array.from(document.getElementsByClassName('filter-checkbox')).forEach(function (element) {
         //make checkboxes in url filter selected
@@ -73,14 +73,96 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         refreshPlants(false)
     }
 
-    function fillSearch() {
+    function fillSearchZipcode() {
         if (filterState['naam'] !== undefined) {
             document.getElementById("search-field").value = filterState['naam'][Object.keys(filterState["naam"])[0]];
         } else {
             document.getElementById("search-field").value = "";
         }
+
+        if (filterState['postcode'] !== undefined) {
+            document.getElementById("zipcode-field").value = filterState['postcode'][Object.keys(filterState["postcode"])[0]];
+        } else {
+            document.getElementById("zipcode-field").value = "";
+        }
+        
+        if(filterState['Afstand'] !== undefined){
+            let optionCollection = document.getElementById("distance-select").options;
+            
+            for (let i = 0; i < optionCollection.length; i++) {
+                if(filterState['Afstand'][Object.keys(filterState["Afstand"])[0]] === optionCollection[i].value){
+                    optionCollection[i].selected = 'selected';
+                }else{
+                    optionCollection[i].selected = '';
+                }
+            }
+        }
     }
 
+    //connect zipcode function with zipcode look button
+    if (document.getElementById("zipcode-button")) {
+        document.getElementById("zipcode-button").addEventListener('click', useZipcodeField)
+    }
+
+    //run zipcode function on enter
+    if (document.getElementById("zipcode-field")) {
+        document.getElementById("zipcode-field").addEventListener("keyup", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                useZipcodeField();
+            }
+        });
+        //use zipcode on clear
+        document.getElementById("zipcode-field").addEventListener("search", () => {
+            if (document.getElementById("zipcode-field").value === "") {
+                useZipcodeField();
+            }
+        });
+    }
+
+    async function useZipcodeField() {
+        //read zipcode from field
+        const zipcode = document.getElementById("zipcode-field").value;
+        
+        if(zipcode.trim().length > 0){
+        fetch(window.location.origin + '/api/zipcode/' + zipcode).then(response => {
+            if(!response.ok){
+                document.getElementById('zipcode-field-error').innerText = "Ongeldige postcode!";
+            }else{
+                document.getElementById('zipcode-field-error').innerText = "";
+                //get coordinates
+                response.json().then(data => {
+                    let zipcode = data['zipCode'];
+                    filterState['postcode'] = {zipcode: zipcode};
+                    let lon = data['longitude'].toString();
+                    filterState['lon'] = {lon: lon};
+                    let lat = data['latitude'].toString();
+                    filterState['lat'] = {lat: lat};
+                    
+                    //remove distance error!
+                    document.getElementById("afstand-field-error").innerText = "";
+                    
+                    removePaging();
+                    refreshPlants(false);
+                });
+            }
+        }).catch(error => {
+            console.log(error);
+        });
+        }else{
+            document.getElementById('zipcode-field-error').innerText = "";
+
+            if (filterState['postcode'] !== undefined && Object.keys(filterState['postcode']).length > 0) {
+                delete filterState['postcode'];
+                delete filterState['lon'];
+                delete filterState['lat'];
+            }
+            
+            removePaging();
+            refreshPlants(false);
+        }
+    }
+    
     async function refreshPlants(backReturn) {
         hideOrShowLoader();
         let searchUlr = new URLSearchParams();
@@ -91,9 +173,11 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                 searchUlr.append(category, v);
             });
         });
+        
+        const searchUri = searchUlr.toString();
 
         //request plants form backend
-        await fetch(window.location.origin + '/api/plants?' + searchUlr.toString()).then(async response => {
+        await fetch(window.location.origin + '/api/plants?' + searchUri).then(async response => {
             const responseData = await response.json();
             //set correct current page in filter state
             let currentPage = responseData["pageIndex"];
@@ -118,35 +202,35 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                             </a>
                         </div>`
                 });
-                
+
                 //generate pagination
                 if (responseData["hasMultiplePages"]) {
                     plantOverview += `<div class="col-span-3">
                         <div class="pt-4 flex justify-center">
                             <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
                                 ${responseData["hasPreviousPage"] ?
-                                `<button onclick="navigateToPage(${responseData['pageIndex'] - 1})" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        `<button onclick="navigateToPage(${responseData['pageIndex'] - 1})" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                         </svg>
                                         Vorige
                                     </button>` : ""}
                                ${responseData["leftPagingNumbers"].map((i) => (
-                                   `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
+                        `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
                                         ${i}
                                    </button>`
-                                )).join("")}
+                    )).join("")}
                                 ${responseData["hiddenPages"] && responseData["leftPagingNumbers"][responseData["leftPagingNumbers"].length - 1] + 1 !== (responseData["rightPagingNumbers"][0] !== undefined ? responseData["rightPagingNumbers"][0] : 0) ?
-                                `<span class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                        `<span class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-700">
                                         ...
                                     </span>` : ""}
                                 ${responseData["rightPagingNumbers"].map((i) => (
-                                    `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
+                        `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
                                         ${i}
                                     </button>`
-                                )).join("")}
+                    )).join("")}
                                 ${responseData["hasNextPage"] ?
-                                `<button onclick="navigateToPage(${responseData['pageIndex'] + 1})"  class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        `<button onclick="navigateToPage(${responseData['pageIndex'] + 1})"  class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                         Volgende
                                         <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
@@ -168,7 +252,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         //modify url
         if (backReturn === false) {
             if (history.pushState) {
-                let url = window.location.origin + window.location.pathname + (searchUlr.toString().length > 0 ? "?" : "") + searchUlr.toString();
+                let url = window.location.origin + window.location.pathname + (searchUri.length > 0 ? "?" : "") + searchUri;
                 window.history.pushState({path: url}, '', url);
             }
         }
@@ -188,11 +272,24 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         return searchState;
     }
 
+
+    window.distanceFilter = (option) => {
+        let value = option.value;
+        
+        if(parseInt(value) > 0){
+            filterState["Afstand"] = {value: value} 
+        }else if(filterState["Afstand"] !== undefined) delete filterState["Afstand"];
+
+        document.getElementById("afstand-field-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
+
+        refreshPlants(false);
+    }
+
     window.navigateToPage = async function navigateToPage(page) {
         filterState["Page"] = {page: page};
         await refreshPlants(false);
         //scroll to highste row of plants
-        window.scrollTo(0,426);
+        window.scrollTo(0, 426);
     }
 
     function hideOrShowLoader() {
@@ -221,7 +318,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         //select checkboxes from filter
         makeSelectedCheckboxes();
         //add correct content in search
-        fillSearch();
+        fillSearchZipcode();
         //refresh content
         await refreshPlants(true);
     };

@@ -12,6 +12,7 @@ using project_c.Services;
 using System.Net.Mail;
 using System.Net;
 using project_c.Helpers;
+using project_c.Repository;
 using project_c.ViewModels;
 
 namespace project_c.Controllers
@@ -21,13 +22,15 @@ namespace project_c.Controllers
         private readonly DataContext _context;
         private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
+        private readonly PlantRepository _plantRepository;
 
         //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
-        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
+        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload, PlantRepository plantRepository)
         {
             _context = context;
             _userManager = userManager;
             _uploadService = upload;
+            _plantRepository = plantRepository;
         }
 
         // GET: PlantsController
@@ -37,28 +40,17 @@ namespace project_c.Controllers
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
             [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "postcode")] string zipcode,
+            [FromQuery(Name = "lat")] double latitude,
+            [FromQuery(Name = "lon")] double longitude,
+            [FromQuery(Name = "Afstand")] int distance,
             [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-
-            var query = _context.Plants.Select(p => p);
-
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
-
-            ViewData["stekCount"] = query.Count();
-
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
+            
+            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page)) : 
+                View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page));
         }
 
         // GET: PlantsController/Details/5

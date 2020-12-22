@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using project_c.Repository;
 using project_c.Services;
 using project_c.Services.GeoRegister.Client;
 using project_c.Services.GeoRegister.Handler;
@@ -26,6 +28,7 @@ namespace project_c
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddDbContext<DataContext>(builder =>
+                
                 builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext"), 
                     o => o.UseNetTopologySuite()));
             services.AddRazorPages();
@@ -33,6 +36,7 @@ namespace project_c
             services.AddTransient<ZipCodeService>();
             services.AddTransient<ZipCodeHandler>();
             services.AddTransient<HttpClient>();
+            services.AddTransient<PlantRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

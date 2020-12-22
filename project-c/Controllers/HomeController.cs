@@ -11,6 +11,7 @@ using project_c.Helpers;
 using project_c.Models.Plants;
 using project_c.Services.GeoRegister.Service;
 using NetTopologySuite.Geometries;
+using project_c.Repository;
 
 
 namespace project_c.Controllers
@@ -19,13 +20,13 @@ namespace project_c.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _dataContext;
-        private readonly ZipCodeService _zipCodeService;
+        private readonly PlantRepository _plantRepository;
 
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext, ZipCodeService zipCodeService)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext, PlantRepository plantRepository)
         {
             _logger = logger;
             _dataContext = dataContext;
-            _zipCodeService = zipCodeService;
+            _plantRepository = plantRepository;
 
         }
 
@@ -35,30 +36,18 @@ namespace project_c.Controllers
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
             [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "postcode")] string zipcode,
+            [FromQuery(Name = "lat")] double latitude,
+            [FromQuery(Name = "lon")] double longitude,
+            [FromQuery(Name = "Afstand")] int distance,
             [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
             ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
             
-            var query = _dataContext.Plants.Select(p => p);
-            
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
+            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page)) : 
+                View(await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page));
 
-            var users = await _dataContext.User.
-                OrderBy(u => u.Location.Distance(new Point( 4.48062326,51.92811794))).ToListAsync();                 
-
-            ViewData["stekCount"] = query.Count();
-
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
 
         [HttpPost]
