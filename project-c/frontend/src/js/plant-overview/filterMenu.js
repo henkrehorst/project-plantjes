@@ -207,7 +207,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
             } else {
                 let plantOverview = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
-                    "            </div><h2 class=\"col-span-2 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
+                    "            </div><h2 class=\"col-span-1 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
                     document.getElementById("sort-filter-div").outerHTML;
                 Object.entries(responseData["items"]).forEach(([key, plant]) => {
                     if(plant.distance > 0){
@@ -236,7 +236,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
                 //generate pagination
                 if (responseData["hasMultiplePages"]) {
-                    plantOverview += `<div class="col-span-3">
+                    plantOverview += `<div class="col-span-1 sm:col-span-2 lg:col-span-3">
                         <div class="pt-4 flex justify-center">
                             <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
                                 ${responseData["hasPreviousPage"] ?
