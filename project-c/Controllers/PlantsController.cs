@@ -44,13 +44,14 @@ namespace project_c.Controllers
             [FromQuery(Name = "lat")] double latitude,
             [FromQuery(Name = "lon")] double longitude,
             [FromQuery(Name = "Afstand")] int distance,
+            [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
             
-            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page)) : 
-                View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page));
+            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
+                View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
         }
 
         // GET: PlantsController/Details/5

@@ -108,7 +108,17 @@
             <div class="overlay" id="overlay">
                 <div class="loader"></div>
             </div>
-            <h2 class="col-span-3 text-2xl font-semibold text-green-500">@Model.Count Stekjes</h2>
+            <h2 class="col-span-2 text-2xl font-semibold text-green-500">@Model.Count Stekjes</h2>
+            <div class="col-span-1 text-right" id="sort-filter-div">
+                <label for="sort-select" class="mr-2 text-base font-semibold text-gray-500 text-bold">Sorteren op:</label>
+                <select class="border border-black bg-white h-10 px-5 pr-4 text-sm focus:outline-none" name="sort" id="sort-select" onchange="sortFilter(this)">
+                    <option value="new">Nieuwste eerst</option>
+                    <option value="a-z">Naam: A-Z</option>
+                    <option value="z-a">Naam: Z-A</option>
+                    <option value="loc">Afstand</option>
+                </select>
+                <span class="mt-2 text-sm text-red-500 w-full block" id="sort-filter-error"></span>
+            </div>
             @{
                 foreach (var plant in Model.Items)
                 {

@@ -4,6 +4,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     let filterState = parseSearchParams();
     //fill search field
     fillSearchZipcode();
+    fillSortFilter();
 
     Array.from(document.getElementsByClassName('filter-checkbox')).forEach(function (element) {
         //make checkboxes in url filter selected
@@ -92,6 +93,22 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
             for (let i = 0; i < optionCollection.length; i++) {
                 if(filterState['Afstand'][Object.keys(filterState["Afstand"])[0]] === optionCollection[i].value){
                     optionCollection[i].selected = 'selected';
+                }else{
+                    optionCollection[i].selected = '';
+                }
+            }
+        }
+    }
+    
+    function fillSortFilter(){
+        if(filterState['Sort'] !== undefined){
+            let optionCollection = document.getElementById("sort-select").options;
+
+            for (let i = 0; i < optionCollection.length; i++) {
+                if(filterState['Sort'][Object.keys(filterState["Sort"])[0]] === optionCollection[i].value) {
+                    optionCollection[i].selected = 'selected';
+                    if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === "loc")
+                        document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
                 }else{
                     optionCollection[i].selected = '';
                 }
@@ -190,7 +207,8 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
             } else {
                 let plantOverview = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
-                    "            </div><h2 class=\"col-span-3 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>";
+                    "            </div><h2 class=\"col-span-2 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
+                    document.getElementById("sort-filter-div").outerHTML;
                 Object.entries(responseData["items"]).forEach(([key, plant]) => {
                     plantOverview +=
                         `<div class="max-w-sm rounded overflow-hidden shadow-lg">
@@ -243,6 +261,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
                 document.getElementById('plantOverview').innerHTML = plantOverview;
                 hideOrShowLoader();
+                fillSortFilter();
             }
 
         }).catch(err => {
@@ -271,6 +290,19 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
         return searchState;
     }
+    
+    window.sortFilter = (option) => {
+      let value = option.value;
+      filterState["Sort"] = {value: value}
+      
+      if(option === "loc") 
+          document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
+      else{
+          document.getElementById("sort-filter-error").innerText = "";
+      }
+      
+      refreshPlants(false);
+    };
 
 
     window.distanceFilter = (option) => {
@@ -319,6 +351,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         makeSelectedCheckboxes();
         //add correct content in search
         fillSearchZipcode();
+        fillSortFilter();
         //refresh content
         await refreshPlants(true);
     };

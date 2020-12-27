@@ -19,7 +19,8 @@ namespace project_c.Repository
             int[] water,
             string name,
             int distance = 0,
-            int page = 1
+            int page = 1,
+            string sort = "new"
         )
         {
             //start join query
@@ -41,10 +42,23 @@ namespace project_c.Repository
             //show only approved plants
             query = query.Where(t => t.plant.HasBeenApproved);
             
-            //order
-            query = query.OrderByDescending(t => t.user.Location.Distance(new Point(latitude, longitude)));
-            
-            //show only plant data and user data
+            //sort plants by sort filter
+            if (sort == "a-z")
+            {
+                query = query.OrderBy(t => t.plant.Name);
+            }else if (sort == "z-a")
+            {
+                query = query.OrderByDescending(t => t.plant.Name);
+            }else if (sort == "loc")
+            {
+                query = query.OrderByDescending(t => t.user.Location.Distance(new Point(latitude, longitude)));
+            }
+            else
+            {
+                query = query.OrderBy(t => t.plant.Creation);
+            }
+
+            //show only plant data and not user data
             var finalQuery  = query.Select(@t => new Plant(@t.plant, @t.user.Location.Distance(new Point(latitude, longitude)) / 1000));
 
             return await PaginatedResponse<Plant>.CreateAsync(finalQuery, page, 15);
@@ -57,7 +71,8 @@ namespace project_c.Repository
             int[] licht,
             int[] water,
             string name,
-            int page = 1
+            int page = 1,
+            string sort = "new"
         )
         {
             var query = dataContext.Plants.Select(p => p);
@@ -73,6 +88,19 @@ namespace project_c.Repository
 
             //show only approved plants
             query = query.Where(p => p.HasBeenApproved);
+
+            //sort plants by sort filter
+            if (sort == "a-z")
+            {
+                query = query.OrderBy(p => p.Name);
+            }else if (sort == "z-a")
+            {
+                query = query.OrderByDescending(p => p.Name);
+            }
+            else
+            {
+                query = query.OrderBy(p => p.Creation);
+            }
 
             return await PaginatedResponse<Plant>.CreateAsync(query, page, 15);
         }

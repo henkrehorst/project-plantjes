@@ -36,11 +36,12 @@ namespace project_c.Controllers.api
             [FromQuery(Name = "lat")] double latitude,
             [FromQuery(Name = "lon")] double longitude,
             [FromQuery(Name = "Afstand")] int distance,
+            [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
 
-            return latitude != 0.0 && longitude != 0.0 ? await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page) : 
-                await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page);
+            return latitude != 0.0 && longitude != 0.0 ? await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort) : 
+                await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page, sort);
         }
     }
 }
