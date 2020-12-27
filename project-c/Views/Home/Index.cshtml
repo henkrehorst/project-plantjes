@@ -122,9 +122,13 @@
             @{
                 foreach (var plant in Model.Items)
                 {
-                    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                    <div class="max-w-sm rounded overflow-hidden shadow-lg relative">
                         <a href="/plants/details/@plant.PlantId">
                             <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
+                            @if (plant.Distance != 0)
+                            {
+                                <div class="absolute dis-label text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle">@plant.Distance km</div>
+                            }
                             <div class="px-6 py-4">
                                 <div class="font-medium text-xl mb-2">@plant.Name</div>
                             </div>

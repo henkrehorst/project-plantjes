@@ -210,8 +210,20 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                     "            </div><h2 class=\"col-span-2 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
                     document.getElementById("sort-filter-div").outerHTML;
                 Object.entries(responseData["items"]).forEach(([key, plant]) => {
+                    if(plant.distance > 0){
+                        plantOverview +=
+                            `<div class="max-w-sm rounded overflow-hidden shadow-lg relative">
+                            <a href="/plants/details/${plant.plantId}">
+                                <img class="w-full plant-image" src="${plant.imgUrl}" alt="${plant.name}">
+                                <div class="absolute dis-label text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle">${plant.distance} km</div>
+                                <div class="px-6 py-4">
+                                    <div class="font-bold text-xl mb-2">${plant.name}</div>
+                                </div>
+                            </a>
+                        </div>`
+                    }else{
                     plantOverview +=
-                        `<div class="max-w-sm rounded overflow-hidden shadow-lg">
+                        `<div class="max-w-sm rounded overflow-hidden shadow-lg relative">
                             <a href="/plants/details/${plant.plantId}">
                                 <img class="w-full plant-image" src="${plant.imgUrl}" alt="${plant.name}">
                                 <div class="px-6 py-4">
@@ -219,6 +231,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                                 </div>
                             </a>
                         </div>`
+                    }
                 });
 
                 //generate pagination
@@ -300,7 +313,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
       else{
           document.getElementById("sort-filter-error").innerText = "";
       }
-      
+      removePaging();
       refreshPlants(false);
     };
 
@@ -313,7 +326,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         }else if(filterState["Afstand"] !== undefined) delete filterState["Afstand"];
 
         document.getElementById("afstand-field-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
-
+        removePaging();
         refreshPlants(false);
     }
 

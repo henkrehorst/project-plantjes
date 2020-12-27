@@ -51,7 +51,7 @@ namespace project_c.Repository
                 query = query.OrderByDescending(t => t.plant.Name);
             }else if (sort == "loc")
             {
-                query = query.OrderByDescending(t => t.user.Location.Distance(new Point(latitude, longitude)));
+                query = query.OrderBy(t => t.user.Location.Distance(new Point(latitude, longitude)));
             }
             else
             {
