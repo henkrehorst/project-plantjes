@@ -66,7 +66,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
         if (searchVal.trim().length > 0) {
             filterState['naam'] = {searchVal: searchVal};
-        } else if (Object.keys(filterState['naam']).length > 0) {
+        } else if (filterState['naam'] !== null | undefined && Object.keys(filterState['naam']).length > 0) {
             delete filterState['naam'];
         }
 
@@ -103,6 +103,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     function fillSortFilter() {
         if (filterState['Sort'] !== undefined) {
             let optionCollection = document.getElementById("sort-select").options;
+            let optionCollectionMobile = document.getElementById("sort-select-mobile").options;
 
             for (let i = 0; i < optionCollection.length; i++) {
                 if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === optionCollection[i].value) {
@@ -111,6 +112,16 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                         document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
                 } else {
                     optionCollection[i].selected = '';
+                }
+            }
+
+            for (let i = 0; i < optionCollectionMobile.length; i++) {
+                if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === optionCollectionMobile[i].value) {
+                    optionCollectionMobile[i].selected = 'selected';
+                    if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === "loc")
+                        document.getElementById("sort-filter-error-mobile").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
+                } else {
+                    optionCollectionMobile[i].selected = '';
                 }
             }
         }
@@ -203,12 +214,28 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
             if (responseData["items"].length === 0) {
                 document.getElementById('plantOverview').innerHTML = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
-                    "            </div><h1>Geen planten gevonden</h1>";
+                    "            </div><h1>Geen planten stekjes</h1>" +
+                    `<div class="md:hidden">
+                    <button onclick="openFilerMenu()" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center w-full">
+                        <svg class="mr-2" style="fill: #ffffff" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                            <path d="M0 0h24v24H0z" fill="none"/><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                        </svg>Filter
+                    </button>
+                    </div>` +
+                    document.getElementById("sort-filter-div").outerHTML;
+                document.getElementById("result-button").innerText = "Geen stekjes gevonden";
             } else {
                 let plantOverview = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
-                    "            </div><h2 class=\"col-span-1 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
+                    "            </div><h2 class=\"col-span-1 text-2xl font-semibold text-green-500 text-center sm:text-left\">" + responseData["count"] + " Stekjes</h2>" +
                     document.getElementById("sort-filter-div").outerHTML;
+                plantOverview += `<div class="md:hidden">
+                    <button onclick="openFilerMenu()" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center w-full">
+                        <svg class="mr-2" style="fill: #ffffff" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                            <path d="M0 0h24v24H0z" fill="none"/><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                        </svg>Filter
+                    </button>
+                </div>`;
                 Object.entries(responseData["items"]).forEach(([key, plant]) => {
                     if (plant.distance > 0) {
                         plantOverview +=
@@ -295,6 +322,9 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                             </div>
                         </div>
                     </div>`;
+
+                    //update result button for mobile
+                    document.getElementById("result-button").innerText = `Toon ${responseData['count']} stekjes`
                 }
 
                 document.getElementById('plantOverview').innerHTML = plantOverview;
@@ -333,10 +363,12 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         let value = option.value;
         filterState["Sort"] = {value: value}
 
-        if (option === "loc")
+        if (option === "loc") {
             document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
-        else {
+            document.getElementById("sort-filter-error-mobile").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
+        }else {
             document.getElementById("sort-filter-error").innerText = "";
+            document.getElementById("sort-filter-error-mobile").innerText = "";
         }
         removePaging();
         refreshPlants(false);
@@ -393,4 +425,45 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         //refresh content
         await refreshPlants(true);
     };
+
+    //listen on scroll
+    document.addEventListener('scroll', (e) => {
+        if (window.innerWidth < 790) {
+            if (window.scrollY > 560 && !isFooterIntoView()) {
+                document.getElementById("filter-button").style.display = "grid";
+            } else {
+                document.getElementById("filter-button").style.display = "none";
+            }
+        }else{
+            document.getElementById("filter-button").style.display = "none";
+        }
+    });
+
+    //check footer is visible
+    function isFooterIntoView() {
+        let rect = document.getElementById("footer").getBoundingClientRect();
+        return (rect.top >= 0) && (rect.bottom - rect.height <= window.innerHeight);
+    }
+    
+    window.openFilerMenu = () => {
+            document.getElementById("filter-menu").classList.add("mobile-filter-open");
+            document.getElementById("filter-result").classList.remove("hidden");
+            document.getElementById("filter-result").classList.add("block");
+            document.body.classList.add("--no-scroll");
+    }
+
+    window.closeFilerMenu = () => {
+        document.getElementById("filter-menu").classList.remove("mobile-filter-open");
+        document.getElementById("filter-result").classList.add("hidden");
+        document.getElementById("filter-result").classList.remove("block");
+        document.body.classList.remove("--no-scroll");
+    }
+    
+    //when user press result button
+    window.resultButton = () => {
+        window.scrollTo(0, 426);
+        window.closeFilerMenu();
+    }
+    
+    
 }

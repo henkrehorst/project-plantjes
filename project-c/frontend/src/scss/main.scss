@@ -10,26 +10,26 @@
 
 $brand-color: white;
 
-body{
+body {
   background-color: $brand-color;
 }
 
-main{
+main {
   min-height: 80vh;
 }
 
-.home-banner{
+.home-banner {
   background: linear-gradient(rgb(0 0 0 / 13%), rgb(0 0 0 / 61%)), url("/Images/home-banner.jpg") center 75%;
   background-size: cover;
   width: 100%;
   min-height: 360px;
 }
 
-.h-fit{
+.h-fit {
   height: fit-content;
 }
 
-.overlay{
+.overlay {
   position: absolute;
   top: 0;
   right: 0;
@@ -52,11 +52,50 @@ main{
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.dis-label{
+.dis-label {
   top: 5px;
   right: 5px;
+}
+
+.mobile-filter {
+  transform: translate(0, 0);
+  @media (max-width: 789px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    z-index: 30;
+    background: #ffffff;
+    overflow-y: scroll;
+   
+    .filter-wrapper {
+      padding-bottom: 72px;
+    }
+  }
+}
+
+.mobile-filter-open {
+  @media (max-width: 789px) {
+    width: 100%;
+  }
+}
+
+.w-full-custom{
+  width: calc(100% - 84px);
+}
+
+.--no-scroll{
+  @media (max-width: 789px) {
+    overflow: hidden;
+  }
 }
