@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div class="container mx-auto mt-6 mb-6">
+<div class="container mx-auto mt-6 mb-6 p-1">
     <div class="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-4">
         @* Filters in frontend *@
         <div class="hidden md:block md:col-span-3 lg:col-span-1">
@@ -138,7 +138,7 @@
             }
             @if (Model.HasMultiplePages)
             {
-                <div class="col-span-1 sm:col-span-2 lg:col-span-3">
+                <div class="col-span-1 sm:col-span-2 lg:col-span-3 hidden sm:block">
                     <div class="pt-4 flex justify-center">
                         <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
                             @if (Model.HasPreviousPage)
@@ -169,6 +169,38 @@
                                 {
                                     <button onclick="navigateToPage(@rightPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == rightPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
                                         @rightPagingNumber
+                                    </button>
+                                }
+                            }
+                            @if (Model.HasNextPage)
+                            {
+                                <button onclick="navigateToPage(@(Model.PageIndex + 1))" class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    Volgende
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-1 sm:hidden">
+                    <div class="pt-4 flex justify-center">
+                        <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <button onclick="navigateToPage(@(Model.PageIndex - 1))" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Vorige
+                                </button>
+                            }
+                            @{
+                                foreach (var number in Model.MobilePagingNumbers)
+                                {
+                                    <button onclick="navigateToPage(@number)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == number ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                        @number
                                     </button>
                                 }
                             }

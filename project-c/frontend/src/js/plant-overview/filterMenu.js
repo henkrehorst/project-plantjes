@@ -86,30 +86,30 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         } else {
             document.getElementById("zipcode-field").value = "";
         }
-        
-        if(filterState['Afstand'] !== undefined){
+
+        if (filterState['Afstand'] !== undefined) {
             let optionCollection = document.getElementById("distance-select").options;
-            
+
             for (let i = 0; i < optionCollection.length; i++) {
-                if(filterState['Afstand'][Object.keys(filterState["Afstand"])[0]] === optionCollection[i].value){
+                if (filterState['Afstand'][Object.keys(filterState["Afstand"])[0]] === optionCollection[i].value) {
                     optionCollection[i].selected = 'selected';
-                }else{
+                } else {
                     optionCollection[i].selected = '';
                 }
             }
         }
     }
-    
-    function fillSortFilter(){
-        if(filterState['Sort'] !== undefined){
+
+    function fillSortFilter() {
+        if (filterState['Sort'] !== undefined) {
             let optionCollection = document.getElementById("sort-select").options;
 
             for (let i = 0; i < optionCollection.length; i++) {
-                if(filterState['Sort'][Object.keys(filterState["Sort"])[0]] === optionCollection[i].value) {
+                if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === optionCollection[i].value) {
                     optionCollection[i].selected = 'selected';
                     if (filterState['Sort'][Object.keys(filterState["Sort"])[0]] === "loc")
                         document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
-                }else{
+                } else {
                     optionCollection[i].selected = '';
                 }
             }
@@ -140,33 +140,33 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     async function useZipcodeField() {
         //read zipcode from field
         const zipcode = document.getElementById("zipcode-field").value;
-        
-        if(zipcode.trim().length > 0){
-        fetch(window.location.origin + '/api/zipcode/' + zipcode).then(response => {
-            if(!response.ok){
-                document.getElementById('zipcode-field-error').innerText = "Ongeldige postcode!";
-            }else{
-                document.getElementById('zipcode-field-error').innerText = "";
-                //get coordinates
-                response.json().then(data => {
-                    let zipcode = data['zipCode'];
-                    filterState['postcode'] = {zipcode: zipcode};
-                    let lon = data['longitude'].toString();
-                    filterState['lon'] = {lon: lon};
-                    let lat = data['latitude'].toString();
-                    filterState['lat'] = {lat: lat};
-                    
-                    //remove distance error!
-                    document.getElementById("afstand-field-error").innerText = "";
-                    
-                    removePaging();
-                    refreshPlants(false);
-                });
-            }
-        }).catch(error => {
-            console.log(error);
-        });
-        }else{
+
+        if (zipcode.trim().length > 0) {
+            fetch(window.location.origin + '/api/zipcode/' + zipcode).then(response => {
+                if (!response.ok) {
+                    document.getElementById('zipcode-field-error').innerText = "Ongeldige postcode!";
+                } else {
+                    document.getElementById('zipcode-field-error').innerText = "";
+                    //get coordinates
+                    response.json().then(data => {
+                        let zipcode = data['zipCode'];
+                        filterState['postcode'] = {zipcode: zipcode};
+                        let lon = data['longitude'].toString();
+                        filterState['lon'] = {lon: lon};
+                        let lat = data['latitude'].toString();
+                        filterState['lat'] = {lat: lat};
+
+                        //remove distance error!
+                        document.getElementById("afstand-field-error").innerText = "";
+
+                        removePaging();
+                        refreshPlants(false);
+                    });
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        } else {
             document.getElementById('zipcode-field-error').innerText = "";
 
             if (filterState['postcode'] !== undefined && Object.keys(filterState['postcode']).length > 0) {
@@ -174,12 +174,12 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                 delete filterState['lon'];
                 delete filterState['lat'];
             }
-            
+
             removePaging();
             refreshPlants(false);
         }
     }
-    
+
     async function refreshPlants(backReturn) {
         hideOrShowLoader();
         let searchUlr = new URLSearchParams();
@@ -190,7 +190,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                 searchUlr.append(category, v);
             });
         });
-        
+
         const searchUri = searchUlr.toString();
 
         //request plants form backend
@@ -210,9 +210,9 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                     "            </div><h2 class=\"col-span-1 text-2xl font-semibold text-green-500\">" + responseData["count"] + " Stekjes</h2>" +
                     document.getElementById("sort-filter-div").outerHTML;
                 Object.entries(responseData["items"]).forEach(([key, plant]) => {
-                    if(plant.distance > 0){
+                    if (plant.distance > 0) {
                         plantOverview +=
-                            `<div class="max-w-sm rounded overflow-hidden shadow-lg relative">
+                            `<div class="rounded overflow-hidden shadow-lg relative">
                             <a href="/plants/details/${plant.plantId}">
                                 <img class="w-full plant-image" src="${plant.imgUrl}" alt="${plant.name}">
                                 <div class="absolute dis-label text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle">${plant.distance} km</div>
@@ -221,9 +221,9 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                                 </div>
                             </a>
                         </div>`
-                    }else{
-                    plantOverview +=
-                        `<div class="max-w-sm rounded overflow-hidden shadow-lg relative">
+                    } else {
+                        plantOverview +=
+                            `<div class="rounded overflow-hidden shadow-lg relative">
                             <a href="/plants/details/${plant.plantId}">
                                 <img class="w-full plant-image" src="${plant.imgUrl}" alt="${plant.name}">
                                 <div class="px-6 py-4">
@@ -236,7 +236,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
                 //generate pagination
                 if (responseData["hasMultiplePages"]) {
-                    plantOverview += `<div class="col-span-1 sm:col-span-2 lg:col-span-3">
+                    plantOverview += `<div class="col-span-1 sm:col-span-2 lg:col-span-3 hidden sm:block">
                         <div class="pt-4 flex justify-center">
                             <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
                                 ${responseData["hasPreviousPage"] ?
@@ -259,6 +259,31 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                         `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
                                         ${i}
                                     </button>`
+                    )).join("")}
+                                ${responseData["hasNextPage"] ?
+                        `<button onclick="navigateToPage(${responseData['pageIndex'] + 1})"  class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        Volgende
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </button>` : ""}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-1 sm:col-span-2 lg:col-span-3 sm:hidden">
+                        <div class="pt-4 flex justify-center">
+                            <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                                ${responseData["hasPreviousPage"] ?
+                        `<button onclick="navigateToPage(${responseData['pageIndex'] - 1})" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Vorige
+                                    </button>` : ""}
+                               ${responseData["mobilePagingNumbers"].map((i) => (
+                        `<button onclick="navigateToPage(${i})" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium ${i === responseData["pageIndex"] ? "bg-green-500 text-white" : "bg-white text-gray-700"} hover:bg-gray-50">
+                                        ${i}
+                                   </button>`
                     )).join("")}
                                 ${responseData["hasNextPage"] ?
                         `<button onclick="navigateToPage(${responseData['pageIndex'] + 1})"  class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
@@ -303,27 +328,27 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
         return searchState;
     }
-    
+
     window.sortFilter = (option) => {
-      let value = option.value;
-      filterState["Sort"] = {value: value}
-      
-      if(option === "loc") 
-          document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
-      else{
-          document.getElementById("sort-filter-error").innerText = "";
-      }
-      removePaging();
-      refreshPlants(false);
+        let value = option.value;
+        filterState["Sort"] = {value: value}
+
+        if (option === "loc")
+            document.getElementById("sort-filter-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
+        else {
+            document.getElementById("sort-filter-error").innerText = "";
+        }
+        removePaging();
+        refreshPlants(false);
     };
 
 
     window.distanceFilter = (option) => {
         let value = option.value;
-        
-        if(parseInt(value) > 0){
-            filterState["Afstand"] = {value: value} 
-        }else if(filterState["Afstand"] !== undefined) delete filterState["Afstand"];
+
+        if (parseInt(value) > 0) {
+            filterState["Afstand"] = {value: value}
+        } else if (filterState["Afstand"] !== undefined) delete filterState["Afstand"];
 
         document.getElementById("afstand-field-error").innerText = filterState["postcode"] === undefined ? "Geef uw postcode in om op afstand te filteren." : "";
         removePaging();

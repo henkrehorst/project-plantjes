@@ -61,7 +61,7 @@ namespace project_c.Repository
             //show only plant data and not user data
             var finalQuery  = query.Select(@t => new Plant(@t.plant, @t.user.Location.Distance(new Point(latitude, longitude)) / 1000));
 
-            return await PaginatedResponse<Plant>.CreateAsync(finalQuery, page, 15);
+            return await PaginatedResponse<Plant>.CreateAsync(finalQuery, page, 18);
         }
         
         public async Task<PaginatedResponse<Plant>> GetPlants(
@@ -102,7 +102,7 @@ namespace project_c.Repository
                 query = query.OrderBy(p => p.Creation);
             }
 
-            return await PaginatedResponse<Plant>.CreateAsync(query, page, 15);
+            return await PaginatedResponse<Plant>.CreateAsync(query, page, 18);
         }
     }
 }
