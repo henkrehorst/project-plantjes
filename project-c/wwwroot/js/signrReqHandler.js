@@ -1,5 +1,5 @@
 ﻿var connection = new signalR.HubConnectionBuilder()
-    .withUrl('/Home/Index')
+    .withUrl('/Chat/ChatIndex')
     .build();
 
 connection.on('receiveMessage', addMessageToChat);
