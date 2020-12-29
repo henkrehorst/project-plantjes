@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,18 @@ using project_c.Services;
 using project_c.Services.GeoRegister.Client;
 using project_c.Services.GeoRegister.Handler;
 using project_c.Services.GeoRegister.Service;
+using project_c.Hubs;
+using project_c.Models.Users;
+using project_c.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data;
 
 namespace project_c
 {
@@ -37,9 +50,11 @@ namespace project_c
             services.AddTransient<ZipCodeHandler>();
             services.AddTransient<HttpClient>();
             services.AddTransient<PlantRepository>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [System.Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -67,7 +82,10 @@ namespace project_c
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSignalR(route =>
+            {
+                route.MapHub<ChatHub>("/api/chat");
+            });
 
             app.UseEndpoints(endpoints =>
             {

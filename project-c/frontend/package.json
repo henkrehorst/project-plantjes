@@ -12,6 +12,7 @@
   "author": "Henk Rehorst",
   "license": "ISC",
   "dependencies": {
+    "@microsoft/signalr": "^5.0.1",
     "autoprefixer": "^10.0.2",
     "css-loader": "^5.0.1",
     "extra-watch-webpack-plugin": "^1.0.3",

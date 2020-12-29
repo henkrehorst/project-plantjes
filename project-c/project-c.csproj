@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201221125146_UserWithMessage.cs" />
+    <Compile Remove="Migrations\20201221125146_UserWithMessage.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.RouteAnalyzer" Version="0.5.3" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.9" />
@@ -28,6 +33,10 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Plants\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.min.js.map" />
   </ItemGroup>
 
   <ItemGroup>

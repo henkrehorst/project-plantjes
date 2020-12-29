@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
 using project_c.Models.Plants;
 using project_c.Models.Chat;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace project_c
@@ -28,10 +33,6 @@ namespace project_c
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
-
-        //chat + message data tables
-        public DbSet<Chat> Chats { get; set; } 
-        public DbSet<ChatData> ChatDatasets { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<PlantRating> Ratings { get; set; }
         
@@ -43,6 +44,13 @@ namespace project_c
                 .HasKey(r => new {r.UserId, r.RoleId});
 
             base.OnModelCreating(modelBuilder);
+
+            //  Voor de chat
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Message>()
+                .HasOne<User>(a => a.User)
+                .WithMany(d => d.Messages)
+                .HasForeignKey(d => d.UserId);
         }
         
         

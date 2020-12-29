@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using NetTopologySuite.Geometries;
+using project_c.Models.Chat;
+using System.Collections.Generic;
 
 namespace project_c.Models.Users
 {
@@ -19,5 +21,6 @@ namespace project_c.Models.Users
         [DataType(DataType.Url)]
         public string Avatar { get; set; }
         public int Karma { get; set; }
+		public virtual ICollection<Message> Messages { get; set; }
     }
 }
