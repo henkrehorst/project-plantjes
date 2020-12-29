@@ -37,6 +37,7 @@ namespace project_c.Controllers
             [FromQuery(Name = "Naam")] string name,
             [FromQuery(Name = "Page")] int page = 1)
         {
+
             //get filters 
             ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
             

@@ -27,7 +27,7 @@ namespace project_c.Models.Plants
         //End Category fields
         
         public DateTime Creation { get; set; }
-        public string ImgUrl { get; set; }
+        public string[] Images { get; set; }
         public bool HasBeenApproved { get; set; }
         public string UserId { get; set; }
         public User User { get; set; } 

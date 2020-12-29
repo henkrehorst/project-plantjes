@@ -33,19 +33,47 @@
                    id="Lengte" type="number" placeholder="Lengte in mm" name="length" min="1" value="@plant.Length" required>
         </div>
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="Aantal">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="Quantity">
                 Aantal
             </label>
-            <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Aantal" type="number" min="1" placeholder="Aantal" name="quantity" required>
+            <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                   id="Aantal" type="number" min="1" placeholder="Aantal" name="quantity" value="@plant.Quantity" required>
         </div>
         <div class="mb-4">
+            <div class="object-center pl-12 mt-8">
+                <img id="mainimg" class="lg:h-64 lg:w-64 object-center rounded border border-2 border-green-300" src="@plant.Images[0]" alt="Plant foto" style="">
+            </div>
+            <!--script om een ander plaatje te selecteren-->
+
+            <script>
+                function changeImage(img) {
+                    document.getElementById("mainimg").src = img;
+                }
+            </script>
+            <div class="object-center col-span-3 max-w-s max-h-s h-12 w-12 ml-12 mb-4">
+                <div class="relative z-0 inline-flex shadow-sm -space-x-px  mb-4" aria-label="Pagination">
+                    @if (plant.Images[0] != null)
+                    {
+                        <img id="image1" onclick="changeImage(this.src)" class="h-12 w-12 max-h-12 max-w-12 border-2 border-green-300" src="@plant.Images[0]" alt="Plant foto" style="">
+                    }
+                    @if (plant.Images.Length > 1 && plant.Images[1] != null)
+                    {
+                        <img id="image2" onclick="changeImage(this.src)" class="h-12 w-12 max-h-12 max-w-12 border-2 border-green-300" src="@plant.Images[1]" alt="Plant foto" style="">
+                    }
+                    @if (plant.Images.Length > 2 && plant.Images[2] != null)
+                    {
+                        <img id="image3" onclick="changeImage(this.src)" class="h-12 w-12 max-h-12 max-w-12 border-2 border-green-300" src="@plant.Images[2]" alt="Plant foto" style="">
+                    }
+                </div>
+            </div>
+            <p class="text-gray-500">Tip: Gebruik de CTRL knop om meerdere foto's te selecteren! Je kan max. 3 foto's selecteren.</p>
             <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
                 <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                     <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
                 </svg>
                 <span class="mt-2 text-base leading-normal">Select a file</span>
                 <span id="file-name"></span>
-                <input type='file' id="FileUpload_FormFile" class="hidden" name="ImageUpload" accept="image/*" />
+                <input type='file' id="FileUpload_FormFile" class="hidden" name="ImageUpload" multiple="multiple" accept="image/*" />
                 <!-- Script voor filename change -->
                 <script>
                     let inputFile = document.getElementById('FileUpload_FormFile');
@@ -59,9 +87,7 @@
                     PNG, JPG, GIF up to 10MB
                 </label>
             </label>
-            <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="width: 300px;height: 300px;object-fit: cover;">
         </div>
-
         @* Get list of selected options *@
         @{ int[] selectedOptions = new int[] { plant.Aanbod, plant.Soort, plant.Licht, plant.Water }; }
         @foreach (Filter filter in (ICollection<Filter>)ViewData["Filters"])

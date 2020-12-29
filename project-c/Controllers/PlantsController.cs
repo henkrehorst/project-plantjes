@@ -13,6 +13,7 @@ using System.Net.Mail;
 using System.Net;
 using project_c.Helpers;
 using project_c.ViewModels;
+using System.Collections.Generic;
 
 namespace project_c.Controllers
 {
@@ -95,7 +96,7 @@ namespace project_c.Controllers
             var quantity = form["quantity"];
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
-            IFormFile image = form.Files.GetFile("ImageUpload");
+            IReadOnlyList<IFormFile> image = form.Files.GetFiles("ImageUpload");
 
             try
             {
@@ -103,9 +104,18 @@ namespace project_c.Controllers
                 if (ModelState.IsValid)
                 {
                     plant.Name = name;
-                    if (image != null)
+                    Func<int, int> counter = x => x < 3 ? x : 3; 
+                    plant.Images = new string[counter(image.Count())];
+                    for (int i = 0; i < plant.Images.Length; i++)
                     {
-                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                        if (image[i] != null)
+                        {
+                            plant.Images[i] = await _uploadService.UploadImage(image[i]);
+                        }
+                        else
+                        {
+                            plant.Images[i] = null;
+                        }
                     }
 
                     plant.Length = Convert.ToInt32(form["length"]);
@@ -163,7 +173,8 @@ namespace project_c.Controllers
             var description = form["description"].ToString();
             description = char.ToUpper(description[0]) + description.Substring(1);
             name = char.ToUpper(name[0]) + name.Substring(1);
-            IFormFile image = form.Files.GetFile("ImageUpload");
+            IReadOnlyList<IFormFile> image = form.Files.GetFiles("ImageUpload");
+         
 
             try
             {
@@ -180,19 +191,18 @@ namespace project_c.Controllers
                 plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
                 plant.Water = Convert.ToInt32(form["filter[Water]"]);
 
-                if (image != null)
-                {
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
-                }
-
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.Name = name;
                     plant.Length = Convert.ToInt32(form["length"]);
                     plant.Description = description;
-                    if (image != null)
+                    for (int i = 0; i < plant.Images.Length; i++)
                     {
-                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                        if (image.Count >= i + 1)
+                        {
+                            if (image[i] != null) { plant.Images[i] = await _uploadService.UploadImage(image[i]); }
+                                
+                        }
                     }
 
                     _context.Update(plant);
@@ -210,6 +220,7 @@ namespace project_c.Controllers
                 return View();
             }
         }
+
 
         // POST: PlantsController/Delete/5
         [HttpPost]
@@ -343,6 +354,7 @@ namespace project_c.Controllers
                 return RedirectToAction(nameof(Details));
             }
         }
+
 
         [HttpPost]
         public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
@@ -9,9 +10,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201221143255_MultipleImagesPerPlant")]
+    partial class MultipleImagesPerPlant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,34 +281,6 @@ namespace project_c.Migrations
                     b.ToTable("Plants");
                 });
 
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("project_c.Models.Users.User", b =>
                 {
                     b.Property<string>("Id")
@@ -446,19 +420,6 @@ namespace project_c.Migrations
 
             modelBuilder.Entity("project_c.Models.Plants.Plant", b =>
                 {
-                    b.HasOne("project_c.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("project_c.Models.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");

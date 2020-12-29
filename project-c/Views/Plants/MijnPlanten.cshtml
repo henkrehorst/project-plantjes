@@ -10,7 +10,7 @@
     @foreach (var plant in Model)
     {
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
-            <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="width: 300px;height: 300px;object-fit: cover;">
+            <img class="w-full" src="@plant.Images[0]" alt="Plant foto" style="width: 300px;height: 300px;object-fit: cover;">
             <div class="px-6 py-4">
                 <h6>Naam:</h6>
                 <div class="font-bold text-xl mb-2">@plant.Name</div>
