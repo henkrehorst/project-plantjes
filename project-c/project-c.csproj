@@ -31,6 +31,10 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Plants\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\signalr\signalr.min.js.map" />
   </ItemGroup>
 
   <ItemGroup>
