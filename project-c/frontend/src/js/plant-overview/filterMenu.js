@@ -391,7 +391,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
         filterState["Page"] = {page: page};
         await refreshPlants(false);
         //scroll to highste row of plants
-        window.scrollTo(0, 426);
+        window.scrollTo(0, document.getElementById("plantOverview").offsetTop - 10);
     }
 
     function hideOrShowLoader() {
@@ -461,7 +461,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
     
     //when user press result button
     window.resultButton = () => {
-        window.scrollTo(0, 426);
+        window.scrollTo(0, document.getElementById("plantOverview").offsetTop - 10);
         window.closeFilerMenu();
     }
     
