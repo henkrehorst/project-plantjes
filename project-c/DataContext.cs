@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace project_c
 {
@@ -35,9 +36,6 @@ namespace project_c
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Message> Messages { get; set; }
-
-        //chat + message data tables
-       
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

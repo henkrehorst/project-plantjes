@@ -170,7 +170,11 @@ namespace project_c.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Ons()
+        {
+            return View();
+        }
+        public IActionResult Voorwaarden()
         {
             return View();
         }

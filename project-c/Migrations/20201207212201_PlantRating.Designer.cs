@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using project_c;
@@ -9,9 +10,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201207212201_PlantRating")]
+    partial class PlantRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,6 +122,38 @@ namespace project_c.Migrations
                     b.ToTable("IdentityUserRoles");
                 });
 
+            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
+                {
+                    b.Property<int>("ChatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("ChatId");
+
+                    b.HasIndex("ChatDataInt");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("project_c.Models.Chat.ChatData", b =>
+                {
+                    b.Property<int>("ChatDataInt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.HasKey("ChatDataInt");
+
+                    b.ToTable("ChatDatasets");
+                });
+
             modelBuilder.Entity("project_c.Models.Chat.Message", b =>
                 {
                     b.Property<int>("MessageId")
@@ -127,120 +161,23 @@ namespace project_c.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("ReceivedUserId")
-                        .HasColumnType("text");
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ChatId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("When")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<string>("MessageContent")
+                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("MessageId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ChatDataInt");
+
+                    b.HasIndex("ChatId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Filter", b =>
-                {
-                    b.Property<int>("SystemId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("character varying(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("character varying(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SystemId");
-
-                    b.ToTable("Filters");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Option", b =>
-                {
-                    b.Property<int>("OptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
-
-                    b.Property<int>("FilterId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OptionId");
-
-                    b.HasIndex("FilterId");
-
-                    b.ToTable("Options");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Filter", b =>
-                {
-                    b.Property<int>("SystemId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("character varying(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("character varying(45)")
-                        .HasMaxLength(45);
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SystemId");
-
-                    b.ToTable("Filters");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Option", b =>
-                {
-                    b.Property<int>("OptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("character varying(20)")
-                        .HasMaxLength(20);
-
-                    b.Property<int>("FilterId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Position")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OptionId");
-
-                    b.HasIndex("FilterId");
-
-                    b.ToTable("Options");
                 });
 
             modelBuilder.Entity("project_c.Models.Plants.Plant", b =>
@@ -250,17 +187,8 @@ namespace project_c.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Aanbod")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Creation")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<bool>("HasBeenApproved")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ImgUrl")
                         .HasColumnType("text");
@@ -268,26 +196,14 @@ namespace project_c.Migrations
                     b.Property<int>("Length")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Licht")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .HasColumnType("text");
-
-                    b.Property<int>("Soort")
-						.HasColumnType("integer");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .HasColumnType("text");
-
-                    b.Property<int>("Water")
-                        .HasColumnType("integer");
 
                     b.HasKey("PlantId");
 
@@ -332,6 +248,9 @@ namespace project_c.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
@@ -373,6 +292,8 @@ namespace project_c.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatDataInt");
+
                     b.ToTable("User");
                 });
 
@@ -390,9 +311,6 @@ namespace project_c.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(45)")
                         .HasMaxLength(45);
-
-                    b.Property<int>("Karma")
-                        .HasColumnType("integer");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -427,27 +345,22 @@ namespace project_c.Migrations
                     b.HasDiscriminator().HasValue("IdentityRole");
                 });
 
+            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
+                {
+                    b.HasOne("project_c.Models.Chat.ChatData", "ChatData")
+                        .WithMany()
+                        .HasForeignKey("ChatDataInt");
+                });
+
             modelBuilder.Entity("project_c.Models.Chat.Message", b =>
                 {
-                    b.HasOne("project_c.Models.Users.User", "User")
+                    b.HasOne("project_c.Models.Chat.ChatData", null)
                         .WithMany("Messages")
-                        .HasForeignKey("UserId");
-                });
+                        .HasForeignKey("ChatDataInt");
 
-            modelBuilder.Entity("project_c.Models.Plants.Option", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Filter", "Filter")
-                        .WithMany("Options")
-                        .HasForeignKey("FilterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Option", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Filter", "Filter")
-                        .WithMany("Options")
-                        .HasForeignKey("FilterId")
+                    b.HasOne("project_c.Models.Chat.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
