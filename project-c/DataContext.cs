@@ -36,6 +36,7 @@ namespace project_c
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PlantRating> Ratings { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
