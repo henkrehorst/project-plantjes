@@ -72,7 +72,7 @@ namespace project_c
             app.UseAuthorization();
             app.UseSignalR(route =>
             {
-                route.MapHub<ChatHub>("/Chat/ChatIndex");
+                route.MapHub<ChatHub>("/api/chat");
             });
 
             app.UseEndpoints(endpoints =>
