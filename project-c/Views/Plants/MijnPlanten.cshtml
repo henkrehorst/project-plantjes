@@ -34,3 +34,24 @@
     }
 </div>
 <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="Create">Plant toevoegen</a>
+@if (ViewBag.plantIsCreated) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Plant toegevoegd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.plantIsDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Plant verwijderd', showConfirmButton: false, timer: 1500})</script>}
+<script>
+    
+    function showPlantDeleteConfirmation(id) {
+         
+        var elem = document.getElementById(id);
+        var btnEdit = document.getElementById(`edit_${id}`)
+        var btnVerwijder = document.getElementById(`verwijder_${id}`)
+        
+        if (elem.style.display === "block") {
+            elem.style.display = "none";
+            btnEdit.style.display = "block"
+            btnVerwijder.style.display = "block"
+        } else {
+            elem.style.display = "block";
+            btnEdit.style.display = "none"
+            btnVerwijder.style.display = "none"
+        }
+    }
+</script>

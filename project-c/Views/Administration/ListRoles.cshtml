@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-<h1 class="text-4xl text-center m-2">Alle Rollen</h1>
+<h1 onload="" class="text-4xl text-center m-2">Alle Rollen</h1>
 
 @if (Model.Any())
 {
@@ -68,3 +68,26 @@ else
         Rol toevoegen
     </a>
 </div>
+
+@if (ViewBag.isCreated) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol toegevoegd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.isDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol verwijderd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.isEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol gewijzigd', showConfirmButton: false, timer: 1500})</script>}
+
+<script>
+    
+    function showRoleDeleteConfirmation(id) {
+        var roleElement = document.getElementById(id);
+        var btnEdit = document.getElementById(`edit_${id}`)
+        var btnVerwijder = document.getElementById(`verwijder_${id}`)
+
+        if (roleElement.style.display === "block") {
+            roleElement.style.display = "none";
+            btnEdit.style.display = "inline-block";
+            btnVerwijder.style.display = "inline-block";
+        } else {
+            roleElement.style.display = "block";
+            btnEdit.style.display = "none"
+            btnVerwijder.style.display = "none"
+        }
+    }
+</script>
