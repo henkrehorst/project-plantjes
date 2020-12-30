@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using project_c.Models.Users;
 
 namespace project_c.Hubs
@@ -25,7 +26,11 @@ namespace project_c.Hubs
         public async Task SendMessage(string receiver, string text)
         {
             var sender = await _userManager.GetUserAsync(Context.User);
-            var message = new Message(){ReceivedUserId = receiver, Text = text, UserId = sender.Id};
+            var message = new Message(){ReceivedUserId = receiver, 
+                Text = text, 
+                UserId = sender.Id,
+                When = DateTime.Now
+            };
             _dataContext.Messages.Add(message);
             await _dataContext.SaveChangesAsync();
 
@@ -38,7 +43,22 @@ namespace project_c.Hubs
         public async Task Hello(string hello) =>
             await Clients.All.SendAsync("hello", hello);
 
-        public async Task SendUserMessage(string userId, string message) =>
-            await Clients.User(userId).SendAsync("hello",message);
+        //get number of unread messages
+        public async Task CountUnreadMessages()
+        {
+            var receivedId = _userManager.GetUserId(Context.User);
+            var count = await _dataContext.Messages.Where(m => m.ReceivedUserId == receivedId).CountAsync();
+            await Clients.User(receivedId).SendAsync("unreadMessageCount", count);
+        }
+        
+        //set read messages
+        public async Task ReadMessages(string userId)
+        {
+            var receivedId = _userManager.GetUserId(Context.User);
+            //TODO-later looking for a code first solution
+            await _dataContext.Database
+                .ExecuteSqlRawAsync(
+                    $"UPDATE \"Messages\" SET \"IsRead\" = true where \"ReceivedUserId\" = '{receivedId}' and \"UserId\" = '{userId}'");
+        }
     }
 }

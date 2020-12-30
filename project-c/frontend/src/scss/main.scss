@@ -40,6 +40,7 @@ main {
   display: none;
 }
 
+
 .loader {
   margin: 320px auto;
   border: 10px solid rgba(164, 164, 164, 0.41);
@@ -52,12 +53,12 @@ main {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+0% {
+  transform: rotate(0deg);
+}
+100% {
+  transform: rotate(360deg);
+}
 }
 
 .dis-label {
@@ -77,7 +78,7 @@ main {
     z-index: 30;
     background: #ffffff;
     overflow-y: scroll;
-   
+
     .filter-wrapper {
       padding-bottom: 72px;
     }
@@ -98,4 +99,24 @@ main {
   @media (max-width: 789px) {
     overflow: hidden;
   }
+}
+
+.chat-menu{
+  height: 500px;
+  width: 360px;
+}
+
+#chat-loader{
+  background-color: rgba(255, 255, 255, 0.72);
+}
+
+.loader-chat {
+  margin: 200px auto;
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #48BB78;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
 }

@@ -1,6 +1,6 @@
 ﻿import * as signalR from "@microsoft/signalr";
 
-if(document.getElementById("chat-overview") !== undefined){
+if(document.getElementById("chat-overview") !== null){
     let connection = new signalR.HubConnectionBuilder()
         .withUrl("/api/chat")
         .build();
