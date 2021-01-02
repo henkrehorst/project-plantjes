@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using project_c.Helpers;
 using project_c.Models.Plants;
+using project_c.Repository;
+using project_c.ViewModels;
 
 namespace project_c.Controllers.api
 {
@@ -14,10 +16,12 @@ namespace project_c.Controllers.api
     public class PlantsController : Controller
     {
         private readonly DataContext _dataContext;
+        private readonly PlantRepository _plantRepository;
 
-        public PlantsController(DataContext context)
+        public PlantsController(DataContext context, PlantRepository plantRepository)
         {
             this._dataContext = context;
+            this._plantRepository = plantRepository;
         }
 
         //Get plants
@@ -28,24 +32,16 @@ namespace project_c.Controllers.api
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
             [FromQuery(Name = "Naam")] string name,
-            [FromQuery(Name = "Page")] int page = 1
-        )
+            [FromQuery(Name = "postcode")] string zipcode,
+            [FromQuery(Name = "lat")] double latitude,
+            [FromQuery(Name = "lon")] double longitude,
+            [FromQuery(Name = "Afstand")] int distance,
+            [FromQuery(Name = "Sort")] string sort,
+            [FromQuery(Name = "Page")] int page = 1)
         {
-            var query = _dataContext.Plants.Select(p => p);
 
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
-            
-            return await PaginatedResponse<Plant>.CreateAsync(query, page, 15);
+            return latitude != 0.0 && longitude != 0.0 ? await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort) : 
+                await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page, sort);
         }
     }
 }

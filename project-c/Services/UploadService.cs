@@ -34,7 +34,8 @@ namespace project_c.Services
 
             BlobHttpHeaders headers = new BlobHttpHeaders()
             {
-                ContentType = "image/jpeg"
+                ContentType = "image/jpeg",
+                CacheControl = "max-age=3600"
             };
 
             await blobClient.SetHttpHeadersAsync(headers);

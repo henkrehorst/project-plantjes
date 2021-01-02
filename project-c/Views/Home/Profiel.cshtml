@@ -16,8 +16,7 @@
         @if (Program.IsLoggedIn)
         {
             var usr = await _userManager.GetUserAsync(User);
-            var usrdta = _context.UserData.FirstOrDefault(u => u.UserId == "" + usr.Id);
-            <img class="profile-pic object-cover w-full h-full" src="@usrdta.Avatar" alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
+            <img class="profile-pic object-cover w-full h-full" src="@usr.Avatar" alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png">
         }
         else
         {

@@ -11,7 +11,7 @@ namespace project_c.Helpers
     {
         public int PageIndex { get; private set; }
         public int TotalPages { get; private set; }
-        
+
         public int Count { get; private set; }
 
         public List<T> Items { get; private set; }
@@ -22,6 +22,7 @@ namespace project_c.Helpers
             TotalPages = (int) Math.Ceiling(count / (double) pageSize);
             RightPagingNumbers = CalculateRightPagingNumbers();
             LeftPagingNumbers = CalculateLeftPagingNumbers();
+            MobilePagingNumbers = CalculateMobileNumbers();
             Items = items;
             Count = count;
         }
@@ -47,7 +48,7 @@ namespace project_c.Helpers
         }
 
         public int[] LeftPagingNumbers { get; private set; }
-        
+
         private int[] CalculateLeftPagingNumbers()
         {
             if (HiddenPages)
@@ -78,6 +79,32 @@ namespace project_c.Helpers
                 }
 
                 return Enumerable.Range(TotalPages - 2, 3).ToArray();
+            }
+
+            return new int[] { };
+        }
+
+        public int[] MobilePagingNumbers { get; private set; }
+
+        private int[] CalculateMobileNumbers()
+        {
+            if (HasMultiplePages)
+            {
+                if (HasPreviousPage & HasNextPage)
+                {
+                    return Enumerable.Range(PageIndex - 1, 3).ToArray();
+                }
+                else if (HasPreviousPage)
+                {
+                    return Enumerable.Range(PageIndex == TotalPages && PageIndex != 2 ? PageIndex - 2 : PageIndex - 1,
+                        PageIndex != 2 ? 3 : 2).ToArray();
+                }
+                else if (HasNextPage)
+                {
+                    return Enumerable.Range(PageIndex, PageIndex + 2 <= TotalPages ? 3 : 2).ToArray();
+                }
+
+                return Enumerable.Range(1, 3).ToArray();
             }
 
             return new int[] { };
