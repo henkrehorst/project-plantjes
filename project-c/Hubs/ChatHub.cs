@@ -25,14 +25,14 @@ namespace project_c.Hubs
         
         public async Task SendMessage(string receiver, string text)
         {
-            var sender = await _userManager.GetUserAsync(Context.User);
+            var sender =  _userManager.GetUserId(Context.User);
             var message = new Message(){ReceivedUserId = receiver, 
                 Text = text, 
-                UserId = sender.Id,
+                UserId = sender,
                 When = DateTime.Now
             };
-            _dataContext.Messages.Add(message);
-            await _dataContext.SaveChangesAsync();
+             _dataContext.Messages.Add(message);
+             _dataContext.SaveChanges();
 
             //remove user data from object
             message.User = null;
@@ -47,7 +47,7 @@ namespace project_c.Hubs
         public async Task CountUnreadMessages()
         {
             var receivedId = _userManager.GetUserId(Context.User);
-            var count = await _dataContext.Messages.Where(m => m.ReceivedUserId == receivedId).CountAsync();
+            var count = await _dataContext.Messages.Where(m => m.ReceivedUserId == receivedId & m.IsRead == false).CountAsync();
             await Clients.User(receivedId).SendAsync("unreadMessageCount", count);
         }
         
@@ -59,6 +59,9 @@ namespace project_c.Hubs
             await _dataContext.Database
                 .ExecuteSqlRawAsync(
                     $"UPDATE \"Messages\" SET \"IsRead\" = true where \"ReceivedUserId\" = '{receivedId}' and \"UserId\" = '{userId}'");
+            
+            var count = await _dataContext.Messages.Where(m => m.ReceivedUserId == receivedId & m.IsRead == false).CountAsync();
+            await Clients.User(receivedId).SendAsync("unreadMessageCount", count);
         }
     }
 }

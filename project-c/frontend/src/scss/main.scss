@@ -4,8 +4,6 @@
 
 @import "tailwindcss/utilities";
 
-@import "./color.scss";
-
 @import "./plant.scss";
 
 $brand-color: white;
@@ -104,6 +102,10 @@ main {
 .chat-menu{
   height: 500px;
   width: 360px;
+  @media (max-width: 789px) {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 #chat-loader{
@@ -119,4 +121,20 @@ main {
   height: 30px;
   -webkit-animation: spin 1s linear infinite; /* Safari */
   animation: spin 1s linear infinite;
+}
+
+#chat-rooms{
+  height: calc(100% - 58px);
+}
+
+#message-view{
+  height: calc(100% - 112px);
+  p{
+    width: fit-content;
+  }
+  padding-bottom: 10px;
+}
+
+#message-count{
+  bottom: 45px;
 }

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using project_c.Models.Users;
+using Message = project_c.Models.Chat.Message;
 
 namespace project_c.Controllers.api
 {
@@ -31,6 +34,13 @@ namespace project_c.Controllers.api
             public int UnreadMessages { get; set; }
         }
 
+        public class Chatroom
+        {
+            public string Avatar { get; set; }
+            public string FirstName { get; set; }
+            public List<Message> Messages { get; set; }
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult> Chats()
@@ -53,7 +63,7 @@ namespace project_c.Controllers.api
                 .OrderByDescending(t => t.LastMessage)
                 .ToListAsync();
             
-            if (chats == null) return NoContent();
+            if (chats.Count == 0) return NoContent();
 
             return Ok(chats);
         }
@@ -61,21 +71,34 @@ namespace project_c.Controllers.api
         [HttpGet]
         [Authorize]
         [Route("/api/[controller]/messages/{receiverId}")]
-        public async Task<ActionResult> Messages(string receiverId)
+        public ActionResult Messages(string receiverId)
         {
             //get id of current user
             var userId = _userManager.GetUserId(User);
             
-            var messages = await _context.Messages.
+            //get other user
+            var other = _context.User.First(u => u.Id == receiverId);
+
+            if (other == null) return NotFound();
+            
+            var messages =  _context.Messages.
                 Where(m => m.UserId == userId & m.ReceivedUserId == receiverId || 
                            m.UserId == receiverId & m.ReceivedUserId == userId)
-                .Take(30)
+                .Select(m => new Message
+                {
+                    User = null, 
+                    IsRead = m.IsRead, 
+                    MessageId = m.MessageId,
+                    ReceivedUserId = m.ReceivedUserId, 
+                    Text = m.Text, 
+                    UserId = m.UserId, 
+                    When = m.When
+                })
                 .OrderByDescending(m => m.When)
-                .ToListAsync();
-            
-            if (messages == null) return NoContent();
-            
-            return Ok(messages);
+                .Take(30)
+                .ToList();
+
+            return Ok(new Chatroom{Avatar = other.Avatar, FirstName = other.FirstName, Messages = messages});
         }
     }
 }
