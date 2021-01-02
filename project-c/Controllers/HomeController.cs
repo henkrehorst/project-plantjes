@@ -178,7 +178,7 @@ namespace project_c.Controllers
         {
             return View();
         }
-        public IActionResult Contact()
+        public IActionResult Partners()
         {
             return View();
         }
