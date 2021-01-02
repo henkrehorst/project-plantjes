@@ -182,11 +182,11 @@ namespace project_c.Controllers
         {
             return View();
         }
-        public IActionResult Partners()
+        public IActionResult ContactPage()
         {
             return View();
         }
-        public IActionResult ContactPage()
+        public IActionResult Partners()
         {
             return View();
         }
