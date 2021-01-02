@@ -18,7 +18,8 @@ namespace project_c.Areas.Identity
         {
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<DataContext>(options =>
-                    options.UseNpgsql(context.Configuration.GetConnectionString("PlantjesDataContext")));
+                    options.UseNpgsql(context.Configuration.GetConnectionString("PlantjesDataContext"),
+                        o => o.UseNetTopologySuite()));
 
                 services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()

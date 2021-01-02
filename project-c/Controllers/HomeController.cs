@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_c.Models;
-using project_c.Services;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using project_c.Helpers;
 using project_c.Models.Plants;
+using project_c.Services.GeoRegister.Service;
+using NetTopologySuite.Geometries;
+using project_c.Repository;
 
 
 namespace project_c.Controllers
@@ -22,11 +20,14 @@ namespace project_c.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _dataContext;
+        private readonly PlantRepository _plantRepository;
 
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext, PlantRepository plantRepository)
         {
             _logger = logger;
             _dataContext = dataContext;
+            _plantRepository = plantRepository;
+
         }
 
         public async Task<ViewResult> Index(
@@ -35,28 +36,19 @@ namespace project_c.Controllers
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
             [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "postcode")] string zipcode,
+            [FromQuery(Name = "lat")] double latitude,
+            [FromQuery(Name = "lon")] double longitude,
+            [FromQuery(Name = "Afstand")] int distance,
+            [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
             ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
             
-            var query = _dataContext.Plants.Select(p => p);
-            
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-            
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
+            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
+                View(await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page, sort));
 
-            ViewData["stekCount"] = query.Count();
-
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
         }
 
         [HttpPost]
@@ -108,17 +100,73 @@ namespace project_c.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public IActionResult Feedback(FeedbackModel model)
+        {
+            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
+            {
+                message.Subject = "Feedback: " + model.To;
+                message.Body = "\n" + model.To + " geeft als feedback:\n\n"  + model.Body;
+                message.IsBodyHtml = false;
+
+                using (SmtpClient smtp = new SmtpClient())
+                {
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                    smtp.UseDefaultCredentials = true;
+                    smtp.Credentials = cred;
+                    smtp.Port = 587;
+                    smtp.Send(message);
+                    ViewBag.Message = "Email Sent Successfully";
+
+                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", model.To))
+                    {
+                        aReply.Subject = "Wij hebben je feedback ontvangen!";
+                        aReply.Body = "\nHey " + model.Naam +
+                                      "\n\n Bedankt voor je feedback!" +
+                                      "\n\n Jij zei het volgende:\n\n" + model.Body +
+                                      "\n________________________________________________\n\n" +
+                                      "\n\n Groetjes!\n\n\n Het hele team van Planjes";
+                        aReply.IsBodyHtml = false;
+
+                        using (SmtpClient smtpReply = new SmtpClient())
+                        {
+                            smtpReply.Host = "smtp.gmail.com";
+                            smtpReply.EnableSsl = true;
+                            NetworkCredential credReply =
+                                new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            smtpReply.UseDefaultCredentials = true;
+                            smtpReply.Credentials = credReply;
+                            smtpReply.Port = 587;
+                            smtpReply.Send(aReply);
+                        }
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        public ViewResult Feedback()
+        {
+            return View();
+        }
         public ViewResult Faq()
         {
             return View();
         }
         
-        public async Task<IActionResult> Profiel()
+        public IActionResult Profiel()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Ons()
+        {
+            return View();
+        }
+        public IActionResult Voorwaarden()
         {
             return View();
         }

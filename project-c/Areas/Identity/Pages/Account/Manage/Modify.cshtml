@@ -6,108 +6,114 @@
 }
 
 <style>
-    h4{
+    h4 {
         padding-top: 15px;
     }
-    input {
-        background-color: #4CAF50;
-        border: 1px;
-        border-radius: 2px;
-        border-color: #000000;
-    }
 
-    .separator{
+    .separator {
         text-align: left;
     }
 
-    button {
-        padding: 10px 10px 10px 10px;
-        text-align: center;
-        transition-duration:0.2s;
-        background-color: white;
-        border: 2px;
-        border-color: #000000;
-        border-style: solid;
-        border-radius: 4px;
-    }
 
-    button:hover {
-        background-color: #4CAF50;
-        text-decoration-color: white;
-     }
-
-    .input-group-append{
-        float: left;
-    }
-    form{
-        padding-bottom:80px;
+    form {
+        padding-bottom: 80px;
     }
 </style>
 
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <h6 class="separator">Algemeen</h6>
-            @if (!Model.IsEmailConfirmed)
-            {
-                <br />
-            }
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username"></label>
-                <input asp-for="Username" class="form-control"  />
-            </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName"></label>
-                <input asp-for="FirstName" class="form-control"  />
-            </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="LastName"></label>
-                <input asp-for="LastName" class="form-control"  />
-            </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Zipcode"></label>
-                <input asp-for="Zipcode" class="form-control" />
-            </div>
-            <br />
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Opslaan</button>
-        </form>
-        <form id="email-form" method="post">
-            <h6 class="separator">Email</h6>
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                @if (Model.IsEmailConfirmed)
-                {
-                    <div class="input-group">
-                        <input asp-for="Email" class="form-control" disabled />
-                        <div class="input-group-append">
-                            <span class="input-group-text text-success font-weight-bold">✓</span>
-                        </div>
+<div class="bg-white mt-6">
+    <div class="items-center flex-1 justify-center px-6 sm:px-0">
+        <div class="h-8 w-102 flex rounded-lg shadow-lg bg-white sm:mx-0" style="height: 1000px">
+            <div class="float-none">
+                <form enctype="multipart/form-data" id="profile-form" method="post" class="content-center">
+                    <h6 class="separator">Algemene Info</h6>
+                    @if (!Model.IsEmailConfirmed)
+                    {
+                        <br />
+                    }
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Username"></label>
+                        <input asp-for="Username" class="bottom-0 box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
                     </div>
-                }
-                else
-                {
-                    <input asp-for="Email" class="form-control" disabled />
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="savebutton">Send verification email</button>
-                }
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="FirstName"></label>
+                        <input asp-for="FirstName" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="LastName"></label>
+                        <input asp-for="LastName" class="form-controlbox-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Zipcode"></label>
+                        <input asp-for="Zipcode" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                    </div>
+                    <br />
+                    <h4>Avatar</h4>
+                    <div class="mb-4">
+                        <label class="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
+                            <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                            </svg>
+                            <span class="mt-2 text-base leading-normal">Select a file</span>
+                            <span id="file-name"></span>
+                            <input type='file' id="FileUpload_FormFile" class="hidden" name="ImageUpload" accept="image/*" />
+                            <!-- Script voor filename change -->
+                            <script>
+                                let inputFile = document.getElementById('FileUpload_FormFile');
+                                let fileNameField = document.getElementById('file-name');
+                                inputFile.addEventListener('change', function (event) {
+                                    let uploadedFileName = event.target.files[0].name;
+                                    fileNameField.textContent = uploadedFileName;
+                                })
+                            </script>
+                            <label class="text-xs text-gray-500">
+                                PNG, JPG, GIF tot 10MB
+                            </label>
+
+                        </label>
+                    </div>
+                    <br />
+                    <button id="update-profile-button" type="submit" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Opslaan</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="EmailInput.NewEmail"></label>
-                <input asp-for="EmailInput.NewEmail" class="form-control" />
-                <span asp-validation-for="EmailInput.NewEmail" class="text-danger"></span>
-            </div>
-            <br />
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail">Verander email</button>
-        </form>
+            <div class="float-none">
+                <form id="email-form" method="post" class="">
+                <h6>Email</h6>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    @if (Model.IsEmailConfirmed)
+                    {
+                        <div class="input-group">
+                            <input asp-for="Email" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" disabled />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-success font-weight-bold">✓</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <input asp-for="Email" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" disabled />
+                        <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Send verification email</button>
+                    }
+                </div>
+                <div class="form-group">
+                    <label asp-for="EmailInput.NewEmail"></label>
+                    <input asp-for="EmailInput.NewEmail" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control" />
+                    <span asp-validation-for="EmailInput.NewEmail" class="text-danger"></span>
+                </div>
+                <br />
+                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Verander email</button>
+            </form>
+            </div>   
+        </div>
     </div>
 </div>
-
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
 }

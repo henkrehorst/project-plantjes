@@ -1,0 +1,60 @@
+﻿@model List<project_c.Models.Chat.Message>
+@{ 
+    ViewData["Title"] = "Chat";
+    var userName = User.Identity.Name;
+}
+
+<div class="jumbrotron bg-light" id="chat-overview">
+    <h2 class="text-center text-primary">
+        <i class="fab fa-facebook-messeneger"></i>&nbsp; Public Talk
+    </h2>
+
+    <div class="row">
+        <div class="col-md-12" id="chat">
+            @if (Model != null)
+            {
+                @foreach (var message in Model.OrderBy(m => m.When))
+                {
+                    string containerClass, timePosition, textAlign, contcolor, offset;
+                    if (userName == message.UserId)
+                    {
+                        containerClass = "container darker";
+                        timePosition = "time-right text-ligth";
+                        textAlign = "text-right text-white";
+                        contcolor = "bg-primary";
+                        offset = "col-md-6 offset-md-6";
+                    }
+                    else
+                    {
+                        containerClass = "container darker";
+                        timePosition = "time-left";
+                        textAlign = "text-left";
+                        contcolor = "bg-right";
+                        offset = "";
+                    }
+
+                    <div class="row">
+                        <div class="@offset">
+                            <div class="@containerClass @contcolor">
+                                <p class="sender @textAlign">@message.UserId</p>
+                                <p class="@textAlign">@message.Text</p>
+                                <span class="@timePosition">@message.When.ToString(timePosition)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+    <div>
+        <input id="message" type="text" class="border"/><br/>
+        <input id="receiver" type="hidden" value="@ViewData["receiverId"]"><br/>
+        <button id="sendButton" class="border">Send message</button>
+    </div>
+
+</div>
+
+<script>
+    const userName = "@ViewBag.CurrentUserName";
+</script>
