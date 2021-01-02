@@ -174,6 +174,18 @@ namespace project_c.Controllers
         {
             return View();
         }
+        public IActionResult Missie()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
+        public IActionResult ContactPage()
+        {
+            return View();
+        }
         public IActionResult Voorwaarden()
         {
             return View();
