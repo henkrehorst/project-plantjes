@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -15,7 +12,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using NetTopologySuite.Geometries;
 using project_c.Models.Users;
+using project_c.Services.GeoRegister.Service;
 using project_c.Services;
 
 namespace project_c.Areas.Identity.Pages.Account.Manage
@@ -29,6 +28,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         private readonly ILogger<ChangePasswordModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly DataContext _context;
+        private readonly ZipCodeService _zipCodeService;
         private readonly UploadService _uploadService;
         
 
@@ -38,6 +38,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             ILogger<ChangePasswordModel> logger,
             IEmailSender emailSender,
             DataContext context,
+            ZipCodeService zipCodeService,
             UploadService uploadService)
 
         {
@@ -46,6 +47,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             _logger = logger;
             _emailSender = emailSender;
             _context = context;
+            _zipCodeService = zipCodeService;
             _uploadService = uploadService;
         }
         [Display(Name = "Gebruikersnaam")]
@@ -70,7 +72,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         [BindProperty]
         public EmailInputModel EmailInput { get; set; }
-        public UserData userData { get; set; }
         public User usr { get; set; }
         public string usrid { get; set; }
         public double lat { get; set; }
@@ -84,66 +85,68 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var email = await _userManager.GetEmailAsync(user);
-            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
             usr = user;
-            lat = userData.Lat;
-            lng = userData.Lng;
-            usrid = userData.UserId;
-            avatar = userData.Avatar;
-            FirstName = userData.FirstName;
-            LastName = userData.LastName;
-            Zipcode = userData.ZipCode;
+            usrid = user.Id;
+            avatar = user.Avatar;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Zipcode = user.ZipCode;
             Username = userName;
             Email = email;
 
         }
 
-        public async Task<IActionResult> OnPostAsync(UserData userData, double lat, double lng, IFormCollection form)
+        public async Task<IActionResult> OnPostAsync(double lat, double lng, IFormCollection form)
         {
             var user = await _userManager.GetUserAsync(User);
-            userData = _context.UserData.Where(u => u.UserId == user.Id).Single();
+
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-            user.UserName = form["Username"].ToString();
-            userData.FirstName = form["FirstName"].ToString();
-            userData.LastName = form["LastName"].ToString();
-            userData.ZipCode = form["Zipcode"].ToString();
-            userData.Lat = lat;
-            userData.Lng = lng;
-            try
+
+            //get zipcode information
+            var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(form["Zipcode"].ToString());
+            //check zipcode is valid
+            if (zipCodeInformation == null)
             {
-                IFormFile image = form.Files.GetFile("ImageUpload");
-                if (image != null)
+                ModelState.AddModelError("Input.PostCode", "Deze postcode is ongeldig, probeer een andere!");
+            }
+            else
+            {
+                user.UserName = form["Username"].ToString();
+                user.FirstName = form["FirstName"].ToString();
+                user.LastName = form["LastName"].ToString();
+                user.ZipCode = form["Zipcode"].ToString();
+                user.Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude);
+                try
                 {
-                    userData.Avatar = await _uploadService.UploadImage(image);
+                    IFormFile image = form.Files.GetFile("ImageUpload");
+                    if (image != null)
+                    {
+                        user.Avatar = await _uploadService.UploadImage(image);
+                    }
                 }
-            }
-            catch
-            {
-                return Content("Error - Probeer het opnieuw.");
-            }
+                catch
+                {
+                    return Content("Error - Probeer het opnieuw.");
+                }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(user);
+                    return Page();
+                }
 
-            await _signInManager.RefreshSignInAsync(user);
-            _context.Update(userData);
-            _context.SaveChanges();
-            StatusMessage = "Your profile has been updated";
+                await _signInManager.RefreshSignInAsync(user);
+                // _context.Add(user);
+                _context.SaveChanges();
+                StatusMessage = "Your profile has been updated";
+                return RedirectToPage();
+            }
             return RedirectToPage();
         }
-
-        [HttpPost]
-        public ActionResult UploadAvatar()
-        {
-            return RedirectToPage();
-        }
-
+        
         //Email code.
         public class EmailInputModel
         {
@@ -210,15 +213,14 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         //Avatar.
         public async Task<IActionResult> SetAvatar(IFormCollection form)
         {
-            var user = _userManager.GetUserAsync(User);
-            var userdata = _context.UserData.FirstOrDefault(ud => ud.UserId == "" + user.Id);
+            var user = await _userManager.GetUserAsync(User);
             try
             {
                 if (ModelState.IsValid)
                 {
                     IFormFile image = form.Files.GetFile("AvatarUpload");
-                    userdata.Avatar = await _uploadService.UploadImage(image);
-                    _context.Update(userdata);
+                    user.Avatar = await _uploadService.UploadImage(image);
+                    _context.Update(user);
                     _context.SaveChanges();
                 }
                 return RedirectToAction(nameof(System.Index));

@@ -13,6 +13,7 @@ using project_c.Services;
 using System.Net.Mail;
 using System.Net;
 using project_c.Helpers;
+using project_c.Repository;
 using project_c.ViewModels;
 
 namespace project_c.Controllers
@@ -22,13 +23,15 @@ namespace project_c.Controllers
         private readonly DataContext _context;
         private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
+        private readonly PlantRepository _plantRepository;
 
         //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
-        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload)
+        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload, PlantRepository plantRepository)
         {
             _context = context;
             _userManager = userManager;
             _uploadService = upload;
+            _plantRepository = plantRepository;
         }
 
         // GET: PlantsController
@@ -38,6 +41,11 @@ namespace project_c.Controllers
             [FromQuery(Name = "Licht")] int[] licht,
             [FromQuery(Name = "Water")] int[] water,
             [FromQuery(Name = "Naam")] string name,
+            [FromQuery(Name = "postcode")] string zipcode,
+            [FromQuery(Name = "lat")] double latitude,
+            [FromQuery(Name = "lon")] double longitude,
+            [FromQuery(Name = "Afstand")] int distance,
+            [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
             //get filters 
@@ -60,14 +68,15 @@ namespace project_c.Controllers
             ViewData["stekCount"] = query.Count();
             ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
             return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
+            
+            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
+            View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
         }
 
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var plant = (from p in this._context.Plants where p.PlantId == id select p).Include(p => p.User)
-                .ThenInclude(u => u.UserData).ToList();
-            
+            var plant = await _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ToListAsync();
             var ratings = from r in _context.Ratings where r.PlantId == id select r;
 
             var plantViewModel = new PlantViewModel();
@@ -139,8 +148,8 @@ namespace project_c.Controllers
 
                     plant.Creation = DateTime.Today;
                     plant.UserId = _userManager.GetUserId(User);
-                    UserData plantuserdata = _context.UserData.Single(z => z.UserId == plant.UserId);
-                    if (plantuserdata.Karma >= 3)
+                    User plantuser = _context.User.First(u => u.Id == plant.UserId);
+                    if (plantuser.Karma >= 3)
                     {
                         plant.HasBeenApproved = true;
                     }
@@ -242,17 +251,16 @@ namespace project_c.Controllers
             {
                 var plant = _context.Plants.Find(id);
                 User usr = _context.User.Single(y => y.Id == plant.UserId);
-                UserData usrdat = _context.UserData.Single(y => y.UserId == usr.Id);
                 if (User.IsInRole("Admin"))
                 {
                     //send email here
                     using (MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
-                        message.Body = $"Beste {usrdat.FirstName} , \n\n\n" +
-                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                                       "Groetjes, Het Plantjes Team";
+                        message.Body = $"Beste {usr.FirstName} , \n\n\n" +
+                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                            "Groetjes, Het Plantjes Team";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
@@ -267,7 +275,7 @@ namespace project_c.Controllers
                     }
 
                     _context.Plants.Remove(plant);
-                    usrdat.Karma--;
+                    usr.Karma--;
                     _context.SaveChanges();
                     TempData["plantIsDeleted"] = true;
                     return RedirectToAction("Index");
@@ -300,7 +308,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddRating(int id, IFormCollection form)
+        public ActionResult AddRating(int id, IFormCollection form)
         {
             var userId = _userManager.GetUserId(User);
             var data = from r in _context.Ratings where r.UserId == userId select r;
@@ -350,11 +358,10 @@ namespace project_c.Controllers
             {
                 var plant = _context.Plants.Find(id);
                 User plantuser = _context.User.Single(y => y.Id == plant.UserId);
-                UserData plantuserdata = _context.UserData.Single(z => z.UserId == plantuser.Id);
                 if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                 {
                     plant.HasBeenApproved = true;
-                    plantuserdata.Karma++;
+                    plantuser.Karma++;
                     _context.SaveChanges();
                 }
                 else
@@ -371,7 +378,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> EditRating(int id, int routingId, IFormCollection form)
+        public ActionResult EditRating(int id, int routingId, IFormCollection form)
         {
             var ratingValue = Convert.ToInt32(form["rating"]);
             try
@@ -398,7 +405,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteRating(int id, int routingId, IFormCollection form)
+        public ActionResult DeleteRating(int id, int routingId, IFormCollection form)
         {
             try
             {

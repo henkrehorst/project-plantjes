@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using project_c.Models.Users;
 using project_c.Models.Plants;
 using project_c.Models.Chat;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace project_c
@@ -17,8 +22,6 @@ namespace project_c
         //add models to database with: public DbSet<modelName> name {get; set;}
         public DbSet<User> User { get; set; }
 
-        public DbSet<UserData> UserData { get; set; }
-        
         //added require tables for identity bundle
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
@@ -30,20 +33,26 @@ namespace project_c
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
-
-        //chat + message data tables
-        public DbSet<Chat> Chats { get; set; } 
-        public DbSet<ChatData> ChatDatasets { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<PlantRating> Ratings { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresExtension("postgis");
             modelBuilder.Entity<IdentityRole>();
             modelBuilder.Entity<IdentityUserRole<string>>()
                 .HasKey(r => new {r.UserId, r.RoleId});
-            
+
             base.OnModelCreating(modelBuilder);
+
+            //  Voor de chat
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Message>()
+                .HasOne<User>(a => a.User)
+                .WithMany(d => d.Messages)
+                .HasForeignKey(d => d.UserId);
         }
+        
+        
     }
 }
