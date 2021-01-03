@@ -31,15 +31,12 @@
                                 
                                 <a class="@Html.IsSelected("Home", "Ons") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
                                 
-                                <a class="@Html.IsSelected("Home", "Voorwaarden") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Voorwaarden">Voorwaarden</a>
-
-                                
+                                                              
                             </div>
                         </div>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-4 flex items-center md:ml-6">
-                            <a class="@Html.IsSelected("Home", "Faq") px-3 py-2 rounded-md text-sm font-small text-white hover:text-white active:bg-green-300 focus:outline-none focus:text-white focus:bg-green-300" asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
                             <button class="p-1 border-2 border-transparent text-white rounded-full hover:text-white focus:outline-none focus:text-white focus: active:bg-green-800" aria-label="Notifications">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -170,6 +167,7 @@
     <div class="container mx-auto flex items-center justify-between h-40 text-white">
         <div class="flex items-center">
             <div class="flex-shrink-0">
+                <br />
                 <div class="text-2xl font-medium">
                     Contact<br />
                     <h1 class="text-sm font-thin">
@@ -181,18 +179,55 @@
                     </h1>
                 </div>
             </div>
-    </div>
+        </div>
+        <div class="flex items-center">
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
-                    Links<br />
-                    <h1 class="text-sm font-thin italic">
-                        <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
-                        <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
-                        <a asp-area="" asp-controller="Home" asp-action="Partners">Partners</a><br />
+                    Info<br />
+                    <h1 class="text-sm font-thin">
+                        <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
+                        <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a><br />
+                        <br /><br />
                     </h1>
                 </div>
             </div>
         </div>
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="text-2xl font-medium">
+                    <br />
+                    <h1 class="text-sm font-thin">
+                        <a href="https://instagram.com/stadskwekerijdekas?igshid=1kukcbi76jlgc" target="_blank"><img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c521.png" width="40" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <br /><br />
+                    </h1>
+                </div>
+            </div>
+            <div class="text-2xl font-medium">
+                <br />
+                <h1 class="text-sm font-thin">
+                    <a href="https://www.facebook.com/stadskwekerijdekas/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" width="40" height="40"></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <br /><br />
+                </h1>
+            </div>
+            <div class="text-2xl font-medium">
+                <br />
+                <h1 class="text-sm font-thin">
+                    <a href="https://stadskwekerijdekas.nl/actueel/" target="_blank"><img src="https://media-exp1.licdn.com/dms/image/C4D1BAQEsifbr257GaA/company-background_10000/0/1529740234151?e=2159024400&v=beta&t=3gFusLtq_mnT-fT3NRyjh6YXjVpAtBCSgM9qNJ_GF4E" width="60" height="40"></a>
+                    <br /><br />
+                </h1>
+            </div>
+        </div>
+        <div class="flex-shrink-0">
+            <div class="text-2xl font-medium">
+                Links<br />
+                <h1 class="text-sm font-thin italic">
+                    <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
+                    <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
+                    <a asp-area="" asp-controller="Home" asp-action="Partners">Partners</a><br />
+                </h1>
+            </div>
+        </div>
+    </div>
 </footer>
 <script src="~/main.js" asp-append-version="true"></script>
 <script>
