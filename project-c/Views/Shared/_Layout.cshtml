@@ -18,7 +18,7 @@
 <body>
 <header>
     <div>
-        <nav class="bg-green-500 text-white">
+        <nav class="bg-white text-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="container mx-auto flex items-center justify-between h-16">
                     <div class="flex items-center">
@@ -27,9 +27,9 @@
                         </div>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
-                                <a class="font-sans @Html.IsSelected("Home", "Index") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
+                                <a class="font-sans @Html.IsSelected("Home", "Index") px-3 py-2 rounded-md text-sm font-medium text-green-800 hover:text-white hover:bg-green-800 active:text-white active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
                                 
-                                <a class="@Html.IsSelected("Home", "Ons") px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-green-800 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
+                                <a class="@Html.IsSelected("Home", "Ons") px-3 py-2 rounded-md text-sm font-medium text-green-800 hover:text-white hover:bg-green-800 active:text-white active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
                                 
                                                               
                             </div>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-4 flex items-center md:ml-6">
-                            <button class="p-1 border-2 border-transparent text-white rounded-full hover:text-white focus:outline-none focus:text-white focus: active:bg-green-800" aria-label="Notifications">
+                            <button class="p-1 border-2 border-transparent text-green-800 rounded-full hover:text-white focus:outline-none focus:text-white focus: active:bg-green-800" aria-label="Notifications">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                                 </svg>
@@ -163,8 +163,8 @@
     </main>
 </div>
 
-<footer class="w-full h-60 bg-green-500" style="height: 200px">
-    <div class="container mx-auto flex items-center justify-between h-40 text-white">
+<footer class="w-full h-60 bg-green-200" style="height: 200px">
+    <div class="container mx-auto flex items-center justify-between h-40 text-green-800">
         <div class="flex items-center">
             <div class="flex-shrink-0">
                 <br />
@@ -183,6 +183,18 @@
         <div class="flex items-center">
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
+                    Links<br />
+                    <h1 class="text-sm font-thin italic">
+                        <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
+                        <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
+                        <a asp-area="" asp-controller="Home" asp-action="Partners">Partners</a><br />
+                    </h1>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="text-2xl font-medium">
                     Info<br />
                     <h1 class="text-sm font-thin">
                         <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
@@ -192,6 +204,7 @@
                 </div>
             </div>
         </div>
+
         <div class="flex items-center">
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
@@ -217,16 +230,7 @@
                 </h1>
             </div>
         </div>
-        <div class="flex-shrink-0">
-            <div class="text-2xl font-medium">
-                Links<br />
-                <h1 class="text-sm font-thin italic">
-                    <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
-                    <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
-                    <a asp-area="" asp-controller="Home" asp-action="Partners">Partners</a><br />
-                </h1>
-            </div>
-        </div>
+
     </div>
 </footer>
 <script src="~/main.js" asp-append-version="true"></script>
