@@ -11,6 +11,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using project_c.Models.Users;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using project_c.Services;
+using System.Net;
+using System.Net.Mail;
+using MimeKit;
 
 namespace project_c.Areas.Identity.Pages.Account
 {
@@ -56,6 +64,25 @@ namespace project_c.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
+
+                using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
+                {
+                    message.Subject = "Wachtwoordherstel";
+                    message.Body = "Hey!<br><br>" + "<" + "a href=\"" + callbackUrl + "\">Klik hier!" + "</a>" + " om je wachtwoord van je Plantjesbuurt account te herstellen." +
+                                        "<br><br>Groetjes,<br><br><br>Het hele Plantjesbuurt Team!";
+                    message.IsBodyHtml = true;
+                    
+                    using (SmtpClient smtp = new SmtpClient())
+                    {
+                        smtp.Host = "smtp.gmail.com";
+                        smtp.EnableSsl = true;
+                        NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                        smtp.UseDefaultCredentials = true;
+                        smtp.Credentials = cred;
+                        smtp.Port = 587;
+                        smtp.Send(message);
+                    }
+                }
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,

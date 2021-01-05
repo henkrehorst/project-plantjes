@@ -144,11 +144,11 @@ namespace project_c.Areas.Identity.Pages.Account
                     using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
                     {
                         message.Subject = "Account verificatie";
-                        message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
-                                       ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
-                                       "om je email te bevesitgen!\n\n" + callbackUrl +
-                                       "Groetjes,\n\n\nHet hele Plantjes Team!";
-                        message.IsBodyHtml = false;
+                        message.Body = "<br>Hey " + Input.Voornaam + " " + Input.Achternaam +
+                                       ",<b><b> Je kunt je account bijna gebruiken! " + " < " + "a href =\"" + callbackUrl + "\">Klik hier" + "</a>" +
+                                       "om je email te bevesitgen!<b><b>"  +
+                                       "Groetjes,<b><b><b>Het hele Plantjesbuurt Team!";
+                        message.IsBodyHtml = true;
 
                         using (SmtpClient smtp = new SmtpClient())
                         {
