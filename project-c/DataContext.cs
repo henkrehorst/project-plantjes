@@ -33,6 +33,11 @@ namespace project_c
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Filter> Filters { get; set; }
         public DbSet<Option> Options { get; set; }
+        public DbSet<Report> Reports { get; set; }
+
+        //chat + message data tables
+        //public DbSet<Chat> Chats { get; set; } 
+       // public DbSet<ChatData> ChatDatasets { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<PlantRating> Ratings { get; set; }
         

@@ -1,0 +1,36 @@
+﻿@model project_c.ViewModels.ReportViewModel
+@{
+    ViewData["Title"] = "Report";
+}
+
+<h1>Report</h1>
+<div class="container px-5 py-24 mx-auto inline">
+    <button onclick="goBack()" class="hover:bg-white duration-200 focus:outline-none focus:outline-none font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-26">
+        <svg class="ruler-icon" widh="30" height="30" viewBox="0 0 20 20">
+            <path fill="#00a135" d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z" />
+            <span class="text-green-500 text-xl hover:text-green-700">
+                Back
+            </span>
+        </svg>
+    </button>
+    <div class="lg:w-4/5 mx-auto flex flex-wrap">
+        <p class="text-gray-800 border-2 justify-center">Vermeld een probleem met @Model.Plant.Name van @Model.Plant.User.UserName</p>
+    </div>
+    <div class="w-full mx-auto max-w-3xl bg-white shadow p-8 text-gray-700">
+        <form asp-action="MakeReport" enctype="multipart/form-data" method="POST" class="bg-white">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="body">
+                Bericht
+            </label>
+            <input class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Bericht" type="text" placeholder="Vul het probleem a.u.b in." name="body" required>
+        </form>
+    </div>
+</div>
+
+    <script>
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
+

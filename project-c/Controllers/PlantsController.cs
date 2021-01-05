@@ -132,8 +132,17 @@ namespace project_c.Controllers
 
         public string FetchUser(Plant plant)
         {
-            User usr = _context.User.Single(x => x.Id == plant.UserId);
-            return usr.UserName;
+            User user = _context.User.Single(u => u.Id == plant.UserId);
+            return user.UserName;
+        }
+        // //GET: PlantsController/Report/5
+        public ActionResult Report(int id)
+        {
+            Plant plant = _context.Plants.First(p => p.PlantId == id);
+            User user = _context.User.Single(u => u.Id == plant.UserId);
+            
+
+            return View(new ReportViewModel(plant, user));
         }
 
         // // GET: PlantsController/Edit/5

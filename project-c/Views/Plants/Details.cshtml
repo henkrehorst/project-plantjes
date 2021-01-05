@@ -8,8 +8,8 @@
     foreach (var plant in Model.Plant)
     {
         <div class="container px-5 py-24 mx-auto inline">
-        <button onclick="goBack()" class="hover:bg-white duration-200 focus:outline-none focus:outline-none font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-26">
-            <svg class="ruler-icon" widh="30" height="30" viewBox="0 0 20 20">
+            <button onclick="goBack()" class="hover:bg-white duration-200 focus:outline-none focus:outline-none font-bold h-10 inline-flex items-center pl-2 pr-2 justify-center px-6 text-white tracking-wide transition w-26">
+             <svg class="ruler-icon" widh="30" height="30" viewBox="0 0 20 20">
                 <path fill="#00a135" d="M8.388,10.049l4.76-4.873c0.303-0.31,0.297-0.804-0.012-1.105c-0.309-0.304-0.803-0.293-1.105,0.012L6.726,9.516c-0.303,0.31-0.296,0.805,0.012,1.105l5.433,5.307c0.152,0.148,0.35,0.223,0.547,0.223c0.203,0,0.406-0.08,0.559-0.236c0.303-0.309,0.295-0.803-0.012-1.104L8.388,10.049z"/>
                 <span class="text-green-500 text-xl hover:text-green-700">
                     Back
@@ -192,12 +192,20 @@
                         }
                         @if (!plant.HasBeenApproved)
                         {
-                            using (Html.BeginForm("Approve", "Plants", new {id = plant.PlantId}, FormMethod.Post))
+                            using (Html.BeginForm("Approve", "Plants", new { id = plant.PlantId }, FormMethod.Post))
                             {
                                 <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                                         type="submit">
                                     Approve
                                 </button>
+
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <div class="flex items-center space-x-4 pl-4 pr-4">
+                                        <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                        href="/plants/report/@plant.PlantId">Report</a>
+                                    </div>
+                                }
                             }
                         }
                     </div>
