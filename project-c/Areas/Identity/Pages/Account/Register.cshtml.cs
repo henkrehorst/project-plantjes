@@ -20,6 +20,9 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
+using NetTopologySuite.Geometries;
+using NpgsqlTypes;
+using project_c.Services.GeoRegister.Service;
 using EmailModel = project_c.Models.EmailModel;
 
 namespace project_c.Areas.Identity.Pages.Account
@@ -32,13 +35,15 @@ namespace project_c.Areas.Identity.Pages.Account
         private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _EmailModel;
+        private readonly ZipCodeService _zipCodeService;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender EmailModel,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<IdentityRole> roleManager,
+            ZipCodeService zipCodeService
         )
         {
             _userManager = userManager;
@@ -46,6 +51,7 @@ namespace project_c.Areas.Identity.Pages.Account
             _logger = logger;
             _EmailModel = EmailModel;
             _roleManager = roleManager;
+            _zipCodeService = zipCodeService;
         }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -78,7 +84,8 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
-            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.",
+                MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -111,13 +118,21 @@ namespace project_c.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/Identity/Account/RegisterConfirmation");
             ReturnUrl = Url.Content("~/Identity/Account/RegisterConfirmation");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (!await _zipCodeService.CheckPostCodeIsValid(Input.PostCode))
+            {
+                ModelState.AddModelError("Input.PostCode", "Deze postcode is ongeldig, probeer een andere!");
+            }
+
             if (ModelState.IsValid)
             {
+                var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(Input.PostCode);
+                
                 var user = new User
                 {
                     UserName = Input.Email, Email = Input.Email,
-                    UserData = new UserData
-                        {FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode}
+                    FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode, 
+                    Location = new Point(zipCodeInformation.Longitude, zipCodeInformation.Latitude)
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (_userManager.Users.Count() == 1)

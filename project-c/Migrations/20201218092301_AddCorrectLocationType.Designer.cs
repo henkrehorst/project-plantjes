@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -10,9 +11,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201218092301_AddCorrectLocationType")]
+    partial class AddCorrectLocationType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,6 +124,38 @@ namespace project_c.Migrations
                     b.ToTable("IdentityUserRoles");
                 });
 
+            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
+                {
+                    b.Property<int>("ChatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("ChatId");
+
+                    b.HasIndex("ChatDataInt");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("project_c.Models.Chat.ChatData", b =>
+                {
+                    b.Property<int>("ChatDataInt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.HasKey("ChatDataInt");
+
+                    b.ToTable("ChatDatasets");
+                });
+
             modelBuilder.Entity("project_c.Models.Chat.Message", b =>
                 {
                     b.Property<int>("MessageId")
@@ -129,25 +163,21 @@ namespace project_c.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("boolean");
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("ReceivedUserId")
-                        .HasColumnType("text");
+                    b.Property<int>("ChatId")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("When")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<string>("MessageContent")
+                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(255);
 
                     b.HasKey("MessageId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ChatDataInt");
+
+                    b.HasIndex("ChatId");
 
                     b.ToTable("Messages");
                 });
@@ -210,9 +240,6 @@ namespace project_c.Migrations
                     b.Property<int>("Aanbod")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Creation")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -231,9 +258,6 @@ namespace project_c.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Soort")
                         .HasColumnType("integer");
 
@@ -250,34 +274,6 @@ namespace project_c.Migrations
                     b.ToTable("Plants");
                 });
 
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
-
-                    b.Property<int>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
-                });
-
             modelBuilder.Entity("project_c.Models.Users.User", b =>
                 {
                     b.Property<string>("Id")
@@ -288,6 +284,9 @@ namespace project_c.Migrations
 
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
+
+                    b.Property<int?>("ChatDataInt")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
@@ -348,6 +347,8 @@ namespace project_c.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChatDataInt");
+
                     b.ToTable("User");
                 });
 
@@ -358,11 +359,24 @@ namespace project_c.Migrations
                     b.HasDiscriminator().HasValue("IdentityRole");
                 });
 
+            modelBuilder.Entity("project_c.Models.Chat.Chat", b =>
+                {
+                    b.HasOne("project_c.Models.Chat.ChatData", "ChatData")
+                        .WithMany()
+                        .HasForeignKey("ChatDataInt");
+                });
+
             modelBuilder.Entity("project_c.Models.Chat.Message", b =>
                 {
-                    b.HasOne("project_c.Models.Users.User", "User")
+                    b.HasOne("project_c.Models.Chat.ChatData", null)
                         .WithMany("Messages")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("ChatDataInt");
+
+                    b.HasOne("project_c.Models.Chat.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("project_c.Models.Plants.Option", b =>
@@ -381,17 +395,11 @@ namespace project_c.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("project_c.Models.Plants.PlantRating", b =>
+            modelBuilder.Entity("project_c.Models.Users.User", b =>
                 {
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("project_c.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                    b.HasOne("project_c.Models.Chat.ChatData", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ChatDataInt");
                 });
 #pragma warning restore 612, 618
         }

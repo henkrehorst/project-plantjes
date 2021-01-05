@@ -51,16 +51,15 @@ namespace project_c.Controllers
             var userClaims = await _userManager.GetClaimsAsync(user);
             // GetRolesAsync returns the list of user Roles
             var userRoles = await _userManager.GetRolesAsync(user);
-            var userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
 
             if (userRoles != null)
             {
                 var model = new EditUserViewModel
                 {
                     Id = user.Id,
-                    FirstName = userData.FirstName,
-                    LastName = userData.LastName,
-                    Zipcode = userData.ZipCode,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Zipcode = user.ZipCode,
                     Email = user.Email,
                     UserName = user.UserName,
                     Claims = userClaims.Select(c => c.Value).ToList(),
@@ -77,7 +76,6 @@ namespace project_c.Controllers
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
-            var userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
 
             if (user == null)
             {
@@ -85,9 +83,9 @@ namespace project_c.Controllers
                 return View("NotFound");
             }
 
-            user.UserData.FirstName = model.FirstName;
-            user.UserData.LastName = model.LastName;
-            user.UserData.ZipCode = model.Zipcode;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.ZipCode = model.Zipcode;
             user.Email = model.Email;
             user.UserName = model.UserName;
 
@@ -116,7 +114,6 @@ namespace project_c.Controllers
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var userData = await _context.UserData.FirstOrDefaultAsync(u => u.UserId == user.Id);
             var plants = from p in _context.Plants where p.UserId == user.Id select p;
             var roles = from r in _context.IdentityUserRoles where r.UserId == user.Id select r;
             
@@ -129,7 +126,6 @@ namespace project_c.Controllers
 
             if (!await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                _context.UserData.Remove(userData);
                 _context.Plants.RemoveRange(plants);
                 _context.IdentityUserRoles.RemoveRange(roles);
             }

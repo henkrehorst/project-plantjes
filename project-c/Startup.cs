@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using project_c.Repository;
+using project_c.Services;
+using project_c.Services.GeoRegister.Client;
+using project_c.Services.GeoRegister.Handler;
+using project_c.Services.GeoRegister.Service;
 using project_c.Hubs;
 using project_c.Models.Users;
 using project_c.Services;
@@ -35,9 +41,15 @@ namespace project_c
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddDbContext<DataContext>(builder =>
-                builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext")));
+                
+                builder.UseNpgsql(Configuration.GetConnectionString("PlantjesDataContext"), 
+                    o => o.UseNetTopologySuite()));
             services.AddRazorPages();
             services.AddTransient<UploadService>();
+            services.AddTransient<ZipCodeService>();
+            services.AddTransient<ZipCodeHandler>();
+            services.AddTransient<HttpClient>();
+            services.AddTransient<PlantRepository>();
             services.AddSignalR();
         }
 

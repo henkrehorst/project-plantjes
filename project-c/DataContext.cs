@@ -22,8 +22,6 @@ namespace project_c
         //add models to database with: public DbSet<modelName> name {get; set;}
         public DbSet<User> User { get; set; }
 
-        public DbSet<UserData> UserData { get; set; }
-        
         //added require tables for identity bundle
         public DbSet<IdentityUserClaim<Guid>> IdentityUserClaims { get; set; }
         public DbSet<IdentityUserClaim<string>> IdentityUserClaim { get; set; }
@@ -40,10 +38,11 @@ namespace project_c
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasPostgresExtension("postgis");
             modelBuilder.Entity<IdentityRole>();
             modelBuilder.Entity<IdentityUserRole<string>>()
                 .HasKey(r => new {r.UserId, r.RoleId});
-            
+
             base.OnModelCreating(modelBuilder);
 
             //  Voor de chat
@@ -53,5 +52,7 @@ namespace project_c
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.UserId);
         }
+        
+        
     }
 }
