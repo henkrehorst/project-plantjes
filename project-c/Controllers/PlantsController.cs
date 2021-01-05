@@ -260,7 +260,7 @@ namespace project_c.Controllers
 
         public ActionResult MijnPlanten()
         {
-            var plants = from p in _context.Plants where p.UserId == _userManager.GetUserId(User) select p;
+            var plants = _context.Plants.Where(p => p.UserId == _userManager.GetUserId(User)).OrderByDescending(p => p.Creation);
 
             return View(plants);
         }

@@ -6,8 +6,8 @@
     Layout = "_Layout";
 }
 <h1></h1>
-<div class="mt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-5">
-    <div class="col-span-1 md:col-span-3">
+<div class="mt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
+    <div class="col-span-1 md:col-span-2 lg:col-span-3">
         <h1 class="text-3xl text-bold text-green-500 font-bold">Mijn planten</h1>
     </div>
     <div>
@@ -18,7 +18,6 @@
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
             <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="height: 300px;object-fit: cover;">
             <div class="px-6 py-4">
-                <h6>Naam:</h6>
                 <div class="font-bold text-xl mb-2">@plant.Name</div>
                 <div class="flex space-x-3">
                     <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -34,7 +33,7 @@
             </div>
         </div>
     }
-    <div class="col-span-1 sm:col-span-2 md:col-span-4">
+    <div class="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">
         <a class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center" asp-controller="Plants" asp-action="Create">Nieuwe plant toevoegen</a>
     </div>
 </div>
