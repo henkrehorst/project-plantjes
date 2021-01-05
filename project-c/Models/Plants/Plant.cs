@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using project_c.Models.Users;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,6 +26,30 @@ namespace project_c.Models.Plants
         public string ImgUrl { get; set; }
         public bool HasBeenApproved { get; set; }
         public string UserId { get; set; }
-        public User User { get; set; } 
+        public User User { get; set; }
+        
+        [NotMapped]
+        public int Distance { get; set; }
+        
+        public Plant(){}
+
+        public Plant(Plant plant, double distance)
+        {
+            PlantId = plant.PlantId;
+            Name = plant.Name;
+            Description = plant.Description;
+            Length = plant.Length;
+            Quantity = plant.Quantity;
+            Aanbod = plant.Aanbod;
+            Soort = plant.Soort;
+            Licht = plant.Licht;
+            Water = plant.Water;
+            Creation = plant.Creation;
+            ImgUrl = plant.ImgUrl;
+            HasBeenApproved = plant.HasBeenApproved;
+            UserId = plant.UserId;
+            User = plant.User;
+            Distance = (int) distance != 0 ? (int) distance : 1;
+        }
     }
 }

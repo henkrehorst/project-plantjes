@@ -5,113 +5,228 @@
     Layout = "_Layout";
 }
 
-<div class="grid grid-cols-12">
-        @* Filters in frontend *@
-        <div class="col-span-3">
-            <h2 class="text-3xl mb-4">Filter</h2>
-            <div class="block mb-4 w-4/5">
-                <span class="text-xl text-bold">Zoeken</span>
-                <div class="pt-2 relative mx-auto text-gray-600">
-                    <input class="border border-black bg-white h-10 px-5 pr-16 text-sm focus:outline-none w-full"
-                           type="search" name="search" placeholder="Zoeken" id="search-field">
-                    <button type="submit" class="absolute right-0 top-0 mt-5 mr-4" id="search-button">
-                        <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
-                             viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
-                             width="512px" height="512px">
-                            <path
-                                d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            @{ List<Filter> filters = (List<Filter>) ViewData["Filters"]; }
-            @foreach (Filter filter in filters)
-            {
-                <div class="block mb-4">
-                    <span class="text-xl text-bold">@filter.Name</span>
-                    <div class="mt-2">
-                        @foreach (Option filterOption  in filter.Options)
-                        {
-                            <div>
-                                <label class="inline-flex items-center w-full cursor-pointer">
-                                    <input type="checkbox" class="form-checkbox filter-checkbox h-5 w-5 checked:bg-green-500 cursor-pointer" data-category="@filter.SystemId" name="@filter.SystemId-@filterOption.OptionId" value="@filterOption.OptionId">
-                                    <span class="ml-2 cursor-pointer">@filterOption.DisplayName</span>
-                                </label>
-                            </div>
-                        }
-                    </div>
-
-                </div>
-            }
+<div class="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-4 mt-4">
+@* Filters in frontend *@
+<div class="mobile-filter md:block md:col-span-3 lg:col-span-1" id="filter-menu">
+    <div class="filter-wrapper">
+        <div class="sticky md:hidden bg-green-500 top-0 right-0 left-0 p-3 pl-4 z-50 flex ">
+            <button onclick="closeFilerMenu()">
+                <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="43pt" viewBox="0 0 30 43" version="1.1">
+                    <g id="surface1">
+                        <path style="stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 20.6875 21.5 L 29.214844 13.09375 C 30.261719 12.0625 30.261719 10.390625 29.214844 9.359375 L 27.320312 7.492188 C 26.273438 6.460938 24.574219 6.460938 23.527344 7.492188 L 15 15.898438 L 6.472656 7.492188 C 5.425781 6.460938 3.726562 6.460938 2.679688 7.492188 L 0.785156 9.359375 C -0.261719 10.390625 -0.261719 12.0625 0.785156 13.09375 L 9.3125 21.5 L 0.785156 29.90625 C -0.261719 30.9375 -0.261719 32.609375 0.785156 33.640625 L 2.679688 35.507812 C 3.726562 36.539062 5.425781 36.539062 6.472656 35.507812 L 15 27.101562 L 23.527344 35.507812 C 24.574219 36.539062 26.273438 36.539062 27.320312 35.507812 L 29.214844 33.640625 C 30.261719 32.609375 30.261719 30.9375 29.214844 29.90625 Z M 20.6875 21.5 "/>
+                    </g>
+                </svg>
+            </button>
+            <h2 class="text-2xl text-white text-bold w-full text-center w-full-custom">Filter</h2>
         </div>
-        @* Plant overview *@
-        <div class="col-span-9 grid grid-cols-3 gap-4 h-fit relative" id="plantOverview">
-            <div class="overlay" id="overlay">
-                <div class="loader"></div>
+        <h2 class="text-3xl mb-4 hidden md:block">Filter</h2>
+        <div class="mt-4 mb-4 w-4/5 pl-4 md:pl-0 block md:hidden" id="sort-filter-div-mobile">
+            <span class="text-xl text-bold">Sorteren op</span>
+            <select class="border border-black bg-white h-10 px-5 pr-4 mt-2 text-sm focus:outline-none w-full" name="sort" id="sort-select-mobile" onchange="sortFilter(this)">
+                <option value="new">Nieuwste eerst</option>
+                <option value="a-z">Naam: A-Z</option>
+                <option value="z-a">Naam: Z-A</option>
+                <option value="loc">Afstand</option>
+            </select>
+            <span class="mt-2 text-sm text-red-500 w-full block" id="sort-filter-error-mobile"></span>
+        </div>
+        <div class="block mb-4 w-4/5 pl-4 md:pl-0">
+            <span class="text-xl text-bold">Zoeken</span>
+            <div class="pt-2 relative mx-auto text-gray-600">
+                <input class="border border-black bg-white h-10 px-5 pr-16 text-sm focus:outline-none w-full"
+                       type="search" name="search" placeholder="Zoeken" id="search-field">
+                <button type="submit" class="absolute right-0 top-0 mt-5 mr-4" id="search-button">
+                    <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                         xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+                         viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                         width="512px" height="512px">
+                        <path
+                            d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
+                    </svg>
+                </button>
             </div>
-            <h2 class="col-span-3 text-2xl font-semibold text-green-500">@ViewData["stekCount"] Stekjes</h2>
-            @{
-                foreach (var plant in Model.Items)
-                {
-                    <div class="max-w-sm rounded overflow-hidden shadow-lg">
-                        <a href="/plants/details/@plant.PlantId">
-                            <img class="w-full plant-image" src="@plant.ImgUrl" alt="@plant.Name">
-                            <div class="px-6 py-4">
-                                <div class="font-medium text-xl mb-2">@plant.Name</div>
-                            </div>
-                        </a>
-                    </div>
-                }
-            }
-            @if (Model.HasMultiplePages)
-            {
-                <div class="col-span-3">
-                    <div class="pt-4 flex justify-center">
-                        <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
-                            @if (Model.HasPreviousPage)
-                            {
-                                <button onclick="navigateToPage(@(Model.PageIndex - 1))" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    Vorige
-                                </button>
-                            }
-                            @{
-                                foreach (var leftPagingNumber in Model.LeftPagingNumbers)
-                                {
-                                    <button onclick="navigateToPage(@leftPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == leftPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
-                                        @leftPagingNumber
-                                    </button>
-                                }
-                            }
-                            @if (Model.HiddenPages && Model.LeftPagingNumbers.Last() + 1 != Model.RightPagingNumbers[0])
-                            {
-                                <span class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                                    ...
-                                </span>
-                            }
-                            @{
-                                foreach (var rightPagingNumber in Model.RightPagingNumbers)
-                                {
-                                    <button onclick="navigateToPage(@rightPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == rightPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
-                                        @rightPagingNumber
-                                    </button>
-                                }
-                            }
-                            @if (Model.HasNextPage)
-                            {
-                                <button onclick="navigateToPage(@(Model.PageIndex + 1))" class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                    Volgende
-                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            }
+        </div>
+        <div class="block mb-4 w-4/5 pl-4 md:pl-0">
+            <span class="text-xl text-bold">Afstand</span>
+            <div class="pt-2 relative mx-auto text-gray-600">
+                <input class="border border-black bg-white h-10 px-5 pr-16 text-sm focus:outline-none w-full"
+                       type="search" name="search" placeholder="Postcode" id="zipcode-field">
+                <button type="submit" class="absolute right-0 top-0 mt-5 mr-4" id="zipcode-button">
+                    <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                         xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+                         viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                         width="512px" height="512px">
+                        <path
+                            d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/>
+                    </svg>
+                </button>
+            </div>
+            <span class="mt-2 text-sm text-red-500" id="zipcode-field-error"></span>
+            <select class="mt-2 border border-black bg-white h-10 px-5 pr-4 text-sm focus:outline-none w-full" name="distance" id="distance-select" onchange="distanceFilter(this)">
+                <option value="0">Alle afstanden...</option>
+                <option value="3">< 3 km</option>
+                <option value="5">< 5 km</option>
+                <option value="10">< 10 km</option>
+                <option value="15">< 15 km</option>
+                <option value="25">< 25 km</option>
+                <option value="50">< 50 km</option>
+                <option value="75">< 75 km</option>
+            </select>
+            <span class="mt-2 text-sm text-red-500" id="afstand-field-error"></span>
+        </div>
+        @{ List<Filter> filters = (List<Filter>) ViewData["Filters"]; }
+        @foreach (Filter filter in filters)
+        {
+            <div class="block mb-4 pl-4 md:pl-0">
+                <span class="text-xl text-bold">@filter.Name</span>
+                <div class="mt-2">
+                    @foreach (Option filterOption  in filter.Options)
+                    {
+                        <div>
+                            <label class="inline-flex items-center w-full cursor-pointer">
+                                <input type="checkbox" class="form-checkbox filter-checkbox h-5 w-5 checked:bg-green-500 cursor-pointer" data-category="@filter.SystemId" name="@filter.SystemId-@filterOption.OptionId" value="@filterOption.OptionId">
+                                <span class="ml-2 cursor-pointer">@filterOption.DisplayName</span>
+                            </label>
                         </div>
-                    </div>
+                    }
                 </div>
-            }
-        </div>
+
+            </div>
+        }
     </div>
+</div>
+@* Plant overview *@
+<div class="col-span-1 md:col-span-5 lg:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 h-fit relative p-5 sm:p-0" id="plantOverview">
+    <div class="overlay" id="overlay">
+        <div class="loader"></div>
+    </div>
+    <h2 class="col-span-1 text-2xl font-semibold text-green-500 text-center sm:text-left">@Model.Count Stekjes</h2>
+    <div class="sm:text-right lg:col-span-2 hidden md:block" id="sort-filter-div">
+        <label for="sort-select" class="mr-2 text-base font-semibold text-gray-500 text-bold">Sorteren op:</label>
+        <select class="border border-black bg-white h-10 px-5 pr-4 text-sm focus:outline-none" name="sort" id="sort-select" onchange="sortFilter(this)">
+            <option value="new">Nieuwste eerst</option>
+            <option value="a-z">Naam: A-Z</option>
+            <option value="z-a">Naam: Z-A</option>
+            <option value="loc">Afstand</option>
+        </select>
+        <span class="mt-2 text-sm text-red-500 w-full block" id="sort-filter-error"></span>
+    </div>
+    <div class="md:hidden">
+        <button onclick="openFilerMenu()" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center w-full">
+            <svg class="mr-2" style="fill: #ffffff" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                <path d="M0 0h24v24H0z" fill="none"/><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+            </svg>Filter
+        </button>
+    </div>
+    @{
+        foreach (var plant in Model.Items)
+        {
+            <div class="rounded overflow-hidden shadow-lg relative">
+                <a href="/plants/details/@plant.PlantId">
+                    <img class="plant-image" src="@plant.ImgUrl" alt="@plant.Name">
+                    @if (plant.Distance != 0)
+                    {
+                        <div class="absolute dis-label text-sm font-medium bg-green-100 py-1 px-2 rounded text-green-500 align-middle">@plant.Distance km</div>
+                    }
+                    <div class="px-6 py-4">
+                        <div class="font-medium text-xl mb-2">@plant.Name</div>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    @if (Model.HasMultiplePages)
+    {
+        <div class="col-span-1 sm:col-span-2 lg:col-span-3 hidden sm:block">
+            <div class="pt-4 flex justify-center">
+                <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <button onclick="navigateToPage(@(Model.PageIndex - 1))" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Vorige
+                        </button>
+                    }
+                    @{
+                        foreach (var leftPagingNumber in Model.LeftPagingNumbers)
+                        {
+                            <button onclick="navigateToPage(@leftPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == leftPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                @leftPagingNumber
+                            </button>
+                        }
+                    }
+                    @if (Model.HiddenPages && Model.LeftPagingNumbers.Last() + 1 != Model.RightPagingNumbers[0])
+                    {
+                        <span class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                            ...
+                        </span>
+                    }
+                    @{
+                        foreach (var rightPagingNumber in Model.RightPagingNumbers)
+                        {
+                            <button onclick="navigateToPage(@rightPagingNumber)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == rightPagingNumber ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                @rightPagingNumber
+                            </button>
+                        }
+                    }
+                    @if (Model.HasNextPage)
+                    {
+                        <button onclick="navigateToPage(@(Model.PageIndex + 1))" class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            Volgende
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-span-1 sm:hidden">
+            <div class="pt-4 flex justify-center">
+                <div class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <button onclick="navigateToPage(@(Model.PageIndex - 1))" class="relative inline-flex items-center px-2 py-2 hover:text-black border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            Vorige
+                        </button>
+                    }
+                    @{
+                        foreach (var number in Model.MobilePagingNumbers)
+                        {
+                            <button onclick="navigateToPage(@number)" class="relative inline-flex items-center px-4 py-2 hover:text-black border border-gray-300 text-sm font-medium @(Model.PageIndex == number ? "bg-green-500 text-white" : "bg-white text-gray-700") hover:bg-gray-50">
+                                @number
+                            </button>
+                        }
+                    }
+                    @if (Model.HasNextPage)
+                    {
+                        <button onclick="navigateToPage(@(Model.PageIndex + 1))" class="relative inline-flex items-center hover:text-black px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            Volgende
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div style="display: none" class="md:hidden p-5 fixed bottom-0 right-0 left-0 justify-center" id="filter-button">
+    <button onclick="openFilerMenu()" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center">
+        <svg class="mr-2" style="fill: #ffffff" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path d="M0 0h24v24H0z" fill="none"/><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+        </svg>Filter
+    </button>
+</div>
+<div class="fixed bottom-0 left-0 right-0 bg-white z-50 border-t-2 border-gray-200 p-2 w-full hidden md:hidden" id="filter-result">
+    <button onclick="resultButton()" id="result-button" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 w-full">
+        @(Model.Count > 0 ? $"Toon {Model.Count} stekjes" : "Geen stekjes gevonden")
+    </button>
+</div>
+</div>

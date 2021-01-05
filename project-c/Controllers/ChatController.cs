@@ -25,7 +25,7 @@ namespace project_c.Controllers
 
         public async Task<ViewResult> Index()
         {
-            var users = await _context.User.Include(u => u.UserData).ToListAsync();
+            var users = await _context.User.ToListAsync();
 
             return View(users);
         }

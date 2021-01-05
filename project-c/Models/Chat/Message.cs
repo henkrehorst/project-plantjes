@@ -21,6 +21,8 @@ namespace project_c.Models.Chat
         public string UserId { get; set; }
         
         public string ReceivedUserId { get; set; }
+        
+        public bool IsRead { get; set; }
         public virtual User User { get; set; }
     }
 }

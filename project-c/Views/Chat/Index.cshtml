@@ -8,7 +8,7 @@
     @foreach (var user in Model)
     {
         <li>
-            <a href="/chat/chatindex/@user.Id">@user.UserData.FirstName @user.UserData.LastName</a>
+            <a href="/chat/chatindex/@user.Id">@user.FirstName @user.LastName</a>
         </li>
     }
 </ul>
