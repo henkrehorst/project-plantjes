@@ -6,22 +6,24 @@
     Layout = "_Layout";
 }
 <h1></h1>
-<div class="flex mb-4 space-x-3">
+<div class="mt-4 mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-5">
+    <div class="col-span-1 md:col-span-3">
+        <h1 class="text-3xl text-bold text-green-500 font-bold">Mijn planten</h1>
+    </div>
+    <div>
+        <a class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center w-full" asp-controller="Plants" asp-action="Create">Nieuwe plant toevoegen</a>
+    </div>
     @foreach (var plant in Model)
     {
         <div class="max-w-sm rounded overflow-hidden shadow-lg">
-            <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="width: 300px;height: 300px;object-fit: cover;">
+            <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="height: 300px;object-fit: cover;">
             <div class="px-6 py-4">
                 <h6>Naam:</h6>
                 <div class="font-bold text-xl mb-2">@plant.Name</div>
-                <h6>Lengte:</h6>
-                <div class="font-bold text-xl mb-2">@plant.Length&nbsp;mm</div>
-                <h6>Beschrijving:</h6>
-                <p class="text-gray-700 text-base">@plant.Description</p>
                 <div class="flex space-x-3">
                     <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                        href="/plants/edit/@plant.PlantId">Edit</a>
-                    @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
+                    @using (Html.BeginForm("Delete", "Plants", new {id = plant.PlantId}, FormMethod.Post))
                     {
                         <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                                 type="submit">
@@ -32,5 +34,7 @@
             </div>
         </div>
     }
+    <div class="col-span-1 sm:col-span-2 md:col-span-4">
+        <a class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center" asp-controller="Plants" asp-action="Create">Nieuwe plant toevoegen</a>
+    </div>
 </div>
-<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="Create">Plant toevoegen</a>
