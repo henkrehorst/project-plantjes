@@ -15,11 +15,11 @@
     </div>
     @foreach (var plant in Model)
     {
-        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+        <div class="rounded overflow-hidden shadow-lg">
             <img class="w-full" src="@plant.ImgUrl" alt="Plant foto" style="height: 300px;object-fit: cover;">
             <div class="px-6 py-4">
                 <div class="font-bold text-xl mb-2">@plant.Name</div>
-                <div class="flex space-x-3">
+                <div class="flex space-x-3 items-center">
                     <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                        href="/plants/edit/@plant.PlantId">Edit</a>
                     @using (Html.BeginForm("Delete", "Plants", new {id = plant.PlantId}, FormMethod.Post))
@@ -52,7 +52,7 @@
         <a class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 flex justify-center" asp-controller="Plants" asp-action="Create">Nieuwe plant toevoegen</a>
     </div>
 </div>
-<a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="Create">Plant toevoegen</a>
+
 @if (ViewBag.plantIsCreated) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Plant toegevoegd', showConfirmButton: false, timer: 1500})</script>}
 @if (ViewBag.plantIsDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Plant verwijderd', showConfirmButton: false, timer: 1500})</script>}
 
