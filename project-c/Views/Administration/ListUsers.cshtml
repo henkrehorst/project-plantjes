@@ -25,4 +25,24 @@
                 </form>
             </div>
         </div>
+}
+@if (ViewBag.userIsEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User gewijzigd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.userIsDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User verwijderd', showConfirmButton: false, timer: 1500})</script>}
+<script>
+    
+    function showUserDeleteConfirmation(id) {
+        var userElement = document.getElementById(id);
+         var btnEdit = document.getElementById(`edit_${id}`)
+         var btnVerwijder = document.getElementById(`verwijder_${id}`)
+
+        if (userElement.style.display === "block") {
+            userElement.style.display = "none";
+            btnEdit.style.display = "inline-block";
+            btnVerwijder.style.display = "inline-block";
+        } else {
+            userElement.style.display = "block";
+            btnEdit.style.display = "none"
+            btnVerwijder.style.display = "none"
+        }
     }
+</script>
