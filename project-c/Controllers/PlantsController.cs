@@ -52,6 +52,11 @@ namespace project_c.Controllers
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
             
+            ViewBag.plantIsEdited = TempData["plantIsEdited"] == null ? false : TempData["plantIsEdited"];
+            ViewBag.ratingIsCreated = TempData["ratingIsCreated"] == null ? false : TempData["ratingIsCreated"];
+            ViewBag.ratingIsDeleted = TempData["ratingIsDeleted"] == null ? false : TempData["ratingIsDeleted"];
+            ViewBag.ratingIsEdited = TempData["ratingIsEdited"] == null ? false : TempData["ratingIsEdited"];
+            
             return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
             View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
         }
