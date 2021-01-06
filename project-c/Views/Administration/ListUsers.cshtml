@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
 
 @{
     ViewBag.Title = "All Users";
@@ -42,6 +42,10 @@
         </div>
     </div>
 }
+
+@if (ViewBag.userIsEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User gewijzigd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.userIsDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User verwijderd', showConfirmButton: false, timer: 1500})</script>}
+
 <script>
     
     function showUserDeleteConfirmation(id) {

@@ -12,13 +12,13 @@
             <div class="px-12 py-6">
                 <div class="max-w-sm mx-auto p-1 pr-0 flex items-center">
                     <div class="w-full text-center">
-                        <form asp-action="CreateRole" method="post" class="mb-4">
+                        <form onsubmit="showSuccesMessage()" asp-action="CreateRole" method="post" class="mb-4">
                             <div asp-validation-summary="All" class="text-red-700">
                             </div>
                             <div class="form-group row max-w-sm mx-auto p-1 pr-0 flex items-center mb-4">
                                 <label asp-for="RoleName" class="px-1 font-semibold form-control">Rol:</label>
                                 <input asp-for="RoleName" class="form-control flex-grow appearance-none rounded shadow p-3 text-grey-dark mr-2"  placeholder="Voer een rol in">
-                                </div>
+                            </div>
                             <div class="form-group row">
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto">

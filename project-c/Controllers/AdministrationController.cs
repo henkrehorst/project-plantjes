@@ -33,6 +33,8 @@ namespace project_c.Controllers
         {
             var users = _userManager.Users;
             var orderedUsers = users.OrderBy(u => u.Id);
+            ViewBag.userIsEdited = TempData["userIsEdited"] == null ? false : TempData["userIsEdited"];
+            ViewBag.userIsDeleted = TempData["userIsDeleted"] == null ? false : TempData["userIsDeleted"];
             return View(orderedUsers);
         }
 
@@ -93,11 +95,13 @@ namespace project_c.Controllers
 
             if (result.Succeeded)
             {
+                TempData["userIsEdited"] = true;
                 return RedirectToAction("ListUsers");
             }
 
             foreach (var error in result.Errors)
             {
+                
                 ModelState.AddModelError("", error.Description);
             }
 
@@ -140,6 +144,7 @@ namespace project_c.Controllers
 
             if (result.Succeeded)
             {
+                TempData["userIsDeleted"] = true;
                 return RedirectToAction("ListUsers");
             }
 
@@ -173,6 +178,7 @@ namespace project_c.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["isCreated"] = true;
                     return RedirectToAction("ListRoles", "Administration");
                 }
 
@@ -181,7 +187,7 @@ namespace project_c.Controllers
                     ModelState.AddModelError("", error.Description);
                 }
             }
-
+        
             return View(model);
         }
 
@@ -189,6 +195,9 @@ namespace project_c.Controllers
         public IActionResult ListRoles()
         {
             var roles = _roleManager.Roles;
+            ViewBag.isCreated = TempData["isCreated"] == null ? false : TempData["isCreated"];
+            ViewBag.isDeleted = TempData["isDeleted"] == null ? false : TempData["isDeleted"];
+            ViewBag.isEdited = TempData["isEdited"] == null ? false : TempData["isEdited"];
             return View(roles);
         }
 
@@ -220,7 +229,7 @@ namespace project_c.Controllers
                     model.Users.Add(user.UserName);
                 }
             }
-
+            ViewBag.roleIsEdited = TempData["roleIsEdited"] == null ? false : TempData["roleIsEdited"];
             return View(model);
         }
 
@@ -244,6 +253,7 @@ namespace project_c.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["isEdited"] = true;
                     return RedirectToAction("ListRoles");
                 }
 
@@ -272,6 +282,7 @@ namespace project_c.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["isDeleted"] = true;
                     return RedirectToAction("ListRoles");
                 }
 
@@ -316,7 +327,7 @@ namespace project_c.Controllers
 
                 model.Add(userRoleViewModel);
             }
-
+            
             return View(model);
         }
 
@@ -355,11 +366,13 @@ namespace project_c.Controllers
                 {
                     if (i < (model.Count - 1))
                         continue;
-                    else
-                        return RedirectToAction("EditRole", new {Id = roleId});
+                    
+                    TempData["roleIsEdited"] = true;
+                    return RedirectToAction("EditRole", new {Id = roleId});
                 }
             }
-
+            
+            TempData["roleIsEdited"] = true;
             return RedirectToAction("EditRole", new
             {
                 Id = roleId
