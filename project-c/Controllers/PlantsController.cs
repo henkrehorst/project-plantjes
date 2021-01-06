@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +12,7 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
 using project_c.Helpers;
 using project_c.Repository;
 using project_c.ViewModels;
@@ -49,21 +51,62 @@ namespace project_c.Controllers
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
+
+            var query = _context.Plants.Select(p => p);
+
+            //build query
+            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
+            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
+            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
+            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
+            if (name != null)
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
+
+            //show only approved plants
+            query = query.Where(p => p.HasBeenApproved);
+
+            ViewData["stekCount"] = query.Count();
+            ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
+            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
             
             return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
-                View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
+            View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
         }
 
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var plant = await _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ToListAsync();
+            
+            var plant = _context.Plants.Where(p => p.PlantId == id )
+                                                    .Include(p => p.User)
+                                                    .ThenInclude(u => u.Id).ToList();
+
+            var singlePlant = _context.Plants.Find(id);
+
+            var aanbod = (from o in _context.Options
+                where singlePlant.Aanbod == o.OptionId select o.DisplayName).FirstOrDefault();
+            var soort = (from o in _context.Options
+                where singlePlant.Soort == o.OptionId select o.DisplayName).FirstOrDefault();
+            var licht = (from o in _context.Options
+                where singlePlant.Licht == o.OptionId select o.DisplayName).FirstOrDefault();
+            var water = (from o in _context.Options
+                where singlePlant.Water == o.OptionId select o.DisplayName).FirstOrDefault();
+            
+            var categories = new List<string>() {aanbod, soort, licht, water};
+            
             var ratings = from r in _context.Ratings where r.PlantId == id select r;
 
             var plantViewModel = new PlantViewModel();
             plantViewModel.Plant = plant;
             plantViewModel.Rating = ratings;
             plantViewModel.UserId = _userManager.GetUserId(User);
+            plantViewModel.Categories = categories;
+
+            ViewBag.plantIsEdited = TempData["plantIsEdited"] == null ? false : TempData["plantIsEdited"];
+            ViewBag.ratingIsCreated = TempData["ratingIsCreated"] == null ? false : TempData["ratingIsCreated"];
+            ViewBag.ratingIsDeleted = TempData["ratingIsDeleted"] == null ? false : TempData["ratingIsDeleted"];
+            ViewBag.ratingIsEdited = TempData["ratingIsEdited"] == null ? false : TempData["ratingIsEdited"];
 
             return View(plantViewModel);
         }
@@ -122,7 +165,8 @@ namespace project_c.Controllers
                     _context.SaveChanges();
                 }
 
-                return RedirectToAction(nameof(Index));
+                TempData["plantIsCreated"] = true;
+                return RedirectToAction("MijnPlanten");
             }
             catch
             {
@@ -195,7 +239,8 @@ namespace project_c.Controllers
                     return Content("Your are not authorized to edit this plant");
                 }
 
-                return RedirectToAction(nameof(Index));
+                TempData["plantIsEdited"] = true;
+                return RedirectToAction("Details", new {id});
             }
             catch
             {
@@ -239,6 +284,8 @@ namespace project_c.Controllers
                     _context.Plants.Remove(plant);
                     usr.Karma--;
                     _context.SaveChanges();
+                    TempData["plantIsDeleted"] = true;
+                    return RedirectToAction("Index");
                 }
                 else if (_userManager.GetUserId(User) == plant.UserId)
                 {
@@ -250,17 +297,21 @@ namespace project_c.Controllers
                     return Content("You are not authorized to perform this action.");
                 }
 
-                return RedirectToAction(nameof(Index));
+                TempData["plantIsDeleted"] = true;
+                return RedirectToAction("MijnPlanten");
             }
             catch
             {
-                return RedirectToAction(nameof(Details));
+                return RedirectToAction("MijnPlanten");
             }
         }
 
         public ActionResult MijnPlanten()
         {
+
             var plants = _context.Plants.Where(p => p.UserId == _userManager.GetUserId(User)).OrderByDescending(p => p.Creation);
+            ViewBag.plantIsCreated = TempData["plantIsCreated"] == null ? false : TempData["plantIsCreated"];
+            ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
 
             return View(plants);
         }
@@ -303,6 +354,7 @@ namespace project_c.Controllers
                 return Content("You already voted");
             }
 
+            TempData["ratingIsCreated"] = true;
             return RedirectToAction("Details", new {id = routingId});
         }
 
@@ -352,7 +404,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to edit rating");
                 }
-
+                TempData["ratingIsEdited"] = true;
                 return RedirectToAction("Details", new {id = routingId});
             }
             catch
@@ -377,7 +429,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to delete this rating");
                 }
-
+                TempData["ratingIsDeleted"] = true;
                 return RedirectToAction("Details", new {id = routingId});
             }
             catch
