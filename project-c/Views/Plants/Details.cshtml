@@ -1,4 +1,5 @@
 @model project_c.ViewModels.PlantViewModel;
+
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
@@ -169,6 +170,13 @@
             <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
                 @plant.Description
             </p>
+             @foreach (var category in Model.Categories)
+            {
+                    @if (category != null && category != "Geen eisen")
+                    {
+                        <span class="pill bg-green-500 text-white rounded-full text-s px-4 py-1 mr-3">@category</span>
+                    }
+            }
             <p class="text-gray-600 font-serif text-xl leading-relaxed pr-8">
                 Huidig Aanbod: @plant.Quantity
             </p>

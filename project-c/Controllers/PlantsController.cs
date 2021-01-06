@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
 using project_c.Helpers;
 using project_c.Repository;
 using project_c.ViewModels;
@@ -76,14 +77,11 @@ namespace project_c.Controllers
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var plant = await _context.Plants.Where(p => p.PlantId == id).Include(p => p.User).ToListAsync();
-            var ratings = from r in _context.Ratings where r.PlantId == id select r;
-
-            var plantViewModel = new PlantViewModel();
-            plantViewModel.Plant = plant;
-            plantViewModel.Rating = ratings;
-            plantViewModel.UserId = _userManager.GetUserId(User);
             
+            var plant = _context.Plants.Where(p => p.PlantId == id )
+                                                    .Include(p => p.User)
+                                                    .ThenInclude(u => u.Id).ToList();
+
             var singlePlant = _context.Plants.Find(id);
 
             var aanbod = (from o in _context.Options
@@ -97,10 +95,19 @@ namespace project_c.Controllers
             
             var categories = new List<string>() {aanbod, soort, licht, water};
             
+            var ratings = from r in _context.Ratings where r.PlantId == id select r;
+
+            var plantViewModel = new PlantViewModel();
+            plantViewModel.Plant = plant;
+            plantViewModel.Rating = ratings;
+            plantViewModel.UserId = _userManager.GetUserId(User);
+            plantViewModel.Categories = categories;
+
             ViewBag.plantIsEdited = TempData["plantIsEdited"] == null ? false : TempData["plantIsEdited"];
             ViewBag.ratingIsCreated = TempData["ratingIsCreated"] == null ? false : TempData["ratingIsCreated"];
             ViewBag.ratingIsDeleted = TempData["ratingIsDeleted"] == null ? false : TempData["ratingIsDeleted"];
             ViewBag.ratingIsEdited = TempData["ratingIsEdited"] == null ? false : TempData["ratingIsEdited"];
+
             return View(plantViewModel);
         }
 
@@ -295,7 +302,7 @@ namespace project_c.Controllers
             }
             catch
             {
-                return RedirectToAction(nameof(Details));
+                return RedirectToAction("MijnPlanten");
             }
         }
 

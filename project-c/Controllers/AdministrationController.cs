@@ -82,7 +82,7 @@ namespace project_c.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             user.FirstName = model.FirstName;
@@ -125,7 +125,7 @@ namespace project_c.Controllers
             if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             if (!await _userManager.IsInRoleAsync(user, "Admin"))
@@ -209,7 +209,7 @@ namespace project_c.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             var model = new EditRoleViewModel
@@ -241,7 +241,7 @@ namespace project_c.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             else
@@ -274,7 +274,7 @@ namespace project_c.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
             else
             {
@@ -304,7 +304,7 @@ namespace project_c.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             var model = new List<UserRoleViewModel>();
@@ -338,7 +338,7 @@ namespace project_c.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
 
             for (int i = 0;
