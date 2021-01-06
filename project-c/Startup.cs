@@ -69,6 +69,7 @@ namespace project_c
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            
             app.UseSignalR(route =>
             {
                 route.MapHub<ChatHub>("/api/chat");
