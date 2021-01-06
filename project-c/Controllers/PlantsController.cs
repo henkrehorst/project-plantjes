@@ -51,24 +51,6 @@ namespace project_c.Controllers
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-
-            var query = _context.Plants.Select(p => p);
-
-            //build query
-            if (aanbod.Length > 0) query = query.Where(p => aanbod.Contains(p.Aanbod));
-            if (soort.Length > 0) query = query.Where(p => soort.Contains(p.Soort));
-            if (licht.Length > 0) query = query.Where(p => licht.Contains(p.Licht));
-            if (water.Length > 0) query = query.Where(p => water.Contains(p.Water));
-            if (name != null)
-                query = query.Where(p =>
-                    EF.Functions.Like(p.Name.ToLower(), $"%{name.ToLower()}%"));
-
-            //show only approved plants
-            query = query.Where(p => p.HasBeenApproved);
-
-            ViewData["stekCount"] = query.Count();
-            ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
-            return View(await PaginatedResponse<Plant>.CreateAsync(query, page, 15));
             
             return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
             View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
@@ -77,12 +59,7 @@ namespace project_c.Controllers
         // GET: PlantsController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            
-            var plant = _context.Plants.Where(p => p.PlantId == id )
-                                                    .Include(p => p.User)
-                                                    .ThenInclude(u => u.Id).ToList();
-
-            var singlePlant = _context.Plants.Find(id);
+            var singlePlant = _context.Plants.Include(u => u.User).FirstOrDefault(p => p.PlantId == id);
 
             var aanbod = (from o in _context.Options
                 where singlePlant.Aanbod == o.OptionId select o.DisplayName).FirstOrDefault();
@@ -95,10 +72,10 @@ namespace project_c.Controllers
             
             var categories = new List<string>() {aanbod, soort, licht, water};
             
-            var ratings = from r in _context.Ratings where r.PlantId == id select r;
+            var ratings = _context.Ratings.Where(r => r.PlantId == id);
 
             var plantViewModel = new PlantViewModel();
-            plantViewModel.Plant = plant;
+            plantViewModel.Plant = new List<Plant>(){singlePlant};
             plantViewModel.Rating = ratings;
             plantViewModel.UserId = _userManager.GetUserId(User);
             plantViewModel.Categories = categories;
