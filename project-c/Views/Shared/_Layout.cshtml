@@ -69,9 +69,9 @@
                                         </button>
                                         <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                             <div id="show-menu" class="py-1 rounded-md bg-white shadow-xs" role="menu">
-
-
                                                 <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="mijnPlanten">Mijn planten</a>
+                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Profiel" asp-action="Index">Mijn profiel</a>    
+                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
 
                                                 @if (User.IsInRole("Admin"))
                                                 {
@@ -79,9 +79,6 @@
                                                     <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListRoles">Rollen wijzigen</a>
                                                 }
 
-                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Profiel" asp-action="Index">Jouw profiel</a>
-
-                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
 
                                                 <form method="post" class="pb-0" asp-controller="Account" asp-action="Logout">
                                                     <button style="width: 100%; text-align: left" class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" type="submit">Logout</button>

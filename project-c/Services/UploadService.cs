@@ -27,6 +27,18 @@ namespace project_c.Services
             return this._blobServiceClient.GetBlobContainerClient(this._blobContainerName);
         }
 
+        public async Task<string[]> UploadMultipleImages(IFormFile[] files)
+        {
+            string[] urls = new string[files.Length];
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                urls[i] = await UploadImage(files[i]);
+            }
+
+            return urls;
+        }
+        
         public async Task<string> UploadImage(IFormFile file)
         {
             BlobClient blobClient = GetBlobContainerClient().GetBlobClient($"{Guid.NewGuid()}.jpg");

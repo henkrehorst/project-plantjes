@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -26,8 +27,41 @@ namespace project_c.Controllers
         private readonly UserManager<User> _userManager;
         private readonly PlantRepository _plantRepository;
 
+        [BindProperty] public InputModel Input { get; set; }
+        public class InputModel
+        {
+            [Required(ErrorMessage = "Voer de naam van de plant in!")]
+            [StringLength(40,
+                ErrorMessage = "De naam van de plant mag maximaal 40 tekens en moet minimaal 3 tekens bevatten!",
+                MinimumLength = 3)]
+            public string Name { get; set; }
+            [Required(ErrorMessage = "Voer de lengte van de plant in!")]
+            public int Length { get; set; }
+            [Required(ErrorMessage = "Voer het aantal planten in!")]
+            public int Amount { get; set; }
+            [Required(ErrorMessage = "Selecteer het aanbod waar de plant in hoort!")]
+            public int Aanbod { get; set; }
+            [Required(ErrorMessage = "Selecteer het soort plant!")]
+            public int Soort { get; set; }
+            [Required(ErrorMessage = "Selecteer de hoeveelheid licht die de plant nodig heeft!")]
+            public int Licht { get; set; }
+            [Required(ErrorMessage = "Selecteer de hoeveelheid water die de plant nodig heeft!")]
+            public int Water { get; set; }
+            
+            [Required(ErrorMessage = "Maak korte beschrijving over de plant")]
+            [StringLength(200, ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten", MinimumLength = 10)]
+            public string Description { get; set; }
+            
+            [DataType(DataType.Upload)]
+            [Required(ErrorMessage = "U moet minimaal 1 foto uploaden")]
+            [MaxFileSizeArray(1* 1024 * 1024)]
+            [AllowedExtensionsArray(new string[] { ".jpg" })]
+            public IFormFile[] PlantPictures { get; set; }
+        }
+
         //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
-        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload, PlantRepository plantRepository)
+        public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload,
+            PlantRepository plantRepository)
         {
             _context = context;
             _userManager = userManager;
@@ -51,9 +85,16 @@ namespace project_c.Controllers
         {
             //get filters 
             ViewData["Filters"] = _context.Filters.Include(f => f.Options).ToList();
-            
-            return latitude != 0.0 && longitude != 0.0 ? View(await _plantRepository.GetPlantsWithDistance(_context,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort)) : 
-            View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
+
+            ViewBag.plantIsEdited = TempData["plantIsEdited"] == null ? false : TempData["plantIsEdited"];
+            ViewBag.ratingIsCreated = TempData["ratingIsCreated"] == null ? false : TempData["ratingIsCreated"];
+            ViewBag.ratingIsDeleted = TempData["ratingIsDeleted"] == null ? false : TempData["ratingIsDeleted"];
+            ViewBag.ratingIsEdited = TempData["ratingIsEdited"] == null ? false : TempData["ratingIsEdited"];
+
+            return latitude != 0.0 && longitude != 0.0
+                ? View(await _plantRepository.GetPlantsWithDistance(_context, latitude, longitude, aanbod, soort, licht,
+                    water, name, distance, page, sort))
+                : View(await _plantRepository.GetPlants(_context, aanbod, soort, licht, water, name, page, sort));
         }
 
         // GET: PlantsController/Details/5
@@ -62,20 +103,24 @@ namespace project_c.Controllers
             var singlePlant = _context.Plants.Include(u => u.User).FirstOrDefault(p => p.PlantId == id);
 
             var aanbod = (from o in _context.Options
-                where singlePlant.Aanbod == o.OptionId select o.DisplayName).FirstOrDefault();
+                where singlePlant.Aanbod == o.OptionId
+                select o.DisplayName).FirstOrDefault();
             var soort = (from o in _context.Options
-                where singlePlant.Soort == o.OptionId select o.DisplayName).FirstOrDefault();
+                where singlePlant.Soort == o.OptionId
+                select o.DisplayName).FirstOrDefault();
             var licht = (from o in _context.Options
-                where singlePlant.Licht == o.OptionId select o.DisplayName).FirstOrDefault();
+                where singlePlant.Licht == o.OptionId
+                select o.DisplayName).FirstOrDefault();
             var water = (from o in _context.Options
-                where singlePlant.Water == o.OptionId select o.DisplayName).FirstOrDefault();
-            
+                where singlePlant.Water == o.OptionId
+                select o.DisplayName).FirstOrDefault();
+
             var categories = new List<string>() {aanbod, soort, licht, water};
-            
+
             var ratings = _context.Ratings.Where(r => r.PlantId == id);
 
             var plantViewModel = new PlantViewModel();
-            plantViewModel.Plant = new List<Plant>(){singlePlant};
+            plantViewModel.Plant = new List<Plant>() {singlePlant};
             plantViewModel.Rating = ratings;
             plantViewModel.UserId = _userManager.GetUserId(User);
             plantViewModel.Categories = categories;
@@ -102,53 +147,50 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Create(IFormCollection form)
         {
-            var name = form["name"].ToString();
-            var description = form["description"].ToString();
-            var quantity = form["quantity"];
-            description = char.ToUpper(description[0]) + description.Substring(1);
-            name = char.ToUpper(name[0]) + name.Substring(1);
-            IFormFile image = form.Files.GetFile("ImageUpload");
-
-            try
+            if (ModelState.IsValid)
             {
-                Plant plant = new Plant();
-                if (ModelState.IsValid)
+                try
                 {
-                    plant.Name = name;
-                    if (image != null)
+                    Plant plant = new Plant();
+                    if (ModelState.IsValid)
                     {
-                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);;
+                        plant.Length = Convert.ToInt32(form["length"]);
+                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);;
+                        plant.Quantity = Input.Amount;
+
+                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
+                        plant.Images = images;
+                        plant.ImgUrl = images[0];
+
+                        //added categories of plant
+                        plant.Aanbod = Input.Aanbod;
+                        plant.Soort = Input.Soort;
+                        plant.Licht = Input.Licht;
+                        plant.Water = Input.Water;
+
+                        plant.Creation = DateTime.Now;
+                        plant.UserId = _userManager.GetUserId(User);
+                        User plantuser = _context.User.First(u => u.Id == plant.UserId);
+                        if (plantuser.Karma >= 3)
+                        {
+                            plant.HasBeenApproved = true;
+                        }
+
+                        _context.Add(plant);
+                        _context.SaveChanges();
                     }
 
-                    plant.Length = Convert.ToInt32(form["length"]);
-                    plant.Description = description;
-                    plant.Quantity = Convert.ToInt32(form["quantity"]);
-
-                    //added categories of plant
-                    plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
-                    plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
-                    plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
-                    plant.Water = Convert.ToInt32(form["filter[Water]"]);
-
-                    plant.Creation = DateTime.Today;
-                    plant.UserId = _userManager.GetUserId(User);
-                    User plantuser = _context.User.First(u => u.Id == plant.UserId);
-                    if (plantuser.Karma >= 3)
-                    {
-                        plant.HasBeenApproved = true;
-                    }
-
-                    _context.Add(plant);
-                    _context.SaveChanges();
+                    TempData["plantIsCreated"] = true;
+                    return RedirectToAction("MijnPlanten");
                 }
-
-                TempData["plantIsCreated"] = true;
-                return RedirectToAction("MijnPlanten");
+                catch
+                {
+                    return Content("Error probeer het opnieuw");
+                }
             }
-            catch
-            {
-                return Content("Error probeer het opnieuw");
-            }
+            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
+            return View();
         }
 
         public string FetchUser(Plant plant)
@@ -163,7 +205,17 @@ namespace project_c.Controllers
         {
             Plant plant = _context.Plants.First(p => p.PlantId == id);
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
-            return View(plant);
+            Input = new InputModel();
+            Input.Name = plant.Name;
+            Input.Amount = plant.Quantity;
+            Input.Length = plant.Length;
+            Input.Aanbod = plant.Aanbod;
+            Input.Soort = plant.Soort;
+            Input.Water = plant.Water;
+            Input.Licht = plant.Licht;
+            Input.Description = plant.Description;
+
+            return View(this);
         }
 
         // POST: PlantsController/Edit/5
@@ -172,57 +224,55 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Edit(int id, IFormCollection form)
         {
-            var name = form["name"].ToString();
-            var description = form["description"].ToString();
-            description = char.ToUpper(description[0]) + description.Substring(1);
-            name = char.ToUpper(name[0]) + name.Substring(1);
-            IFormFile image = form.Files.GetFile("ImageUpload");
-
-            try
+            if (ModelState.IsValid)
             {
-                var plant = _context.Plants.First(p => p.PlantId == id);
-
-                plant.Name = name;
-                plant.Length = Convert.ToInt32(form["length"]);
-                plant.Quantity = Convert.ToInt32(form["quantity"]);
-                plant.Description = description;
-
-                //added categories of plant
-                plant.Aanbod = Convert.ToInt32(form["filter[Aanbod]"]);
-                plant.Soort = Convert.ToInt32(form["filter[Soort]"]);
-                plant.Licht = Convert.ToInt32(form["filter[Licht]"]);
-                plant.Water = Convert.ToInt32(form["filter[Water]"]);
-
-                if (image != null)
+                try
                 {
-                    plant.ImgUrl = await _uploadService.UploadImage(image);
-                }
+                    var plant = _context.Plants.First(p => p.PlantId == id);
 
-                if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
-                {
-                    plant.Name = name;
-                    plant.Length = Convert.ToInt32(form["length"]);
-                    plant.Description = description;
-                    if (image != null)
+                    if (_userManager.GetUserId(User) == plant.UserId || User.IsInRole("Admin"))
                     {
-                        plant.ImgUrl = await _uploadService.UploadImage(image);
+                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);
+                        plant.Length = Convert.ToInt32(form["length"]);
+                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
+                        plant.Quantity = Input.Amount;
+
+                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
+                        plant.Images = images;
+                        plant.ImgUrl = images[0];
+
+                        //added categories of plant
+                        plant.Aanbod = Input.Aanbod;
+                        plant.Soort = Input.Soort;
+                        plant.Licht = Input.Licht;
+                        plant.Water = Input.Water;
+
+                        plant.Creation = DateTime.Now;
+                        User plantuser = _context.User.First(u => u.Id == plant.UserId);
+                        if (plantuser.Karma >= 3)
+                        {
+                            plant.HasBeenApproved = true;
+                        }
+
+                        _context.Update(plant);
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        return Content("Your are not authorized to edit this plant");
                     }
 
-                    _context.Update(plant);
-                    _context.SaveChanges();
+                    TempData["plantIsEdited"] = true;
+                    return RedirectToAction("Details", new {id});
                 }
-                else
+                catch
                 {
-                    return Content("Your are not authorized to edit this plant");
+                    ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
+                    return View();
                 }
-
-                TempData["plantIsEdited"] = true;
-                return RedirectToAction("Details", new {id});
             }
-            catch
-            {
-                return View();
-            }
+            ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
+            return View();
         }
 
         // POST: PlantsController/Delete/5
@@ -242,9 +292,9 @@ namespace project_c.Controllers
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
                         message.Body = $"Beste {usr.FirstName} , \n\n\n" +
-                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                            "Groetjes, Het Plantjes Team";
+                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                                       "Groetjes, Het Plantjes Team";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
@@ -283,10 +333,11 @@ namespace project_c.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult MijnPlanten()
         {
-
-            var plants = _context.Plants.Where(p => p.UserId == _userManager.GetUserId(User)).OrderByDescending(p => p.Creation);
+            var plants = _context.Plants.Where(p => p.UserId == _userManager.GetUserId(User))
+                .OrderByDescending(p => p.Creation);
             ViewBag.plantIsCreated = TempData["plantIsCreated"] == null ? false : TempData["plantIsCreated"];
             ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
 
@@ -381,6 +432,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to edit rating");
                 }
+
                 TempData["ratingIsEdited"] = true;
                 return RedirectToAction("Details", new {id = routingId});
             }
@@ -406,6 +458,7 @@ namespace project_c.Controllers
                 {
                     return Content("Your are not authorized to delete this rating");
                 }
+
                 TempData["ratingIsDeleted"] = true;
                 return RedirectToAction("Details", new {id = routingId});
             }

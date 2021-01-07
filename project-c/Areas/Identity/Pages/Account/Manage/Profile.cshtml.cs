@@ -42,9 +42,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             [AllowedExtensions(new string[] { ".jpg" })]
             public IFormFile Avatar { get; set; }
             
-            [DataType(DataType.Upload)]
-            [MaxFileSize(2* 1024 * 1024)]
-            [AllowedExtensions(new string[] { ".jpg" })]
             public IFormFile Banner { get; set; }
             
         }
