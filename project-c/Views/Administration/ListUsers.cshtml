@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
 
 @{
     ViewBag.Title = "All Users";
@@ -6,23 +6,61 @@
 
 <h1>All Users</h1>
 
-    @foreach (var user in Model)
-    {
-        <div class="card mb-3">
-            <div class="card-header">
-                User Id : @user.Id
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">@user.UserName</h5>
-            </div>
-            <div class="card-footer">
-                <div class="card-footer">
-                    <a asp-action="EditUser" asp-controller="Administration"
-                        asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
-                </div>
-                <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
-                    <button onclick="if(!confirm('Weet u zeker dat u de gebruiker @user.Email wilt verwijderen?')){return false;}" type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
+@foreach (var user in Model)
+{
+    <div class="card mb-3">
+        <div class="card-header">
+            User Id : @user.Id
         </div>
+        <div class="card-body">
+            <h5 class="card-title">@user.UserName</h5>
+        </div>
+        <div class="card-footer">
+            <div class="card-footer">
+                <a id="edit_@user.GetHashCode()" asp-action="EditUser" asp-controller="Administration"
+                   asp-route-id="@user.Id" class="btn btn-primary">
+                    Edit
+                </a>
+            </div>
+            <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                <a id="verwijder_@user.GetHashCode()" style="cursor: pointer" onclick="showUserDeleteConfirmation(@user.GetHashCode())" class="btn btn-danger">Delete</a>
+                <div id="@user.GetHashCode()" style="display: none" class="pr-16 relative">
+                    <div class="bg-white rounded-lg shadow-md p-4 border-1 border-gray-400 w-64 mb-8">
+                        <div class="relative">
+                            <span class="block absolute bottom-0 shadow-md w-3 h-3 right-0" style="right:-30px;background-color: inherit; transform: translateX(-6px) rotate(45deg); pointer-events: none; box-shadow: 2px -2px 5px 0 rgba(0,0,0,.1);">&nbsp;</span>
+                            <p class="block mb-1 text-gray-900 leading-tight mb-4">
+                                Weet u zeker dat uw de user @user.Email wilt verwijderen?
+                            </p>
+                            <div class="block flex flex-wrap w-full">
+                                <a id="@user.Id" style="cursor: pointer" onclick="showUserDeleteConfirmation(@user.GetHashCode())" class="rounded-l justify-center p-2 text-xs font-bold bg-green-500 text-white flex w-1/2">Cancel</a>
+                                <button type="submit" class="rounded-r justify-center p-2 text-xs bg-red-500 text-white  flex w-1/2">Verwijderen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (ViewBag.userIsEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User gewijzigd', showConfirmButton: false, timer: 1500})</script>}
+@if (ViewBag.userIsDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'User verwijderd', showConfirmButton: false, timer: 1500})</script>}
+
+<script>
+    
+    function showUserDeleteConfirmation(id) {
+        var userElement = document.getElementById(id);
+         var btnEdit = document.getElementById(`edit_${id}`)
+         var btnVerwijder = document.getElementById(`verwijder_${id}`)
+
+        if (userElement.style.display === "block") {
+            userElement.style.display = "none";
+            btnEdit.style.display = "inline-block";
+            btnVerwijder.style.display = "inline-block";
+        } else {
+            userElement.style.display = "block";
+            btnEdit.style.display = "none"
+            btnVerwijder.style.display = "none"
+        }
     }
+</script>

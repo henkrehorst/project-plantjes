@@ -42,6 +42,7 @@
   <ItemGroup>
     <Folder Include="frontend\src" />
     <Folder Include="wwwroot\Images\" />
+    <Folder Include="Views\Admin" />
   </ItemGroup>
 
   <ItemGroup>

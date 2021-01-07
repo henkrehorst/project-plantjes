@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -10,9 +11,10 @@ using project_c;
 namespace project_c.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210106125809_ImprovePlantUserRelation")]
+    partial class ImprovePlantUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,9 +221,6 @@ namespace project_c.Migrations
                     b.Property<bool>("HasBeenApproved")
                         .HasColumnType("boolean");
 
-                    b.Property<string[]>("Images")
-                        .HasColumnType("text[]");
-
                     b.Property<string>("ImgUrl")
                         .HasColumnType("text");
 
@@ -279,31 +278,6 @@ namespace project_c.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Report", b =>
-                {
-                    b.Property<int>("ReportId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Body")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PlantId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("ReportId");
-
-                    b.HasIndex("PlantId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("project_c.Models.Users.User", b =>
@@ -426,31 +400,6 @@ namespace project_c.Migrations
                     b.HasOne("project_c.Models.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("project_c.Models.Plants.Report", b =>
-                {
-                    b.HasOne("project_c.Models.Plants.Plant", "Plant")
-                        .WithMany()
-                        .HasForeignKey("PlantId");
-
-                    b.HasOne("project_c.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("project_c.Models.Users.User", b =>
-                {
-                    b.HasOne("project_c.Models.Chat.ChatData", null)
-                        .WithMany("Users")
-                        .HasForeignKey("ChatDataInt");
-                });
-
-            modelBuilder.Entity("project_c.Models.Users.UserData", b =>
-                {
-                    b.HasOne("project_c.Models.Users.User", "User")
-                        .WithOne("UserData")
-                        .HasForeignKey("project_c.Models.Users.UserData", "UserId");
                 });
 #pragma warning restore 612, 618
         }
