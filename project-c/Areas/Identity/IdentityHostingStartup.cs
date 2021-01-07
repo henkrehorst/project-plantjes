@@ -21,11 +21,7 @@ namespace project_c.Areas.Identity
                     options.UseNpgsql(context.Configuration.GetConnectionString("PlantjesDataContext"),
                         o => o.UseNetTopologySuite()));
 
-                services.AddDefaultIdentity<User>(options =>
-                    {
-                        options.SignIn.RequireConfirmedEmail = true;
-                        options.SignIn.RequireConfirmedAccount = true;
-                    })
+                services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();
                

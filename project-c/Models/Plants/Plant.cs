@@ -24,7 +24,6 @@ namespace project_c.Models.Plants
         
         public DateTime Creation { get; set; }
         public string ImgUrl { get; set; }
-        public string[] Images { get; set; }
         public bool HasBeenApproved { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
@@ -47,7 +46,6 @@ namespace project_c.Models.Plants
             Water = plant.Water;
             Creation = plant.Creation;
             ImgUrl = plant.ImgUrl;
-            Images = plant.Images;
             HasBeenApproved = plant.HasBeenApproved;
             UserId = plant.UserId;
             User = plant.User;

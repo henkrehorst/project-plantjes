@@ -67,7 +67,7 @@ if(document.getElementById("chat-screen") !== null){
         if(message.trim().length > 0) {
             connection.send("SendMessage", document.getElementById("message-userid").value, message);
             document.getElementById('message-view').innerHTML +=
-                `<p class="mt-2 ml-8 mr-2 clear-both rounded-md float-right p-2 text-base text-black bg-green-200">
+                `<p class="mt-2 ml-8 mr-2 clear-both rounded-md float-right p-2 text-base text-black bg-gray-200">
                     ${message}<span class="block mt-1 text-xs font-medium text-gray-500">${new Date().toLocaleTimeString().slice(0,5)}</span>
                 </p>`;
             scrollToBottomMessageView();
@@ -89,7 +89,7 @@ if(document.getElementById("chat-screen") !== null){
                                     <p class="m-0 -mt-1 text-1xl text-black font-bold chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
                                         ${chat['firstName']}
                                         <span class="block -mt-1 text-xs font-medium text-black chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
-                                            ${moment(chat['lastMessage']).format('HH:MM D-M-Y')}</span>
+                                            ${moment(chat['lastMessage']).format('HH:mm D-M-Y')}</span>
                                     </p>
                                     <p class="mr-2 mt-0 mb-0 ml-auto h-6 pr-2 pl-2 bg-green-600 rounded-full text-white text-base font-bold flex chat-box" 
                                             data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
@@ -103,7 +103,7 @@ if(document.getElementById("chat-screen") !== null){
                                     <p class="m-0 -mt-1 text-1xl text-gray-600 font-bold chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
                                         ${chat['firstName']}
                                         <span class="block -mt-1 text-xs font-medium text-gray-600 chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
-                                            ${moment(chat['lastMessage']).format('HH:MM D-M-Y')}
+                                            ${moment(chat['lastMessage']).format('H:M D-M-Y')}
                                         </span>
                                     </p>
                                 </div>`;
@@ -204,7 +204,7 @@ if(document.getElementById("chat-screen") !== null){
                                 ${element.text}<span class="block mt-1 text-xs font-medium text-gray-500">${moment(element.when).format('HH:mm')}</span>
                             </p>` + messageOutput;
                         }else{
-                            messageOutput = `<p class="mt-2 ml-8 mr-2 clear-both rounded-md float-right p-2 text-base text-black bg-green-200">
+                            messageOutput = `<p class="mt-2 ml-8 mr-2 clear-both rounded-md float-right p-2 text-base text-black bg-gray-200">
                                 ${element.text}<span class="block mt-1 text-xs font-medium text-gray-500">${moment(element.when).format('HH:mm')}</span>
                             </p>` + messageOutput;
                         }

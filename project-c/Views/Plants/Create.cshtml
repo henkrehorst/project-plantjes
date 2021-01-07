@@ -1,11 +1,10 @@
 ﻿@using project_c.Models.Plants
-@model project_c.Controllers.PlantsController
 @{
-    ViewBag.Title = "Plant toevoegen";
+    ViewBag.Title = "title";
     Layout = "_Layout";
 }
 
-<div class="container w-full mx-auto mt-3 bg-green-700 shadow p-8 text-gray-700">
+<div class="container w-full mx-auto max-w-3xl bg-green-800 shadow p-8 text-gray-700">
     <div class="px-0 flex">
         <div>
             <h2 class="md:text-4xl text-xl font-medium text-white leading-6 text-gray-200">Plant toevoegen</h2>
@@ -13,7 +12,7 @@
     </div>
 </div>
 
-<div class="w-full mx-auto mb-4 bg-white shadow p-8 pt-0 text-gray-700">
+<div class="w-full mx-auto max-w-3xl bg-white shadow p-8 text-gray-700">
     <form asp-action="Create" enctype="multipart/form-data" method="POST" class="bg-white">
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="Body">
@@ -68,151 +67,19 @@
                         <option value="@option.OptionId">@option.DisplayName</option>
                     }
                 </select>
-        <div class="grid grid-cols-1 md:grid-cols-2">
-            <div class="mb-2 mt-2 p-5">
-                <h1 class="text-2xl font-bold mb-3">Informatie over de plant</h1>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" asp-for="Input.Name">
-                        Naam
-                    </label>
-                    <input asp-for="Input.Name" placeholder="Naam" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    <span asp-validation-for="Input.Name" class="block mb-3 text-sm font-medium text-red-700"></span>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" asp-for="Input.Length">
-                        Lengte
-                    </label>
-                    <input asp-for="Input.Length" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Lengte in mm">
-                    <span asp-validation-for="Input.Length" class="block mb-3 text-sm font-medium text-red-700"></span>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" asp-for="Input.Amount">
-                        Aantal
-                    </label>
-                    <input asp-for="Input.Amount" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Aantal aanbod">
-                    <span asp-validation-for="Input.Amount" class="block mb-3 text-sm font-medium text-red-700"></span>
-                </div>
-                @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
-                {
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">
-                            @filter.Name
-                        </label>
-                        @if (@filter.Name == "Water")
-                        {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Input.Water">
-                                <option disabled selected>Selecteer een optie</option>
-                                @foreach (Option option in filter.Options)
-                                {
-                                    <option value="@option.OptionId">@option.DisplayName</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Input.Water" class="block mb-3 text-sm font-medium text-red-700"></span>
-                        }
-                        else if (@filter.Name == "Licht")
-                        {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Licht">
-                                <option disabled selected>Selecteer een optie</option>
-                                @foreach (Option option in filter.Options)
-                                {
-                                    <option value="@option.OptionId">@option.DisplayName</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Input.Licht" class="block mb-3 text-sm font-medium text-red-700"></span>
-                        }
-                        else if (@filter.Name == "Aanbod")
-                        {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Aanbod">
-                                <option disabled selected>Selecteer een optie</option>
-                                @foreach (Option option in filter.Options)
-                                {
-                                    <option value="@option.OptionId">@option.DisplayName</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Input.Aanbod" class="block mb-3 text-sm font-medium text-red-700"></span>
-                        }
-                        else if (@filter.Name == "Soort")
-                        {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Soort">
-                                <option disabled selected>Selecteer een optie</option>
-                                @foreach (Option option in filter.Options)
-                                {
-                                    <option value="@option.OptionId">@option.DisplayName</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Input.Soort" class="block mb-3 text-sm font-medium text-red-700"></span>
-                        }
-                        else
-                        {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
-                                <option disabled selected>Selecteer een optie</option>
-                                @foreach (Option option in filter.Options)
-                                {
-                                    <option value="@option.OptionId">@option.DisplayName</option>
-                                }
-                            </select>
-                        }
-
-                    </div>
-                }
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Beschrijving">
-                        Beschrijving
-                    </label>
-                    <textarea asp-for="Input.Description" class="form-textarea shadow appearance-none border border-blue-500 rounded h-32 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Beschrijving" required></textarea>
-                    <p class="mt-1 text-sm text-gray-500">Een korte beschrijving over jouw stekje!</p>
-                    <span asp-validation-for="Input.Description" class="block mb-3 text-sm font-medium text-red-700"></span>
-                </div>
             </div>
-            <div class="mb-2 mt-2 p-5">
-                <h1 class="text-2xl font-bold mb-3">Foto's van de plant</h1>
-                <div class="custom-file-container" id="plantPictureUploadBox" data-upload-id="plantPictureUpload">
-                    <label class="block text-gray-700 text-sm font-bold mb-1">
-                        Upload hier uw files
-                        <a
-                            href="javascript:void(0)"
-                            class="custom-file-container__image-clear"
-                            title="Clear Image">
-                            &times;
-                        </a
-                        >
-                    </label>
-                    <label class="custom-file-container__custom-file">
-                        <input
-                            type="file"
-                            class="custom-file-container__custom-file__custom-file-input"
-                            accept="image/jpeg"
-                            multiple="multiple"
-                            aria-label="Choose File"
-                            asp-for="Input.PlantPictures"/>
-                        <input type="hidden" name="MAX_FILE_SIZE" value="1048576"/>
-                        <span
-                            class="custom-file-container__custom-file__custom-file-control">
-                        </span>
-                    </label>
-                    <div class="custom-file-container__image-preview"></div>
-                    <span asp-validation-for="Input.PlantPictures" class="block mb-3 text-sm font-medium text-red-700"></span>
-                </div>
-            </div>
+        }
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="Beschrijving">
+                Beschrijving
+            </label>
+            <textarea class="form-textarea shadow appearance-none border border-blue-500 rounded h-32 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Beschrijving" type="text" placeholder="Beschrijving" name="description" required></textarea>
         </div>
+        <p class="mt-1 text-sm text-gray-500">Een korte beschrijving over jouw stekje!</p>
         <div class="flex items-center justify-between">
-            <button class="bg-blue-500 ml-5 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                 Toevoegen
             </button>
         </div>
-
-
     </form>
 </div>
-@section Scripts {
-    <partial name="_ValidationScriptsPartial"/>
-}

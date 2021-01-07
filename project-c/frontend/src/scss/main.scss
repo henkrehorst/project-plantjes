@@ -6,8 +6,6 @@
 
 @import "./plant.scss";
 
-@import "file-upload-with-preview/dist/file-upload-with-preview.min.css";
-
 $brand-color: white;
 
 body {
@@ -139,18 +137,4 @@ main {
 
 #message-count{
   bottom: 45px;
-}
-
-.custom-file-container__image-preview{
-  overflow: auto;
-}
-
-.custom-file-container__custom-file__custom-file-control__button{
-  display: flex;
-  align-items: center;
-}
-
-.custom-file-container__custom-file__custom-file-control{
-  border-color: #4299e1;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }

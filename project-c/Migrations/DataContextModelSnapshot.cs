@@ -219,9 +219,6 @@ namespace project_c.Migrations
                     b.Property<bool>("HasBeenApproved")
                         .HasColumnType("boolean");
 
-                    b.Property<string[]>("Images")
-                        .HasColumnType("text[]");
-
                     b.Property<string>("ImgUrl")
                         .HasColumnType("text");
 
@@ -317,9 +314,6 @@ namespace project_c.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("text");
 
-                    b.Property<string>("Bio")
-                        .HasColumnType("text");
-
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
@@ -363,9 +357,6 @@ namespace project_c.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("ProfileBanner")
-                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -411,7 +402,7 @@ namespace project_c.Migrations
             modelBuilder.Entity("project_c.Models.Plants.Plant", b =>
                 {
                     b.HasOne("project_c.Models.Users.User", "User")
-                        .WithMany("Plants")
+                        .WithMany()
                         .HasForeignKey("UserId");
                 });
 

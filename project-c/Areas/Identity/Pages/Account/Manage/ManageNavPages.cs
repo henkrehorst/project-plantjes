@@ -24,7 +24,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
         public static string PersonalData => "PersonalData";
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
-        public static string Profile => "Profile";
 
         public static string ModifyNavClass(ViewContext viewContext) => PageNavClass(viewContext, Modify);
 

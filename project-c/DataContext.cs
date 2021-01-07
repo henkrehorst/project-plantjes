@@ -56,12 +56,6 @@ namespace project_c
                 .HasOne<User>(a => a.User)
                 .WithMany(d => d.Messages)
                 .HasForeignKey(d => d.UserId);
-
-            //add plant user relation
-            modelBuilder.Entity<Plant>()
-                .HasOne<User>(a => a.User)
-                .WithMany(d => d.Plants)
-                .HasForeignKey(d => d.UserId);
         }
         
         

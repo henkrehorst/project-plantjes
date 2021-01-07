@@ -1,11 +1,11 @@
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 
 @{
     ViewBag.Title = "All Roles";
     Layout = "_Layout";
 }
 
-<h1 onload="" class="text-4xl text-center m-2">Alle Rollen</h1>
+<h1 class="text-4xl text-center m-2">Alle Rollen</h1>
 
 @if (Model.Any())
 {
@@ -37,25 +37,11 @@
                 </td>
                 <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
                     <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
-                    <a id="edit_@role.GetHashCode()" asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="text-blue-400 hover:text-blue-600 underline">Bewerken</a>
+                    <a asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id" class="text-blue-400 hover:text-blue-600 underline">Bewerken</a>
                     <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="inline-block mx-3">
                         @if (role.Name != "Admin" && role.Name != "Customer")
                         {
-                            <a style="cursor: pointer" id="verwijder_@role.GetHashCode()" onclick="showRoleDeleteConfirmation(@role.GetHashCode())" class="text-red-400 hover:text-red-600 underline">Verwijderen</a>
-                            <div id="@role.GetHashCode()" style="display: none" class="pr-16 relative">
-                                <div class="bg-white rounded-lg shadow-md p-4 border-1 border-gray-400 w-64 mb-8">
-                                    <div class="relative">
-                                        <span class="block absolute bottom-0 shadow-md w-3 h-3 right-0" style="right:-30px;background-color: inherit; transform: translateX(-6px) rotate(45deg); pointer-events: none; box-shadow: 2px -2px 5px 0 rgba(0,0,0,.1);">&nbsp;</span>
-                                        <p class="block mb-1 text-gray-900 leading-tight mb-4">
-                                            Weet u zeker dat uw de role @role.Name wilt verwijderen?
-                                        </p>
-                                        <div class="block flex flex-wrap w-full">
-                                            <a id="@role.GetHashCode()" style="cursor: pointer" onclick="showRoleDeleteConfirmation(@role.GetHashCode())" class="rounded-l justify-center p-2 text-xs font-bold bg-green-500 text-white flex w-1/2">Cancel</a>
-                                            <button type="submit" class="rounded-r justify-center p-2 text-xs bg-red-500 text-white  flex w-1/2">Verwijderen</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <button onclick="if(!confirm('Weet u zeker dat u de rol @role.Name wilt verwijderen?')){return false;}" type="submit" class="text-red-400 hover:text-red-600 underline">Verwijderen</button>
                         }
                     </form>
                 </td>
@@ -82,29 +68,3 @@ else
         Rol toevoegen
     </a>
 </div>
-
-
-@if (ViewBag.isCreated) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol toegevoegd', showConfirmButton: false, timer: 1500})</script>}
-@if (ViewBag.isDeleted) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol verwijderd', showConfirmButton: false, timer: 1500})</script>}
-@if (ViewBag.isEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Rol gewijzigd', showConfirmButton: false, timer: 1500})</script>}
-
-<script>
-    
-    function showRoleDeleteConfirmation(id) {
-        var roleElement = document.getElementById(id);
-        var btnEdit = document.getElementById(`edit_${id}`)
-        var btnVerwijder = document.getElementById(`verwijder_${id}`)
-
-        if (roleElement.style.display === "block") {
-            roleElement.style.display = "none";
-            btnEdit.style.display = "inline-block";
-            btnVerwijder.style.display = "inline-block";
-        } else {
-            roleElement.style.display = "block";
-            btnEdit.style.display = "none"
-            btnVerwijder.style.display = "none"
-        }
-    }
-</script>
-
-

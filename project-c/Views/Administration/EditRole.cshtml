@@ -50,13 +50,9 @@
             }
         </tbody>
     </table>
-<div class="card-footer flex justify-center">
-    <a asp-controller="Administration" asp-action="EditUsersInRole"
-       asp-route-roleId="@Model.Id" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto">
-        Toevoegen of verwijderen gebruiker 
-    </a>
-</div>
-
-@{
-    if (ViewBag.roleIsEdited) {<script>Swal.fire({position: 'center', icon: 'success', title: 'Wijzigingen opgeslagen', showConfirmButton: false, timer: 1500})</script>}
-}
+    <div class="card-footer flex justify-center">
+        <a asp-controller="Administration" asp-action="EditUsersInRole"
+           asp-route-roleId="@Model.Id" class="btn btn-primary bg-green-500 text-white p-2 px-8 mt-6 hover:bg-green-700 rounded" style="width:auto">
+            Toevoegen of verwijderen gebruiker 
+        </a>
+    </div>

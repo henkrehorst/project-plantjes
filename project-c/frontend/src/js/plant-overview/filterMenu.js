@@ -225,10 +225,6 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                     document.getElementById("sort-filter-div").outerHTML;
                 document.getElementById("result-button").innerText = "Geen stekjes gevonden";
             } else {
-
-                //update result button for mobile
-                document.getElementById("result-button").innerText = `Toon ${responseData['count']} stekjes`;
-                
                 let plantOverview = "<div class=\"overlay\" id=\"overlay\">\n" +
                     "                <div class=\"loader\"></div>\n" +
                     "            </div><h2 class=\"col-span-1 text-2xl font-semibold text-green-500 text-center sm:text-left\">" + responseData["count"] + " Stekjes</h2>" +
@@ -327,6 +323,8 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
                         </div>
                     </div>`;
 
+                    //update result button for mobile
+                    document.getElementById("result-button").innerText = `Toon ${responseData['count']} stekjes`
                 }
 
                 document.getElementById('plantOverview').innerHTML = plantOverview;
