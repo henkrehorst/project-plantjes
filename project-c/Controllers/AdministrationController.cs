@@ -37,6 +37,17 @@ namespace project_c.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ListReports()
+        {
+            var reports = await _context.Reports.Include(r => r.User).Include(r => r.Plant).ToListAsync();
+
+            UserReportViewModel model = new UserReportViewModel();
+            model.Report = reports;
+
+            return View(reports);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

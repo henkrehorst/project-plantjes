@@ -77,7 +77,7 @@
                                 <button class="text-red-500 hover:underline" onclick="showDeleteConfirmation()">Delete</button>
                             </span>
                             <div class="inline-block">
-                                @using (Html.BeginForm("DeleteRating", "Plants", new {id = item.Id, routingId = plant.PlantId}, FormMethod.Post))
+                                @using (Html.BeginForm("DeleteRating", "Plants", new { id = item.Id, routingId = plant.PlantId }, FormMethod.Post))
                                 {
                                     <div id="delete_confirmation">
                                         <div class="pr-16 relative">
@@ -98,7 +98,7 @@
                                 }
                             </div>
                         </div>
-                        @using (Html.BeginForm("EditRating", "Plants", new {id = item.Id, routingId = plant.PlantId}, FormMethod.Post))
+                        @using (Html.BeginForm("EditRating", "Plants", new { id = item.Id, routingId = plant.PlantId }, FormMethod.Post))
                         {
                             <div id="editForm" class="flex flex-wrap -mx-3 mb-6">
                                 <h2 class="px-2 pt-3 pb-2 text-gray-800 text-m">Wijzig rating</h2>
@@ -138,7 +138,7 @@
                     }
                 }
                 <div id="rating_form" class="mb-4">
-                    @using (Html.BeginForm("AddRating", "Plants", new {id = plant.PlantId}, FormMethod.Post))
+                    @using (Html.BeginForm("AddRating", "Plants", new { id = plant.PlantId }, FormMethod.Post))
                     {
                         <div class="flex flex-wrap -mx-3 mb-6">
                             <h2 class="px-4 pt-3 pb-2 text-gray-800 text-lg">Geef een rating</h2>
@@ -180,11 +180,11 @@
                 {
                     <h6>Huidige karma:</h6>
                     <div class="font-bold text-l mb-2">@plant.User.Karma</div>
-                    <br/>
+                    <br />
                     <div class="flex space-x-3">
                         <a class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                            href="/plants/edit/@plant.PlantId">Edit</a>
-                        @using (Html.BeginForm("Delete", "Plants", new {id = plant.PlantId}, FormMethod.Post))
+                        @using (Html.BeginForm("Delete", "Plants", new { id = plant.PlantId }, FormMethod.Post))
                         {
                             <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" type="submit">
                                 Verwijderen
@@ -198,16 +198,16 @@
                                         type="submit">
                                     Approve
                                 </button>
-
-                                if (User.Identity.IsAuthenticated)
-                                {
-                                    <div class="flex items-center space-x-4 pl-4 pr-4">
-                                        <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                        href="/plants/report/@plant.PlantId">Report</a>
-                                    </div>
-                                }
                             }
                         }
+                    </div>
+                }
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    <div class="flex items-center space-x-4 pl-4 pr-4">
+                        <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                           href="/plants/report/@plant.PlantId">Report</a>
                     </div>
                 }
             }
@@ -222,22 +222,6 @@
                     </svg>
                 </div>
             </button>
-        }
-        @{
-            if (User.IsInRole("Admin"))
-            {
-                <div class="flex items-center space-x-4">
-                    <a class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                       href="/plants/edit/@plant.PlantId">Edit</a>
-                    @using (Html.BeginForm("Delete", "Plants", new {id = plant.PlantId}, FormMethod.Post))
-                    {
-                        <button class="my-4 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                type="submit">
-                            Delete
-                        </button>
-                    }
-                </div>
-            }
         }
         </div>
         </div>
