@@ -54,7 +54,7 @@ namespace project_c.Controllers
         [HttpPost]
         public IActionResult Faq(EmailModel model)
         {
-            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
+            using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", "plantjesbuurt@gmail.com"))
             {
                 message.Subject = "User: " + model.To + " Subj: " + model.Subject;
                 message.Body = "\n" + model.To + " zegt het volgende:\n\n" + model.Body;
@@ -64,14 +64,14 @@ namespace project_c.Controllers
                 {
                     smtp.Host = "smtp.gmail.com";
                     smtp.EnableSsl = true;
-                    NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                    NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                     smtp.UseDefaultCredentials = true;
                     smtp.Credentials = cred;
                     smtp.Port = 587;
                     smtp.Send(message);
                     ViewBag.Message = "Email Sent Successfully";
 
-                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", model.To))
+                    using (MailMessage aReply = new MailMessage("plantjesbuurt@gmail.com", model.To))
                     {
                         aReply.Subject = "Wij hebben je mail ontvangen!";
                         aReply.Body = "\nHey " + model.To +
@@ -79,7 +79,7 @@ namespace project_c.Controllers
                                       "\n\n Jij zei het volgende:\n\n" + model.Subject + "\n\n" + model.Body +
                                       "\n________________________________________________\n\n" +
                                       "Wij verwachten je bericht uiterlijk binnnen 3 werkdagen te beantwoorden." +
-                                      "\n\n Groetjes!\n\n\n Het hele team van Planjes";
+                                      "\n\n Groetjes!\n\n\n Het hele team van Plantjesbuurt";
                         aReply.IsBodyHtml = false;
 
                         using (SmtpClient smtpReply = new SmtpClient())
@@ -87,7 +87,7 @@ namespace project_c.Controllers
                             smtpReply.Host = "smtp.gmail.com";
                             smtpReply.EnableSsl = true;
                             NetworkCredential credReply =
-                                new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                                new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                             smtpReply.UseDefaultCredentials = true;
                             smtpReply.Credentials = credReply;
                             smtpReply.Port = 587;
@@ -103,7 +103,7 @@ namespace project_c.Controllers
         [HttpPost]
         public IActionResult Feedback(FeedbackModel model)
         {
-            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
+            using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", "plantjesbuurt@gmail.com"))
             {
                 message.Subject = "Feedback: " + model.To;
                 message.Body = "\n" + model.To + " geeft als feedback:\n\n"  + model.Body;
@@ -113,21 +113,21 @@ namespace project_c.Controllers
                 {
                     smtp.Host = "smtp.gmail.com";
                     smtp.EnableSsl = true;
-                    NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                    NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                     smtp.UseDefaultCredentials = true;
                     smtp.Credentials = cred;
                     smtp.Port = 587;
                     smtp.Send(message);
                     ViewBag.Message = "Email Sent Successfully";
 
-                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", model.To))
+                    using (MailMessage aReply = new MailMessage("plantjesbuurt@gmail.com", model.To))
                     {
                         aReply.Subject = "Wij hebben je feedback ontvangen!";
                         aReply.Body = "\nHey " + model.Naam +
                                       "\n\n Bedankt voor je feedback!" +
                                       "\n\n Jij zei het volgende:\n\n" + model.Body +
                                       "\n________________________________________________\n\n" +
-                                      "\n\n Groetjes!\n\n\n Het hele team van Planjes";
+                                      "\n\n Groetjes!\n\n\n Het hele team van Planjesbuurt";
                         aReply.IsBodyHtml = false;
 
                         using (SmtpClient smtpReply = new SmtpClient())
@@ -135,7 +135,7 @@ namespace project_c.Controllers
                             smtpReply.Host = "smtp.gmail.com";
                             smtpReply.EnableSsl = true;
                             NetworkCredential credReply =
-                                new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                                new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                             smtpReply.UseDefaultCredentials = true;
                             smtpReply.Credentials = credReply;
                             smtpReply.Port = 587;
