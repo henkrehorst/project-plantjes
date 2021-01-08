@@ -47,6 +47,22 @@ namespace project_c.Controllers
             return View(reports);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteReport(int id)
+        {
+            try 
+            { 
+                var report = _context.Reports.Find(id);
+                _context.Reports.Remove(report);
+                _context.SaveChanges();
+                return RedirectToAction("ListReports");
+            }
+            catch
+            {
+                return RedirectToAction("ListReports");
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
