@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -51,118 +51,21 @@ namespace project_c.Controllers
 
         }
 
-        [HttpPost]
-        public IActionResult Faq(EmailModel model)
-        {
-            using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", "plantjesbuurt@gmail.com"))
-            {
-                message.Subject = "User: " + model.To + " Subj: " + model.Subject;
-                message.Body = "\n" + model.To + " zegt het volgende:\n\n" + model.Body;
-                message.IsBodyHtml = false;
 
-                using (SmtpClient smtp = new SmtpClient())
-                {
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = cred;
-                    smtp.Port = 587;
-                    smtp.Send(message);
-                    ViewBag.Message = "Email Sent Successfully";
-
-                    using (MailMessage aReply = new MailMessage("plantjesbuurt@gmail.com", model.To))
-                    {
-                        aReply.Subject = "Wij hebben je mail ontvangen!";
-                        aReply.Body = "\nHey " + model.To +
-                                      "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
-                                      "\n\n Jij zei het volgende:\n\n" + model.Subject + "\n\n" + model.Body +
-                                      "\n________________________________________________\n\n" +
-                                      "Wij verwachten je bericht uiterlijk binnnen 3 werkdagen te beantwoorden." +
-                                      "\n\n Groetjes!\n\n\n Het hele team van Plantjesbuurt";
-                        aReply.IsBodyHtml = false;
-
-                        using (SmtpClient smtpReply = new SmtpClient())
-                        {
-                            smtpReply.Host = "smtp.gmail.com";
-                            smtpReply.EnableSsl = true;
-                            NetworkCredential credReply =
-                                new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
-                            smtpReply.UseDefaultCredentials = true;
-                            smtpReply.Credentials = credReply;
-                            smtpReply.Port = 587;
-                            smtpReply.Send(aReply);
-                        }
-                    }
-                }
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult Feedback(FeedbackModel model)
-        {
-            using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", "plantjesbuurt@gmail.com"))
-            {
-                message.Subject = "Feedback: " + model.To;
-                message.Body = "\n" + model.To + " geeft als feedback:\n\n"  + model.Body;
-                message.IsBodyHtml = false;
-
-                using (SmtpClient smtp = new SmtpClient())
-                {
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = cred;
-                    smtp.Port = 587;
-                    smtp.Send(message);
-                    ViewBag.Message = "Email Sent Successfully";
-
-                    using (MailMessage aReply = new MailMessage("plantjesbuurt@gmail.com", model.To))
-                    {
-                        aReply.Subject = "Wij hebben je feedback ontvangen!";
-                        aReply.Body = "\nHey " + model.Naam +
-                                      "\n\n Bedankt voor je feedback!" +
-                                      "\n\n Jij zei het volgende:\n\n" + model.Body +
-                                      "\n________________________________________________\n\n" +
-                                      "\n\n Groetjes!\n\n\n Het hele team van Planjesbuurt";
-                        aReply.IsBodyHtml = false;
-
-                        using (SmtpClient smtpReply = new SmtpClient())
-                        {
-                            smtpReply.Host = "smtp.gmail.com";
-                            smtpReply.EnableSsl = true;
-                            NetworkCredential credReply =
-                                new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
-                            smtpReply.UseDefaultCredentials = true;
-                            smtpReply.Credentials = credReply;
-                            smtpReply.Port = 587;
-                            smtpReply.Send(aReply);
-                        }
-                    }
-                }
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        public ViewResult Feedback()
-        {
-            return View();
-        }
-        public ViewResult Faq()
-        {
-            return View();
-        }
-        
         public IActionResult Profiel()
         {
             return View();
         }
 
         public IActionResult Ons()
+        {
+            return View();
+        }
+        public IActionResult Missie()
+        {
+            return View();
+        }
+        public IActionResult ContactPage()
         {
             return View();
         }

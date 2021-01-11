@@ -43,5 +43,14 @@ namespace project_c.Controllers.api
             return latitude != 0.0 && longitude != 0.0 ? await _plantRepository.GetPlantsWithDistance(_dataContext,latitude, longitude, aanbod, soort, licht, water, name, distance, page, sort) : 
                 await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page, sort);
         }
+
+        [HttpGet]
+        [Route("/api/plants/images/{id}")]
+        public async Task<string[]> GetPlantImages(int id)
+        {
+            var plant = await _dataContext.Plants.FirstOrDefaultAsync(p => p.PlantId == id);
+
+            return plant.Images;
+        }
     }
 }
