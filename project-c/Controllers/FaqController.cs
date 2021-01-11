@@ -1,19 +1,39 @@
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using project_c.Models;
+using project_c.Models.Users;
 
 namespace project_c.Controllers
 {
     public class FaqController : Controller
     {
+        private readonly DataContext _dataContext;
+        private readonly UserManager<User> _userManager;
+
+        public FaqController(DataContext dataContext,
+            UserManager<User> userManager)
+        {
+            this._dataContext = dataContext;
+            this._userManager = userManager;
+        }
+
         public EmailModel Input { get; set; }
-        
+
         public ViewResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = _dataContext.User.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
+
+                if (user != null) return View(new EmailModel() {To = user.Email});
+            }
+
             return View();
         }
-        
+
         [HttpPost]
         public ActionResult Index(EmailModel model)
         {
@@ -67,7 +87,5 @@ namespace project_c.Controllers
 
             return View();
         }
-
-        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
@@ -6,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using project_c.Models;
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using project_c.Helpers;
 using project_c.Models.Plants;
 using project_c.Services.GeoRegister.Service;
 using NetTopologySuite.Geometries;
+using project_c.Models.Users;
 using project_c.Repository;
 
 
@@ -21,16 +24,17 @@ namespace project_c.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly DataContext _dataContext;
         private readonly PlantRepository _plantRepository;
+        private readonly UserManager<User> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, DataContext dataContext, PlantRepository plantRepository)
+        public HomeController(ILogger<HomeController> logger, DataContext dataContext, PlantRepository plantRepository, UserManager<User> userManager)
         {
             _logger = logger;
             _dataContext = dataContext;
             _plantRepository = plantRepository;
-
+            _userManager = userManager;
         }
 
-        public async Task<ViewResult> Index(
+        public async Task<ActionResult> Index(
             [FromQuery(Name = "Aanbod")] int[] aanbod,
             [FromQuery(Name = "Soort")] int[] soort,
             [FromQuery(Name = "Licht")] int[] licht,
@@ -43,6 +47,30 @@ namespace project_c.Controllers
             [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
+            _logger.LogInformation(HttpContext.Request.QueryString.ToString());
+            _logger.LogInformation(HttpContext.Request.QueryString.ToString().Length.ToString());
+            if (User.Identity.IsAuthenticated && latitude == 0.0 && longitude == 0.0)
+            {
+                var user = _dataContext.User.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
+                if (HttpContext.Request.QueryString.ToString().Length == 0)
+                {
+                    if (user != null)
+                        return Redirect($"https://localhost:5001/" +
+                                        $"?lat={user.Location.X.ToString(CultureInfo.InvariantCulture)}" +
+                                        $"&lon={user.Location.Y.ToString(CultureInfo.InvariantCulture)}" +
+                                        $"&postcode={user.ZipCode}");
+                }
+                else
+                {
+                    if (user != null)
+                        return Redirect($"https://localhost:5001/" +
+                                        $"{HttpContext.Request.QueryString.ToString()}" +
+                                        $"&lat={user.Location.X.ToString(CultureInfo.InvariantCulture)}" +
+                                        $"&lon={user.Location.Y.ToString(CultureInfo.InvariantCulture)}" +
+                                        $"&postcode={user.ZipCode}");
+                }
+            }
+            
             //get filters 
             ViewData["Filters"] = _dataContext.Filters.Include(f => f.Options).ToList();
             
