@@ -1,42 +1,30 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using project_c.Models;
 using System.Net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using project_c.Helpers;
-using project_c.Models.Plants;
-using project_c.Services.GeoRegister.Service;
-using NetTopologySuite.Geometries;
-using project_c.Repository;
+using System.Net.Mail;
+using Microsoft.AspNetCore.Mvc;
+using project_c.Models;
 
 namespace project_c.Controllers
 {
-    public class FeedbackController : Controller
+    public class FaqController : Controller
     {
-        [BindProperty]
-        public FeedbackModel Input { get; set; }
-
+        public EmailModel Input { get; set; }
+        
         public ViewResult Index()
         {
             return View();
         }
-
+        
         [HttpPost]
-        public ActionResult Index(IFormCollection form)
+        public ActionResult Index(EmailModel model)
         {
-            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
+            if (ModelState.IsValid)
             {
-                message.Subject = "Feedback: " + Input.To;
-                message.Body = "\n" + Input.To + " geeft als feedback:\n\n" + Input.Body;
-                message.IsBodyHtml = false;
-
-                if (ModelState.IsValid)
+                using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
                 {
+                    message.Subject = "User: " + Input.To + " Subj: " + Input.Subject;
+                    message.Body = "\n" + Input.To + " zegt het volgende:\n\n" + Input.Body;
+                    message.IsBodyHtml = false;
+
                     using (SmtpClient smtp = new SmtpClient())
                     {
                         smtp.Host = "smtp.gmail.com";
@@ -50,11 +38,12 @@ namespace project_c.Controllers
 
                         using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", Input.To))
                         {
-                            aReply.Subject = "Wij hebben je feedback ontvangen!";
-                            aReply.Body = "\nHey " + Input.Naam +
-                                          "\n\n Bedankt voor je feedback!" +
-                                          "\n\n Jij zei het volgende:\n\n" + Input.Body +
+                            aReply.Subject = "Wij hebben je mail ontvangen!";
+                            aReply.Body = "\nHey " + Input.To +
+                                          "\n\n We hebben je mail ontvangen en proberen deze zo snel mogelijk te beantwoorden!" +
+                                          "\n\n Jij zei het volgende:\n\n" + Input.Subject + "\n\n" + Input.Body +
                                           "\n________________________________________________\n\n" +
+                                          "Wij verwachten je bericht uiterlijk binnnen 3 werkdagen te beantwoorden." +
                                           "\n\n Groetjes!\n\n\n Het hele team van Planjes";
                             aReply.IsBodyHtml = false;
 
@@ -71,11 +60,14 @@ namespace project_c.Controllers
                             }
                         }
                     }
-                    return RedirectToAction("Index");
                 }
-                return View();
+
+                return RedirectToAction("Index");
             }
-            
+
+            return View();
         }
+
+        
     }
 }
