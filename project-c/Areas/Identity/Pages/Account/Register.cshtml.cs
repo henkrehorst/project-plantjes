@@ -162,7 +162,7 @@ namespace project_c.Areas.Identity.Pages.Account
                         message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
                                        ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
                                        "om je email te bevesitgen!\n\n" + callbackUrl +
-                                       "Groetjes,\n\n\nHet hele Plantjes Team!";
+                                       "Groetjes,\n\n\nHet hele Plantjesbuurt Team!";
                         message.IsBodyHtml = false;
 
                         using (SmtpClient smtp = new SmtpClient())

@@ -155,7 +155,7 @@
     </main>
 </div>
 <div class="fixed z-10 right-0 origin-top-right " style="top: 50%; transform: rotate(-90deg) translate(0, -130%);">
-    <a asp-controller="Home" asp-action="Feedback" class="bg-green-600 rounded-t-lg p-3 text-base text-bold text-white hover:bg-green-400 tracking-wide">Feedback</a>
+    <a asp-controller="Feedback" asp-action="Index" class="bg-green-600 rounded-t-lg p-3 text-base text-bold text-white hover:bg-green-400 tracking-wide">Feedback</a>
 </div>
 
 @if (User.Identity.IsAuthenticated)
@@ -243,7 +243,7 @@
                     Info<br />
                     <h1 class="text-sm font-thin">
                         <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
-                        <a asp-area="" asp-controller="Home" asp-action="Faq">FAQ</a>
+                        <a asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
                     </h1>
                 </div>
             </div>
@@ -255,7 +255,6 @@
                     <h1 class="text-sm font-thin italic">
                         <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
                         <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
-                        <a asp-area="" asp-controller="Home" asp-action="Partners">Partners</a>
                     </h1>
                 </div>
             </div>

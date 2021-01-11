@@ -98,7 +98,7 @@ namespace project_c.Controllers
         }
 
         // GET: PlantsController/Details/5
-        public async Task<ActionResult> Details(int id)
+        public ActionResult Details(int id)
         {
             var singlePlant = _context.Plants.Include(u => u.User).FirstOrDefault(p => p.PlantId == id);
 
