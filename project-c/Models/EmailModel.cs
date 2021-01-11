@@ -26,13 +26,13 @@ namespace project_c.Models
         [Required]
         [EmailAddress, DisplayName("Email")]
         public string To { get; set; }
-        [Required]
-        [DataType(DataType.Text, ErrorMessage = "Please fill in your subject"), DisplayName("Onderwerp")]
+        [Required(ErrorMessage = "Vul een onderwerp in"), DisplayName("Onderwerp")]
+        [DataType(DataType.Text)]
         public string Subject { get; set; }
         [Required]
         [DataType(DataType.Text)]
         public string Username { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Er is geen bericht ingevuld.")]
         [DataType(DataType.Text), DisplayName("Bericht")]
         public string Body { get; set; }
         [Required]

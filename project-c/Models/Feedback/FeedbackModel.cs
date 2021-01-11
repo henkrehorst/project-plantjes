@@ -26,11 +26,11 @@ namespace project_c.Models
         [Required(ErrorMessage = "Vul een naam in.")]
         public string Naam { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vul een geldige Email in.")]
         [EmailAddress, DisplayName("Email")]
         public string To { get; set; }
-        [Required]
-        [DataType(DataType.Text, ErrorMessage = "Er is geen feedback ingevuld"), DisplayName("Feedback")]
+        [Required(ErrorMessage = "Er is geen feedback ingevuld"), DisplayName("Feedback")]
+        [DataType(DataType.Text)]
         public string Body { get; set; }
         [Required]
         [EmailAddress]

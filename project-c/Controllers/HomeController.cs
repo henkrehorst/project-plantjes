@@ -100,58 +100,7 @@ namespace project_c.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public IActionResult Feedback(FeedbackModel model)
-        {
-            using (MailMessage message = new MailMessage("projectplantjes@gmail.com", "projectplantjes@gmail.com"))
-            {
-                message.Subject = "Feedback: " + model.To;
-                message.Body = "\n" + model.To + " geeft als feedback:\n\n"  + model.Body;
-                message.IsBodyHtml = false;
-
-                using (SmtpClient smtp = new SmtpClient())
-                {
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = cred;
-                    smtp.Port = 587;
-                    smtp.Send(message);
-                    ViewBag.Message = "Email Sent Successfully";
-
-                    using (MailMessage aReply = new MailMessage("projectplantjes@gmail.com", model.To))
-                    {
-                        aReply.Subject = "Wij hebben je feedback ontvangen!";
-                        aReply.Body = "\nHey " + model.Naam +
-                                      "\n\n Bedankt voor je feedback!" +
-                                      "\n\n Jij zei het volgende:\n\n" + model.Body +
-                                      "\n________________________________________________\n\n" +
-                                      "\n\n Groetjes!\n\n\n Het hele team van Planjes";
-                        aReply.IsBodyHtml = false;
-
-                        using (SmtpClient smtpReply = new SmtpClient())
-                        {
-                            smtpReply.Host = "smtp.gmail.com";
-                            smtpReply.EnableSsl = true;
-                            NetworkCredential credReply =
-                                new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
-                            smtpReply.UseDefaultCredentials = true;
-                            smtpReply.Credentials = credReply;
-                            smtpReply.Port = 587;
-                            smtpReply.Send(aReply);
-                        }
-                    }
-                }
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        public ViewResult Feedback()
-        {
-            return View();
-        }
+        
         public ViewResult Faq()
         {
             return View();
