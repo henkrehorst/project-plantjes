@@ -154,9 +154,13 @@
         @RenderBody()
     </main>
 </div>
-<div class="fixed z-10 right-0 origin-top-right " style="top: 50%; transform: rotate(-90deg) translate(0, -130%);">
-    <a asp-controller="Feedback" asp-action="Index" class="bg-green-600 rounded-t-lg p-3 text-base text-bold text-white hover:bg-green-400 tracking-wide">Feedback</a>
-</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="fixed z-10 right-0 origin-top-right " style="top: 50%; transform: rotate(-90deg) translate(0, -130%);">
+        <a asp-controller="Feedback" asp-action="Index" class="bg-green-600 rounded-t-lg p-3 text-base text-bold text-white hover:bg-green-400 tracking-wide">Feedback</a>
+    </div>
+}
 
 @if (User.Identity.IsAuthenticated)
     {
