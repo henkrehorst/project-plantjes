@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using project_c.Services;
+using NetTopologySuite.Geometries;
 using User = project_c.Models.Users.User;
 
 [assembly: HostingStartup(typeof(project_c.Areas.Identity.IdentityHostingStartup))]
