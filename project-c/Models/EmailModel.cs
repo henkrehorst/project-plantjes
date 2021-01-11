@@ -23,8 +23,8 @@ namespace project_c.Models
 {
     public class EmailModel
     {
-        [Required]
-        [EmailAddress, DisplayName("Email")]
+        [Required(ErrorMessage = "Er is geen email ingevuld")]
+        [EmailAddress(ErrorMessage = "Er is geen geldig email adres ingevuld"), DisplayName("Email")]
         public string To { get; set; }
         [Required(ErrorMessage = "Vul een onderwerp in"), DisplayName("Onderwerp")]
         [DataType(DataType.Text)]

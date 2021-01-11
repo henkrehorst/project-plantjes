@@ -26,8 +26,8 @@ namespace project_c.Models
         [Required(ErrorMessage = "Vul een naam in.")]
         public string Naam { get; set; }
 
-        [Required(ErrorMessage = "Vul een geldige Email in.")]
-        [EmailAddress, DisplayName("Email")]
+        [Required(ErrorMessage = "Er is geen email ingevuld")]
+        [EmailAddress(ErrorMessage = "Er is geen geldig email adres ingevuld"), DisplayName("Email")]
         public string To { get; set; }
         [Required(ErrorMessage = "Er is geen feedback ingevuld"), DisplayName("Feedback")]
         [DataType(DataType.Text)]
