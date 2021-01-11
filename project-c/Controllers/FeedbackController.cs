@@ -1,28 +1,41 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using project_c.Models;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using project_c.Helpers;
-using project_c.Models.Plants;
-using project_c.Services.GeoRegister.Service;
-using NetTopologySuite.Geometries;
-using project_c.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using project_c.Models.Users;
 
 namespace project_c.Controllers
 {
     public class FeedbackController : Controller
     {
+       
+        private readonly UserManager<User> _userManager;
+        private readonly DataContext _dataContext;
+
+        public FeedbackController(UserManager<User> userManager,
+            DataContext dataContext)
+        {
+            _userManager = userManager;
+            _dataContext = dataContext;
+        }
+        
         [BindProperty]
         public FeedbackModel Input { get; set; }
 
         public ViewResult Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = _dataContext.User.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
+
+                if (user != null) return View(new FeedbackModel() {To = user.Email});
+            }
+            
             return View();
         }
 
