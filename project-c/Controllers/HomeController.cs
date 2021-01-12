@@ -47,15 +47,13 @@ namespace project_c.Controllers
             [FromQuery(Name = "Sort")] string sort,
             [FromQuery(Name = "Page")] int page = 1)
         {
-            _logger.LogInformation(HttpContext.Request.QueryString.ToString());
-            _logger.LogInformation(HttpContext.Request.QueryString.ToString().Length.ToString());
             if (User.Identity.IsAuthenticated && latitude == 0.0 && longitude == 0.0)
             {
                 var user = _dataContext.User.FirstOrDefault(u => u.Id == _userManager.GetUserId(User));
                 if (HttpContext.Request.QueryString.ToString().Length == 0)
                 {
                     if (user != null)
-                        return Redirect($"https://localhost:5001/" +
+                        return Redirect($"https://{HttpContext.Request.Host}/" +
                                         $"?lat={user.Location.X.ToString(CultureInfo.InvariantCulture)}" +
                                         $"&lon={user.Location.Y.ToString(CultureInfo.InvariantCulture)}" +
                                         $"&postcode={user.ZipCode}");
@@ -63,7 +61,7 @@ namespace project_c.Controllers
                 else
                 {
                     if (user != null)
-                        return Redirect($"https://localhost:5001/" +
+                        return Redirect($"https://{HttpContext.Request.Host}/" +
                                         $"{HttpContext.Request.QueryString.ToString()}" +
                                         $"&lat={user.Location.X.ToString(CultureInfo.InvariantCulture)}" +
                                         $"&lon={user.Location.Y.ToString(CultureInfo.InvariantCulture)}" +
