@@ -39,7 +39,16 @@
                     <input asp-for="Input.Amount" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Aantal aanbod">
                     <span asp-validation-for="Input.Amount" class="block mb-3 text-sm font-medium text-red-700"></span>
                 </div>
-                @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
+                <div>
+                    <input asp-for="Input.checkBees" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor bijen</span>
+                </div>
+                <div>
+                    <input asp-for="Input.checkOtherAnimals" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere diersoorten</span>
+                </div>
+                <div>
+                    <input asp-for="Input.checkOtherPlants" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere plantsoorten</span>
+                </div>
+                @foreach (Filter filter in (ICollection<Filter>)ViewData["Filters"])
                 {
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2">
@@ -47,8 +56,7 @@
                         </label>
                         @if (@filter.Name == "Water")
                         {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Input.Water">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" asp-for="Input.Water">
                                 <option disabled selected>Selecteer een optie</option>
                                 @foreach (Option option in filter.Options)
                                 {
@@ -59,9 +67,8 @@
                         }
                         else if (@filter.Name == "Licht")
                         {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Licht">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    asp-for="Input.Licht">
                                 <option disabled selected>Selecteer een optie</option>
                                 @foreach (Option option in filter.Options)
                                 {
@@ -72,9 +79,8 @@
                         }
                         else if (@filter.Name == "Aanbod")
                         {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Aanbod">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    asp-for="Input.Aanbod">
                                 <option disabled selected>Selecteer een optie</option>
                                 @foreach (Option option in filter.Options)
                                 {
@@ -85,9 +91,8 @@
                         }
                         else if (@filter.Name == "Soort")
                         {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                asp-for="Input.Soort">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    asp-for="Input.Soort">
                                 <option disabled selected>Selecteer een optie</option>
                                 @foreach (Option option in filter.Options)
                                 {
@@ -98,9 +103,8 @@
                         }
                         else
                         {
-                            <select
-                                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
+                            <select class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    id="filter-@filter.SystemId" name="filter[@filter.SystemId]">
                                 <option disabled selected>Selecteer een optie</option>
                                 @foreach (Option option in filter.Options)
                                 {
