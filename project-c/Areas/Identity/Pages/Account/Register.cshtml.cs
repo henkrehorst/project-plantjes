@@ -132,7 +132,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 {
                     UserName = Input.Email, Email = Input.Email,
                     FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode, 
-                    Location = new Point(zipCodeInformation.Longitude, zipCodeInformation.Latitude)
+                    Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude)
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (_userManager.Users.Count() == 1)
