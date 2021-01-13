@@ -132,7 +132,7 @@ namespace project_c.Areas.Identity.Pages.Account
                 {
                     UserName = Input.Email, Email = Input.Email,
                     FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode, 
-                    Location = new Point(zipCodeInformation.Longitude, zipCodeInformation.Latitude)
+                    Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude)
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (_userManager.Users.Count() == 1)
@@ -162,7 +162,7 @@ namespace project_c.Areas.Identity.Pages.Account
                         message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
                                        ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
                                        "om je email te bevesitgen!\n\n" + callbackUrl +
-                                       "Groetjes,\n\n\nHet hele Plantjes Team!";
+                                       "Groetjes,\n\n\nHet hele Plantjesbuurt Team!";
                         message.IsBodyHtml = false;
 
                         using (SmtpClient smtp = new SmtpClient())

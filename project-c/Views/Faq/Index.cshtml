@@ -15,22 +15,22 @@
                             <h1 class="text-4xl text-center font-thin">Neem contact met ons op!</h1>
                             <section>
                                 <div class="w-full mt-4">
-                                    <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
+                                    <form asp-action="Index" class="form-horizontal w-3/4 mx-auto" id="account" method="post">
                                         <h4>Vul hier je gegevens in</h4>
                                         <hr/>
                                         <div class="form-group flex flex-col mt-4">
                                             <label asp-for="To"></label>
                                             <input asp-for="To" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
-                                            <span asp-validation-for="To" class="text-danger"></span>
+                                            <span asp-validation-for="To" class="font-bold text-sm font-medium text-red-700"></span>
                                             <div class="form-group flex flex-col mt-4">
                                                 <label asp-for="Subject"></label>
                                                 <input asp-for="Subject" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
-                                                <span asp-validation-for="Subject" class="text-danger"></span>
+                                                <span asp-validation-for="Subject" class="font-bold text-sm font-medium text-red-700"></span>
                                             </div>
                                             <div class="form-group flex flex-col mt-4">
                                                 <label asp-for="Body"></label>
-                                                <input asp-for="Body" class="box-border h-40 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control"/>
-                                                <span asp-validation-for="Body" class="text-danger"></span>
+                                                <textarea asp-for="Body" rows="4" class="box-border w-102 p-4 flex-grow px-2 border rounded border-grey-400 form-control"></textarea>
+                                                <span asp-validation-for="Body" class="font-bold text-sm font-medium text-red-700"></span>
                                             </div>
 
                                             <div class="flex flex-col mt-8 form-group">
@@ -48,3 +48,6 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

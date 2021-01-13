@@ -28,6 +28,7 @@ namespace project_c.Controllers
         private readonly PlantRepository _plantRepository;
 
         [BindProperty] public InputModel Input { get; set; }
+
         public class InputModel
         {
             [Required(ErrorMessage = "Voer de naam van de plant in!")]
@@ -35,31 +36,39 @@ namespace project_c.Controllers
                 ErrorMessage = "De naam van de plant mag maximaal 40 tekens en moet minimaal 3 tekens bevatten!",
                 MinimumLength = 3)]
             public string Name { get; set; }
+
             [Required(ErrorMessage = "Voer de lengte van de plant in!")]
             public int Length { get; set; }
+
             [Required(ErrorMessage = "Voer het aantal planten in!")]
             public int Amount { get; set; }
+
             [Required(ErrorMessage = "Selecteer het aanbod waar de plant in hoort!")]
             public int Aanbod { get; set; }
+
             [Required(ErrorMessage = "Selecteer het soort plant!")]
             public int Soort { get; set; }
+
             [Required(ErrorMessage = "Selecteer de hoeveelheid licht die de plant nodig heeft!")]
             public int Licht { get; set; }
+
             [Required(ErrorMessage = "Selecteer de hoeveelheid water die de plant nodig heeft!")]
             public int Water { get; set; }
-            
+
             public bool checkBees { get; set; }
             public bool checkOtherAnimals { get; set; }
             public bool checkOtherPlants { get; set; }
             
             [Required(ErrorMessage = "Maak korte beschrijving over de plant")]
-            [StringLength(200, ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten", MinimumLength = 10)]
+            [StringLength(200,
+                ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten",
+                MinimumLength = 10)]
             public string Description { get; set; }
-            
+
             [DataType(DataType.Upload)]
             [Required(ErrorMessage = "U moet minimaal 1 foto uploaden")]
-            [MaxFileSizeArray(1* 1024 * 1024)]
-            [AllowedExtensionsArray(new string[] { ".jpg" })]
+            [MaxFileSizeArray(1 * 1024 * 1024)]
+            [AllowedExtensionsArray(new string[] {".jpg"})]
             public IFormFile[] PlantPictures { get; set; }
         }
 
@@ -102,7 +111,7 @@ namespace project_c.Controllers
         }
 
         // GET: PlantsController/Details/5
-        public async Task<ActionResult> Details(int id)
+        public ActionResult Details(int id)
         {
             var singlePlant = _context.Plants.Include(u => u.User).FirstOrDefault(p => p.PlantId == id);
 
@@ -158,9 +167,11 @@ namespace project_c.Controllers
                     Plant plant = new Plant();
                     if (ModelState.IsValid)
                     {
-                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);;
+                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);
+                        ;
                         plant.Length = Convert.ToInt32(form["length"]);
-                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);;
+                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
+                        ;
                         plant.Quantity = Input.Amount;
 
                         var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
@@ -197,6 +208,7 @@ namespace project_c.Controllers
                     return Content("Error probeer het opnieuw");
                 }
             }
+
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }
@@ -286,6 +298,7 @@ namespace project_c.Controllers
                     return View();
                 }
             }
+
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }
