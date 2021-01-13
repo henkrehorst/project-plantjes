@@ -5,7 +5,11 @@
     ViewData["ActivePage"] = ManageNavPages.Modify;
 }
 
-<partial name="_StatusMessage" model="Model.StatusMessage"/>
+<script>
+    function emailStatus() {
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+    }
+</script>
 <div class="bg-white">
     <div class="h-8 rounded-lg border shadow-lg bg-white sm:mx-0 h-full">
         <div class="h-30 grid grid-cols-1 md:grid-cols-2 p-5">
@@ -83,6 +87,7 @@
                     <span asp-validation-for="EmailInput.NewEmail" class="text-danger"></span>
 
                     <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded block w-full sm:w-9/12">Verander email</button>
+                    <partial name="_StatusMessage" model="Model.StatusMessage" />
                 </form>
             </div>
         </div>
