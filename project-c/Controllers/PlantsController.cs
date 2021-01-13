@@ -14,6 +14,7 @@ using project_c.Services;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
+using Microsoft.Extensions.Logging;
 using project_c.Helpers;
 using project_c.Repository;
 using project_c.ViewModels;
@@ -26,6 +27,7 @@ namespace project_c.Controllers
         private readonly UploadService _uploadService;
         private readonly UserManager<User> _userManager;
         private readonly PlantRepository _plantRepository;
+        private readonly ILogger<PlantsController> _logger;
 
         [BindProperty] public InputModel Input { get; set; }
 
@@ -70,12 +72,13 @@ namespace project_c.Controllers
 
         //te doen - zorg ervoor dat de aantal en uploadsdatum te zien zijn voor andere gebruikers - zorg ook voor checks of ze er zijn wanneer je dit doet.
         public PlantsController(DataContext context, UserManager<User> userManager, UploadService upload,
-            PlantRepository plantRepository)
+            PlantRepository plantRepository, ILogger<PlantsController> logger)
         {
             _context = context;
             _userManager = userManager;
             _uploadService = upload;
             _plantRepository = plantRepository;
+            _logger = logger;
         }
 
         // GET: PlantsController
@@ -161,6 +164,12 @@ namespace project_c.Controllers
                 try
                 {
                     Plant plant = new Plant();
+                    
+                    foreach (var file in Input.PlantPictures)
+                    {
+                        _logger.LogInformation(file.FileName);
+                    }
+                    
                     if (ModelState.IsValid)
                     {
                         plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);
@@ -169,6 +178,11 @@ namespace project_c.Controllers
                         plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
                         ;
                         plant.Quantity = Input.Amount;
+
+                        foreach (var file in Input.PlantPictures)
+                        {
+                            _logger.LogInformation(file.FileName);
+                        }
 
                         var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
                         plant.Images = images;

@@ -1,4 +1,4 @@
-﻿import FileUploadWithPreview from "file-upload-with-preview";
+﻿import FileUploadWithPreview from "@henkrehorst/file-upload-with-preview";
 
 if (document.getElementById("plantPictureUploadBox") !== null) {
     var upload = new FileUploadWithPreview("plantPictureUpload", {
@@ -13,6 +13,8 @@ if (document.getElementById("plantPictureUploadBox") !== null) {
                 "</svg>",
             selectedCount: "foto's zijn geupload",
         },
+        sortable: true,
+        maxFileCount: 9,
         images: {
             baseImage: "/Images/placeholder-picture.png",
         },
@@ -35,6 +37,8 @@ if (document.getElementById("plantPictureEditUploadBox") !== null) {
                             "</svg>",
                         selectedCount: "foto's zijn geupload",
                     },
+                    maxFileCount: 9,
+                    sortable: true,
                     images: {
                         baseImage: "/Images/placeholder-picture.png",
                     },
