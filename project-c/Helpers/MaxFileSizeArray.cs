@@ -16,17 +16,20 @@ namespace project_c.Helpers
         {
             var files = value as IFormFile[];
 
-            foreach (var file in files)
+            if (files != null)
             {
-                if (file != null)
+                foreach (var file in files)
                 {
-                    if (file.Length > _maxFileSize)
+                    if (file != null)
                     {
-                        return new ValidationResult(GetErrorMessage());
+                        if (file.Length > _maxFileSize)
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
                     }
                 }
             }
-            
+
             return ValidationResult.Success;
         }
 
