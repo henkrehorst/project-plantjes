@@ -60,13 +60,13 @@ namespace project_c.Controllers
             public bool checkBees { get; set; }
             public bool checkOtherAnimals { get; set; }
             public bool checkOtherPlants { get; set; }
-            
+
             [Required(ErrorMessage = "Maak korte beschrijving over de plant")]
             [StringLength(200,
                 ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten",
                 MinimumLength = 10)]
             public string Description { get; set; }
-            
+
             public string ImageOrder { get; set; }
 
             [DataType(DataType.Upload)]
@@ -180,22 +180,23 @@ namespace project_c.Controllers
                         plant.Quantity = Input.Amount;
 
                         var imageOrder = JsonConvert.DeserializeObject<ImageOrderModel[]>(Input.ImageOrder);
-                        
+
                         //convert uploaded images in image order
                         var imagesArray = new string[imageOrder.Length];
-                        
+
                         for (int i = 0; i < imageOrder.Length; i++)
                         {
-                            var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
-                                if (plantPicture != null)
-                                {
-                                    imagesArray[i] = await _uploadService.UploadImage(plantPicture);
-                                }
+                            var plantPicture =
+                                Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                            if (plantPicture != null)
+                            {
+                                imagesArray[i] = await _uploadService.UploadImage(plantPicture);
+                            }
                         }
-                        
+
                         //remove null values from array
                         imagesArray = imagesArray.Where(x => x != null).ToArray();
-                        
+
                         plant.Images = imagesArray;
                         plant.ImgUrl = imagesArray[0];
 
@@ -277,7 +278,7 @@ namespace project_c.Controllers
                 if (ModelState.ContainsKey("Input.PlantPictures"))
                     ModelState.Remove("Input.PlantPictures");
             }
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -301,18 +302,18 @@ namespace project_c.Controllers
                             }
                             else
                             {
-                                var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                                var plantPicture =
+                                    Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
                                 if (plantPicture != null)
                                 {
                                     imagesArray[i] = await _uploadService.UploadImage(plantPicture);
                                 }
-                                
                             }
                         }
-                        
+
                         //remove null values from array
                         imagesArray = imagesArray.Where(x => x != null).ToArray();
-                        
+
                         plant.Images = imagesArray;
                         plant.ImgUrl = imagesArray[0];
 
@@ -372,9 +373,9 @@ namespace project_c.Controllers
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
                         message.Body = $"Beste {usr.FirstName} , \n\n\n" +
-                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                            "Groetjes, Plantjesbuurt";
+                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                                       "Groetjes, Plantjesbuurt";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
@@ -436,13 +437,12 @@ namespace project_c.Controllers
 
             PlantRating rating = new PlantRating();
 
-            if (ModelState.IsValid)
-            {
-                rating.Rating = ratingValue;
-                rating.Comment = comment;
-                rating.PlantId = id;
-                rating.UserId = userId;
-            }
+
+            rating.Rating = ratingValue;
+            rating.Comment = comment;
+            rating.PlantId = id;
+            rating.UserId = userId;
+
 
             foreach (var plantRating in data)
             {
