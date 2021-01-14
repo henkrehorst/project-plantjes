@@ -23,15 +23,15 @@
                 <div class="container mx-auto flex items-center justify-between h-16">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <a href="/home/"><img class="h-8 w-8" src="https://www.flaticon.com/svg/static/icons/svg/1590/1590412.svg" alt="Workflow logo"></a>
+                            <a href="/home/">
+                                <img class="h-8 w-8" src="https://www.flaticon.com/svg/static/icons/svg/1590/1590412.svg" alt="Workflow logo">
+                            </a>
                         </div>
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <a class="@Html.IsSelected("Home", "Index") z-10 px-6 py-8 rounded-xl font-medium text-green-800 text-green-800 hover:text-green-800 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-800 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
 
                                 <a class="@Html.IsSelected("Home", "Ons") z-10 px-6 py-8 rounded-xl text-md font-medium text-green-800 text-green-800 hover:text-green-800 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-800 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
-                                
-                                
 
 
                             </div>
@@ -84,23 +84,12 @@
                                     }
 
                                 </div>
-                                <!--
-        Profile dropdown panel, show/hide based on dropdown state.
-
-        Entering: "transition ease-out duration-100"
-        From: "transform opacity-0 scale-95"
-        To: "transform opacity-100 scale-100"
-        Leaving: "transition ease-in duration-75"
-        From: "transform opacity-100 scale-100"
-        To: "transform opacity-0 scale-95"
-        -->
-
                             </div>
                         </div>
                     </div>
                     <div class="-mr-2 flex md:hidden">
                         <!-- Mobile menu button -->
-                        <button class="inline-flex items-center justify-center p-2 rounded-md text-green-800 hover:text-green-700 hover:bg-green-100 focus:outline-none focus:bg-green-100 focus:text-green-700">
+                        <button onclick="openMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-green-800 hover:text-green-700 hover:bg-green-100 focus:outline-none focus:bg-green-100 focus:text-green-700">
                             <!-- Menu open: "hidden", Menu closed: "block" -->
                             <svg class="block h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -113,34 +102,32 @@
                     </div>
                 </div>
             </div>
-
-            <!--
-            Mobile menu, toggle classes based on menu state.
-
-            Open: "block", closed: "hidden"
-            -->
-            <div class="hidden md:hidden">
+            
+            <div id="mobile_menu" class="hidden md:hidden">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    <a class="px-3 py-2 rounded-md text-sm font-medium text-green-800 bg-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
-
-                    <a class="px-3 py-2 rounded-md text-sm font-medium text-green-800 bg-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
-
-
-
+                    <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Index", "bg-white text-green-600")" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
+                    <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Ons", "bg-white text-green-600")" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
+                    <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Ons", "bg-white text-green-600")" asp-area="" asp-controller="Faq" asp-action="Index">Faq</a>
                 </div>
-                <div class="pt-4 pb-3 border-t border-green-800">
-                    <div class="flex items-center px-5 space-x-3">
-                        <div class="flex-shrink-0">
-                        </div>
-                        <div class="space-y-1">
-                            <div class="text-base font-medium leading-none text-white">Tom Cook</div>
-                            <div class="text-sm font-medium leading-none text-green-500">tom@example.com</div>
-                        </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="pt-4 px-2 pb-3 border-t bg-gray-300 border-green-800">
+                        <a class="block px-3 py-2 rounded-md text-base font-medium text-green-600 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Profiel" asp-action="Index">Mijn profiel</a>
+                        <a class="block px-3 py-2 rounded-md text-base font-medium text-green-600 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListUsers">Gebruikers wijzigen</a>
+                            <a class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListRoles">Rollen wijzigen</a>
+                            <a class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Administration" asp-action="ListReports">Gebruiker Reports</a>
+                        }
+
+
+                        <form method="post" class="pb-0" asp-controller="Account" asp-action="Logout">
+                            <button style="width: 100%; text-align: left" class="block px-3 py-2 rounded-md bg-red-300 text-base font-medium text-red-600 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" type="submit">Logout</button>
+                        </form>
                     </div>
-
-                    }
-
-                </div>
+                }
             </div>
         </nav>
     </div>
@@ -161,7 +148,7 @@
 }
 
 @if (User.Identity.IsAuthenticated)
-    {
+{
     <button class="fixed bottom-0 right-0 m-3 bg-green-600 px-5 py-3 mt-2 border border-transparent font-bold rounded-full flex z-10" id="chat-open">
         <svg style="height: 20px; width: auto" class="sm:mr-3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="45pt" height="40pt" viewBox="0 0 45 40" version="1.1">
             <g id="surface1">
@@ -170,70 +157,70 @@
         </svg>
         <span class="hidden sm:block text-xl1 text-white font-bold">INBOX</span>
     </button>
-    
-        <div class="fixed bottom-0 right-0 md:m-3 bg-gray-100 chat-menu border z-20 md:rounded-md hidden" id="chat-screen">
-            <div class="w-full p-1 text-center bg-green-600 md:rounded-t-md flex" id="chat-overview-header">
-                <button id="chat-close">
-                    <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="43pt" viewBox="0 0 30 43" version="1.1">
-                        <g id="surface1">
-                            <path style="stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 20.6875 21.5 L 29.214844 13.09375 C 30.261719 12.0625 30.261719 10.390625 29.214844 9.359375 L 27.320312 7.492188 C 26.273438 6.460938 24.574219 6.460938 23.527344 7.492188 L 15 15.898438 L 6.472656 7.492188 C 5.425781 6.460938 3.726562 6.460938 2.679688 7.492188 L 0.785156 9.359375 C -0.261719 10.390625 -0.261719 12.0625 0.785156 13.09375 L 9.3125 21.5 L 0.785156 29.90625 C -0.261719 30.9375 -0.261719 32.609375 0.785156 33.640625 L 2.679688 35.507812 C 3.726562 36.539062 5.425781 36.539062 6.472656 35.507812 L 15 27.101562 L 23.527344 35.507812 C 24.574219 36.539062 26.273438 36.539062 27.320312 35.507812 L 29.214844 33.640625 C 30.261719 32.609375 30.261719 30.9375 29.214844 29.90625 Z M 20.6875 21.5 "/>
-                        </g>
-                    </svg>
-                </button>
-                <p class="text-1xl text-white font-bold m-3 w-full-custom">Chat overzicht</p>
-            </div>
-            <div class="w-full overflow-y-auto" id="chat-rooms">
 
-            </div>
-            <div class="hidden w-full absolute top-0 w-full h-full" id="chat-loader">
-                <div class="loader-chat"></div>
-            </div>
-            <div class="w-full p-1 text-center bg-green-600 md:rounded-t-md flex hidden" id="chat-header">
-                <button id="chat-room-return">
-                    <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25pt" height="40pt" viewBox="0 0 25 40" version="1.1">
-                        <g id="surface1">
-                            <path style=" stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 2.695312 18.675781 L 17.878906 3.492188 C 18.613281 2.757812 19.800781 2.757812 20.53125 3.492188 L 22.304688 5.261719 C 23.035156 5.992188 23.035156 7.179688 22.304688 7.910156 L 10.273438 20 L 22.304688 32.089844 C 23.035156 32.824219 23.035156 34.007812 22.300781 34.738281 L 20.53125 36.507812 C 19.800781 37.242188 18.613281 37.242188 17.878906 36.507812 L 2.695312 21.324219 C 1.964844 20.59375 1.964844 19.40625 2.695312 18.675781 Z M 2.695312 18.675781 "/>
-                        </g>
-                    </svg>
-                </button>
-                <img class="m-2 h-8 w-8 rounded-full" id="avatar-place" src="" alt="">
-                <p class="text-1xl text-white font-bold m-3" id="name-place"></p>
-                <button class="ml-auto" id="chat-room-close">
-                    <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="43pt" viewBox="0 0 30 43" version="1.1">
-                        <g id="surface1">
-                            <path style="stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 20.6875 21.5 L 29.214844 13.09375 C 30.261719 12.0625 30.261719 10.390625 29.214844 9.359375 L 27.320312 7.492188 C 26.273438 6.460938 24.574219 6.460938 23.527344 7.492188 L 15 15.898438 L 6.472656 7.492188 C 5.425781 6.460938 3.726562 6.460938 2.679688 7.492188 L 0.785156 9.359375 C -0.261719 10.390625 -0.261719 12.0625 0.785156 13.09375 L 9.3125 21.5 L 0.785156 29.90625 C -0.261719 30.9375 -0.261719 32.609375 0.785156 33.640625 L 2.679688 35.507812 C 3.726562 36.539062 5.425781 36.539062 6.472656 35.507812 L 15 27.101562 L 23.527344 35.507812 C 24.574219 36.539062 26.273438 36.539062 27.320312 35.507812 L 29.214844 33.640625 C 30.261719 32.609375 30.261719 30.9375 29.214844 29.90625 Z M 20.6875 21.5 "/>
-                        </g>
-                    </svg>
-                </button>
-            </div>
-            <div id="message-view" class="overflow-y-auto bg-white hidden">
-            </div>
-            <div class="w-full p-1 text-center bg-green-600 md:rounded-b-md flex hidden" id="chat-controls">
-                <input class="w-full m-1 border border-gray-700 bg-white h-10 px-5 pr-16 text-sm focus:outline-none" type="text" id="message-box" name="message">
-                <input type="hidden" id="message-userid">
-                <button type="button" id="send-button">
-                    <svg style="height: 24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40pt" height="40pt" viewBox="0 0 40 40" version="1.1">
-                        <g id="surface1">
-                            <path style=" stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 34.375 0.507812 L 1.875 19.25 C -0.8125 20.804688 -0.554688 24.78125 2.320312 25.960938 L 11.25 29.65625 L 11.25 36.25 C 11.25 39.875 15.875 41.367188 18.015625 38.484375 L 21.4375 33.867188 L 30.179688 37.476562 C 30.640625 37.664062 31.125 37.757812 31.609375 37.757812 C 32.25 37.757812 32.882812 37.59375 33.453125 37.273438 C 34.453125 36.710938 35.140625 35.710938 35.320312 34.578125 L 39.960938 4.328125 C 40.4375 1.195312 37.078125 -1.046875 34.375 0.507812 Z M 15 36.25 L 15 31.203125 L 17.859375 32.382812 Z M 31.609375 34.007812 L 19.59375 29.046875 L 30.546875 13.242188 C 31.382812 12.03125 29.804688 10.625 28.695312 11.585938 L 12.171875 25.984375 L 3.75 22.5 L 36.25 3.75 Z M 31.609375 34.007812 "/>
-                        </g>
-                    </svg>
-                </button>
-            </div>
+    <div class="fixed bottom-0 right-0 md:m-3 bg-gray-100 chat-menu border z-20 md:rounded-md hidden" id="chat-screen">
+        <div class="w-full p-1 text-center bg-green-600 md:rounded-t-md flex" id="chat-overview-header">
+            <button id="chat-close">
+                <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="43pt" viewBox="0 0 30 43" version="1.1">
+                    <g id="surface1">
+                        <path style="stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 20.6875 21.5 L 29.214844 13.09375 C 30.261719 12.0625 30.261719 10.390625 29.214844 9.359375 L 27.320312 7.492188 C 26.273438 6.460938 24.574219 6.460938 23.527344 7.492188 L 15 15.898438 L 6.472656 7.492188 C 5.425781 6.460938 3.726562 6.460938 2.679688 7.492188 L 0.785156 9.359375 C -0.261719 10.390625 -0.261719 12.0625 0.785156 13.09375 L 9.3125 21.5 L 0.785156 29.90625 C -0.261719 30.9375 -0.261719 32.609375 0.785156 33.640625 L 2.679688 35.507812 C 3.726562 36.539062 5.425781 36.539062 6.472656 35.507812 L 15 27.101562 L 23.527344 35.507812 C 24.574219 36.539062 26.273438 36.539062 27.320312 35.507812 L 29.214844 33.640625 C 30.261719 32.609375 30.261719 30.9375 29.214844 29.90625 Z M 20.6875 21.5 "/>
+                    </g>
+                </svg>
+            </button>
+            <p class="text-1xl text-white font-bold m-3 w-full-custom">Chat overzicht</p>
         </div>
-        <div class="bg-red-700 text-white fixed z-10 right-0 text-xs font-bold rounded-full pl-2 pr-2 pt-1 pb-1 mr-2 hidden" id="message-count">
+        <div class="w-full overflow-y-auto" id="chat-rooms">
+
         </div>
+        <div class="hidden w-full absolute top-0 w-full h-full" id="chat-loader">
+            <div class="loader-chat"></div>
+        </div>
+        <div class="w-full p-1 text-center bg-green-600 md:rounded-t-md flex hidden" id="chat-header">
+            <button id="chat-room-return">
+                <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25pt" height="40pt" viewBox="0 0 25 40" version="1.1">
+                    <g id="surface1">
+                        <path style=" stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 2.695312 18.675781 L 17.878906 3.492188 C 18.613281 2.757812 19.800781 2.757812 20.53125 3.492188 L 22.304688 5.261719 C 23.035156 5.992188 23.035156 7.179688 22.304688 7.910156 L 10.273438 20 L 22.304688 32.089844 C 23.035156 32.824219 23.035156 34.007812 22.300781 34.738281 L 20.53125 36.507812 C 19.800781 37.242188 18.613281 37.242188 17.878906 36.507812 L 2.695312 21.324219 C 1.964844 20.59375 1.964844 19.40625 2.695312 18.675781 Z M 2.695312 18.675781 "/>
+                    </g>
+                </svg>
+            </button>
+            <img class="m-2 h-8 w-8 rounded-full" id="avatar-place" src="" alt="">
+            <p class="text-1xl text-white font-bold m-3" id="name-place"></p>
+            <button class="ml-auto" id="chat-room-close">
+                <svg style="height:24px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30pt" height="43pt" viewBox="0 0 30 43" version="1.1">
+                    <g id="surface1">
+                        <path style="stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 20.6875 21.5 L 29.214844 13.09375 C 30.261719 12.0625 30.261719 10.390625 29.214844 9.359375 L 27.320312 7.492188 C 26.273438 6.460938 24.574219 6.460938 23.527344 7.492188 L 15 15.898438 L 6.472656 7.492188 C 5.425781 6.460938 3.726562 6.460938 2.679688 7.492188 L 0.785156 9.359375 C -0.261719 10.390625 -0.261719 12.0625 0.785156 13.09375 L 9.3125 21.5 L 0.785156 29.90625 C -0.261719 30.9375 -0.261719 32.609375 0.785156 33.640625 L 2.679688 35.507812 C 3.726562 36.539062 5.425781 36.539062 6.472656 35.507812 L 15 27.101562 L 23.527344 35.507812 C 24.574219 36.539062 26.273438 36.539062 27.320312 35.507812 L 29.214844 33.640625 C 30.261719 32.609375 30.261719 30.9375 29.214844 29.90625 Z M 20.6875 21.5 "/>
+                    </g>
+                </svg>
+            </button>
+        </div>
+        <div id="message-view" class="overflow-y-auto bg-white hidden">
+        </div>
+        <div class="w-full p-1 text-center bg-green-600 md:rounded-b-md flex hidden" id="chat-controls">
+            <input class="w-full m-1 border border-gray-700 bg-white h-10 px-5 pr-16 text-sm focus:outline-none" type="text" id="message-box" name="message">
+            <input type="hidden" id="message-userid">
+            <button type="button" id="send-button">
+                <svg style="height: 24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40pt" height="40pt" viewBox="0 0 40 40" version="1.1">
+                    <g id="surface1">
+                        <path style=" stroke:none;fill-rule:nonzero;fill:rgb(255,255,255);fill-opacity:1;" d="M 34.375 0.507812 L 1.875 19.25 C -0.8125 20.804688 -0.554688 24.78125 2.320312 25.960938 L 11.25 29.65625 L 11.25 36.25 C 11.25 39.875 15.875 41.367188 18.015625 38.484375 L 21.4375 33.867188 L 30.179688 37.476562 C 30.640625 37.664062 31.125 37.757812 31.609375 37.757812 C 32.25 37.757812 32.882812 37.59375 33.453125 37.273438 C 34.453125 36.710938 35.140625 35.710938 35.320312 34.578125 L 39.960938 4.328125 C 40.4375 1.195312 37.078125 -1.046875 34.375 0.507812 Z M 15 36.25 L 15 31.203125 L 17.859375 32.382812 Z M 31.609375 34.007812 L 19.59375 29.046875 L 30.546875 13.242188 C 31.382812 12.03125 29.804688 10.625 28.695312 11.585938 L 12.171875 25.984375 L 3.75 22.5 L 36.25 3.75 Z M 31.609375 34.007812 "/>
+                    </g>
+                </svg>
+            </button>
+        </div>
+    </div>
+    <div class="bg-red-700 text-white fixed z-10 right-0 text-xs font-bold rounded-full pl-2 pr-2 pt-1 pb-1 mr-2 hidden" id="message-count">
+    </div>
 }
 <footer id="footer" class="w-full h-60 bg-green-500">
     <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 p-5 h-full text-white">
         <div class="mb-4">
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
-                    Contact<br />
+                    Contact<br/>
                     <h1 class="text-sm font-thin">
-                        Stadskwekerij De Kas<br />
-                        Van Beuningenstraat 22<br />
-                        3039 WE Rotterdam<br />
-                        06 23 05 77 61<br />
+                        Stadskwekerij De Kas<br/>
+                        Van Beuningenstraat 22<br/>
+                        3039 WE Rotterdam<br/>
+                        06 23 05 77 61<br/>
                         info@stadskwekerijdekas.nl
                     </h1>
                 </div>
@@ -242,35 +229,42 @@
         <div class="mb-4">
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
-                    Info<br />
-                        <h1 class="text-sm font-thin">
-                            <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
-                            <a asp-area="" asp-controller="Home" asp-action="Ons">Meer over ons</a><br />
-                            <a asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
-                        </h1>
-                </div>
-            </div>
-        </div>
-        
-            <div class="mb-4 flex items-center">
-                <div class="flex-shrink-0 mr-3">
-                    <div class="text-2xl font-medium">
-                        <h1 class="text-sm font-thin">
-                            <a href="https://instagram.com/stadskwekerijdekas?igshid=1kukcbi76jlgc" target="_blank"><img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c521.png" width="40" height="40"></a>
-                        </h1>
-                    </div>
-                </div>
-                <div class="text-2xl font-medium mr-3">
+                    Info<br/>
                     <h1 class="text-sm font-thin">
-                        <a href="https://www.facebook.com/stadskwekerijdekas/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" width="40" height="40"></a></h1>
-                </div>
-                <div class="text-2xl font-medium mr-3">
-                    <h1 class="text-sm font-thin">
-                        <a href="https://stadskwekerijdekas.nl/actueel/" target="_blank"><img src="https://media-exp1.licdn.com/dms/image/C4D1BAQEsifbr257GaA/company-background_10000/0/1529740234151?e=2159024400&v=beta&t=3gFusLtq_mnT-fT3NRyjh6YXjVpAtBCSgM9qNJ_GF4E" width="60" height="40"></a>
+                        <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br/>
+                        <a asp-area="" asp-controller="Home" asp-action="Ons">Meer over ons</a><br/>
+                        <a asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
                     </h1>
                 </div>
             </div>
         </div>
+
+        <div class="mb-4 flex items-center">
+            <div class="flex-shrink-0 mr-3">
+                <div class="text-2xl font-medium">
+                    <h1 class="text-sm font-thin">
+                        <a href="https://instagram.com/stadskwekerijdekas?igshid=1kukcbi76jlgc" target="_blank">
+                            <img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c521.png" width="40" height="40">
+                        </a>
+                    </h1>
+                </div>
+            </div>
+            <div class="text-2xl font-medium mr-3">
+                <h1 class="text-sm font-thin">
+                    <a href="https://www.facebook.com/stadskwekerijdekas/" target="_blank">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" width="40" height="40">
+                    </a>
+                </h1>
+            </div>
+            <div class="text-2xl font-medium mr-3">
+                <h1 class="text-sm font-thin">
+                    <a href="https://stadskwekerijdekas.nl/actueel/" target="_blank">
+                        <img src="https://media-exp1.licdn.com/dms/image/C4D1BAQEsifbr257GaA/company-background_10000/0/1529740234151?e=2159024400&v=beta&t=3gFusLtq_mnT-fT3NRyjh6YXjVpAtBCSgM9qNJ_GF4E" width="60" height="40">
+                    </a>
+                </h1>
+            </div>
+        </div>
+    </div>
 </footer>
 <script src="~/main.js" asp-append-version="true"></script>
 <script>
