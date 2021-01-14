@@ -5,61 +5,76 @@
 }
 <h1>@ViewData["Title"]</h1>
 <body class="font-normal bg-white">
-    <div class="bg-white">
-        <div class="items-center flex-1 justify-center px-6 sm:px-0 mt-6 mx-auto">
-            <div class="h-8 w-102 flex rounded-lg shadow-lg w-full bg-white sm:mx-0" style="height: 600px">
-                <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://www.tuinen.nl/wp-content/uploads/sites/12/2019/01/planten_stekken_FMDB_0-730x413.jpg'); background-size: cover; background-position: center center;"></div>
-                <div class="flex flex-col w-full md:w-1/2 p-4">
-                    <div class="flex justify-between gap-3">
-                        <div class="w-full mt-4">
-                            <div class="col-md-4">
-                                <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="mb-8">
-                                    <h1 class="text-3xl text-center font-thin">Account aanmaken</h1>
-                                    <!--<div asp-validation-summary="All" class="text-danger"></div>-->
-                                    <div class="form-group mt-4">
-                                        <div class="flex justify-between gap-3">
-                                            <span class="w-1/2">
-                                                <label class="px-1" asp-for="Input.Voornaam"></label>
-                                                <input asp-for="Input.Voornaam" placeholder="Voornaam" class="block px-1 py-2 box-border h-8 w-full p-4 flex-grow h-8 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                                <span asp-validation-for="Input.Voornaam" class="w-1/2 text-red-700 px-1"></span>
-                                            </span>
-                                            <div class="form-group">
-                                                <label class="px-1" asp-for="Input.Achternaam"></label>
-                                                <input asp-for="Input.Achternaam" placeholder="Achternaam" class="block mr-20 py-2 box-border h-8 w-full p-4 flex-grow h-8 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                                <span asp-validation-for="Input.Achternaam" class="w-1/2 text-red-700"></span>
-                                            </div>
+<div class="bg-white">
+    <div class="items-center flex-1 justify-center px-6 sm:px-0 mt-6 mx-auto">
+        <div class="h-8 w-102 flex rounded-lg shadow-lg w-full bg-white sm:mx-0" style="height: 600px">
+            <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://www.tuinen.nl/wp-content/uploads/sites/12/2019/01/planten_stekken_FMDB_0-730x413.jpg'); background-size: cover; background-position: center center;"></div>
+            <div class="flex flex-col w-full md:w-1/2 p-4">
+                <div class="flex justify-between gap-3">
+                    <div class="w-full mt-4">
+                        <div class="col-md-4">
+                            <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="mb-8">
+                                <h1 class="text-3xl text-center font-thin">Account aanmaken</h1>
+                                <!--<div asp-validation-summary="All" class="text-danger"></div>-->
+                                <div class="form-group mt-4">
+                                    <div class="flex justify-between gap-3">
+                                        <span class="w-1/2">
+                                            <label class="px-1" asp-for="Input.Voornaam"></label>
+                                            <input asp-for="Input.Voornaam" placeholder="Voornaam" class="block px-1 py-2 box-border h-8 w-full p-4 flex-grow h-8 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                            <span asp-validation-for="Input.Voornaam" class="w-1/2 text-red-700 px-1"></span>
+                                        </span>
+                                        <div class="form-group">
+                                            <label class="px-1" asp-for="Input.Achternaam"></label>
+                                            <input asp-for="Input.Achternaam" placeholder="Achternaam" class="block mr-20 py-2 box-border h-8 w-full p-4 flex-grow h-8 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                            <span asp-validation-for="Input.Achternaam" class="w-1/2 text-red-700"></span>
                                         </div>
-                                        <label class="px-1" asp-for="Input.PostCode"></label>
-                                        <input asp-for="Input.PostCode" placeholder="Postcode" class="block w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                        <span asp-validation-for="Input.PostCode" class="text-red-700"></span>
                                     </div>
-                                    <div class="form-group mt-4">
-                                        <label class="px-1" asp-for="Input.Email"></label>
-                                        <input asp-for="Input.Email" placeholder="Email" class="box-border w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                        <span asp-validation-for="Input.Email" class="text-red-700"></span>
+                                    <label class="px-1" asp-for="Input.PostCode"></label>
+                                    <input asp-for="Input.PostCode" placeholder="Postcode" class="block w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                    <span asp-validation-for="Input.PostCode" class="text-red-700"></span>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label class="px-1" asp-for="Input.Email"></label>
+                                    <input asp-for="Input.Email" placeholder="Email" class="box-border w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                    <span asp-validation-for="Input.Email" class="text-red-700"></span>
+                                </div>
+                                <div class="form-group mt-4 ">
+                                    <label class="px-1" asp-for="Input.Password"></label>
+                                    <div class="flex items-center relative">
+                                        <input asp-for="Input.Password" placeholder="Wachtwoord" class="box-border  w-full flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                        <span class="absolute right-0 mr-3 cursor-pointer" data-toggle="password" data-target="#Input_Password" data-class-active="text-purple-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </span>
                                     </div>
-                                    <div class="form-group mt-4 ">
-                                        <label class="px-1" asp-for="Input.Password"></label>
-                                        <input asp-for="Input.Password" placeholder="Wachtwoord" class="box-border  w-full flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                        <span asp-validation-for="Input.Password" class="text-red-700"></span>
+                                    <span asp-validation-for="Input.Password" class="text-red-700"></span>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label class="px-1" asp-for="Input.ConfirmPassword"></label>
+                                    <div class="flex items-center relative">
+                                        <input asp-for="Input.ConfirmPassword" placeholder="verifieer je wachtwoord" class="box-border w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                        <span class="absolute right-0 mr-3 cursor-pointer" data-toggle="password" data-target="#Input_ConfirmPassword" data-class-active="text-purple-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                        </span>
                                     </div>
-                                    <div class="form-group mt-4">
-                                        <label class="px-1" asp-for="Input.ConfirmPassword"></label>
-                                        <input asp-for="Input.ConfirmPassword" placeholder="verifieer je wachtwoord" class="box-border w-full p-4 flex-grow h-8 px-2 border rounded form-control focus:border-green-500 focus:outline-none focus:ring" />
-                                        <span asp-validation-for="Input.ConfirmPassword" class="text-red-700"></span>
-                                    </div>
-                                    <div class="flex flex-col mt-4 form-group">
-                                        <button type="submit" class="btn btn-primary bg-green-500 hover:bg-green-700 text-white text-sm font-semibold py-2 px-4 rounded">Registreren</button>
-                                    </div>
-                                </form>
-                            </div>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-red-700"></span>
+                                </div>
+                                <div class="flex flex-col mt-4 form-group">
+                                    <button type="submit" class="btn btn-primary bg-green-500 hover:bg-green-700 text-white text-sm font-semibold py-2 px-4 rounded">Registreren</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </body>
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+</div>
+</body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
