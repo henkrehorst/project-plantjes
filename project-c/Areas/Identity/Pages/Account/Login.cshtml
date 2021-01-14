@@ -30,7 +30,14 @@
                                             </div>
                                             <div class="form-group flex flex-col mt-4">
                                                 <label asp-for="Input.Password">Wachtwoord</label>
-                                                <input value="@ViewData["password"]" asp-for="Input.Password" class="flex-grow h-8 px-2 rounded border border-grey-400 form-control focus:outline-none focus:shadow-outline"/>
+                                                <div class="flex items-center relative">
+                                                    <input value="@ViewData["password"]" asp-for="Input.Password" class="flex-grow h-8 px-2 rounded border border-grey-400 form-control focus:border-green-500 focus:outline-none focus:ring"/>
+                                                    <span class="absolute right-0 mr-3 cursor-pointer" data-toggle="password" data-target="#Input_Password" data-class-active="text-purple-600">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                                 <span asp-validation-for="Input.Password" class="text-red-700"></span>
                                             </div>
                                             <div class="form-group flex items-center mt-4">
@@ -57,7 +64,7 @@
                                                 <p>
                                                 <p class="text-black">
                                                     Nog geen account?
-                                                    <a class="underline text-blue-500 hover:bg-blue-700" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren</a>
+                                                    <a class="underline text-green-600 hover:text-green-800" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren</a>
                                                 </p>
                                             </div>
                                         </div>

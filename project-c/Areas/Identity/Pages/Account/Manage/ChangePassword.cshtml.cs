@@ -41,13 +41,16 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
                 MinimumLength = 6)]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", 
+                ErrorMessage = "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
+                               " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
-            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+            [Compare("NewPassword", ErrorMessage = "Het nieuwe wachtwoord en het bevestigingswachtwoord komen niet overeen.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -95,7 +98,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            StatusMessage = "Uw wachtwoord is veranderd.";
 
             return RedirectToPage();
         }

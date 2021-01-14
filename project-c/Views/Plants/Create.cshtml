@@ -13,7 +13,7 @@
     </div>
 </div>
 
-<div class="w-full mx-auto mb-4 bg-white shadow p-8 pt-0 text-gray-700">
+<div class="w-full mx-auto mb-4 bg-white shadow p-2 sm:p-8 pt-0 text-gray-700">
     <form asp-action="Create" enctype="multipart/form-data" method="POST" class="bg-white">
         <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="mb-2 mt-2 p-5">
@@ -38,6 +38,15 @@
                     </label>
                     <input asp-for="Input.Amount" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Aantal aanbod">
                     <span asp-validation-for="Input.Amount" class="block mb-3 text-sm font-medium text-red-700"></span>
+                </div>
+                <div>
+                    <input asp-for="Input.checkBees" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor bijen</span>
+                </div>
+                <div>
+                    <input asp-for="Input.checkOtherAnimals" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere diersoorten</span>
+                </div>
+                <div>
+                    <input asp-for="Input.checkOtherPlants" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere plantsoorten</span>
                 </div>
                 @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
                 {
@@ -122,7 +131,7 @@
             </div>
             <div class="mb-2 mt-2 p-5">
                 <h1 class="text-2xl font-bold mb-3">Foto's van de plant</h1>
-                <div class="custom-file-container" id="plantPictureUploadBox" data-upload-id="plantPictureUpload">
+                <div class="custom-file-container lg:w-4/5" id="plantPictureUploadBox" data-upload-id="plantPictureUpload">
                     <label class="block text-gray-700 text-sm font-bold mb-1">
                         Upload hier uw files
                         <a
@@ -142,6 +151,7 @@
                             aria-label="Choose File"
                             asp-for="Input.PlantPictures"/>
                         <input type="hidden" name="MAX_FILE_SIZE" value="1048576"/>
+                        <input type="hidden" value="" asp-for="Input.ImageOrder" />
                         <span
                             class="custom-file-container__custom-file__custom-file-control">
                         </span>

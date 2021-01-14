@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -76,6 +76,7 @@ namespace project_c.Controllers
                 View(await _plantRepository.GetPlants(_dataContext, aanbod, soort, licht, water, name, page, sort));
 
         }
+
 
         public IActionResult Profiel()
         {

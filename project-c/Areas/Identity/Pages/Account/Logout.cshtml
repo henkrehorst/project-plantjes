@@ -19,7 +19,10 @@
     var isLoggedOut = true;
     @if (isLoggedOut)
     {
-        <script>Swal.fire({position: 'center', icon: 'success', title:'Succesvol uitgelogd' , showConfirmButton: false, timer: 2500})</script>
+        <script>
+        Swal.fire({position: 'center', title:'Uitloggen...' , showConfirmButton: false, timer: 2500})
+        swal.showLoading();
+        </script>
     }
 }
 <script>

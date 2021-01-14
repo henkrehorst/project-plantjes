@@ -25,6 +25,7 @@ namespace project_c.Areas.Identity
                     {
                         options.SignIn.RequireConfirmedEmail = true;
                         options.SignIn.RequireConfirmedAccount = true;
+                        options.User.AllowedUserNameCharacters = string.Empty;
                     })
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<DataContext>();

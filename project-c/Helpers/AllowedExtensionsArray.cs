@@ -17,15 +17,19 @@ namespace project_c.Helpers
             object value, ValidationContext validationContext)
         {
             var files = value as IFormFile[];
-
-            foreach (var file in files)
+            
+            if (files != null)
             {
-                if (file != null)
+                foreach (var file in files)
                 {
-                   
-                    if (file.ContentType != "image/pjpeg" && file.ContentType != "image/jpeg" && file.ContentType != "image/jpg")
+                    if (file != null)
                     {
-                        return new ValidationResult(GetErrorMessage());
+
+                        if (file.ContentType != "image/pjpeg" && file.ContentType != "image/jpeg" &&
+                            file.ContentType != "image/jpg")
+                        {
+                            return new ValidationResult(GetErrorMessage());
+                        }
                     }
                 }
             }

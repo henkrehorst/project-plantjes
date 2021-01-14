@@ -28,18 +28,21 @@ namespace project_c.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Geen Email ingevuld")]
+            [EmailAddress(ErrorMessage = "Vul een geldig Emailadres in")]
             public string Email { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
+            [StringLength(100, ErrorMessage = "Het {0} moet minstens {2} en maximaal {1} karakters lang zijn.", MinimumLength = 6)]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", 
+                ErrorMessage = "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
+                               " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Herhaal wachtwoord")]
+            [Compare("Password", ErrorMessage = "De wachtwoorden zijn niet gelijk.")]
             public string ConfirmPassword { get; set; }
 
             public string Code { get; set; }

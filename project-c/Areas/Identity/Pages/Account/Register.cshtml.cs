@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -66,7 +66,7 @@ namespace project_c.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required(ErrorMessage = "Geen Email ingevuld")]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "Vul een geldig Emailadres in")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -87,8 +87,12 @@ namespace project_c.Areas.Identity.Pages.Account
             public string PostCode { get; set; }
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
-            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} characters lang zijn.",
+            [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} karakters lang zijn.",
                 MinimumLength = 6)]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+                ErrorMessage =
+                    "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
+                    " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -166,7 +170,7 @@ namespace project_c.Areas.Identity.Pages.Account
                             values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
                             protocol: Request.Scheme);
 
-                        using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
+                        using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", Input.Email))
                         {
                             message.Subject = "Account verificatie";
                             message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
@@ -179,14 +183,16 @@ namespace project_c.Areas.Identity.Pages.Account
                             {
                                 smtp.Host = "smtp.gmail.com";
                                 smtp.EnableSsl = true;
-                                NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                                NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                                 smtp.UseDefaultCredentials = true;
                                 smtp.Credentials = cred;
                                 smtp.Port = 587;
                                 smtp.Send(message);
                             }
+
+                            return LocalRedirect(ReturnUrl);
                         }
-                        return LocalRedirect(ReturnUrl);
+                        
                     }
 
                     foreach (var error in result.Errors)
@@ -194,10 +200,11 @@ namespace project_c.Areas.Identity.Pages.Account
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-            }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+                // If we got this far, something failed, redisplay form
+                return Page();
+            }
+            return LocalRedirect(ReturnUrl);
         }
     }
 }
