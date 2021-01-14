@@ -2,9 +2,20 @@
 
 @if (!String.IsNullOrEmpty(Model))
 {
+    <script>
+        function removeStatusMessage() {
+            var status = document.getElementById("currentstatus");
+            var msg = document.getElementById("removemsg");
+
+            status.style.display = "none";
+            msg.style.display = "none";
+        }
+    </script>
     var statusMessageClass = Model.StartsWith("Error") ? "danger" : "success";
     <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        @Model
+        <div id="currentstatus" class="border-2 border-red-600 bg-red-100 text-red-600 w-full sm:w-9/12 mt-3">
+            <button id="removemsg" type="button" onclick="removeStatusMessage()" class="close text-red-600 border-red-600 bg-red-100" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Model
+        </div>
     </div>
 }

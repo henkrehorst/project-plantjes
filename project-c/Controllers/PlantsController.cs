@@ -57,6 +57,10 @@ namespace project_c.Controllers
             [Required(ErrorMessage = "Selecteer de hoeveelheid water die de plant nodig heeft!")]
             public int Water { get; set; }
 
+            public bool checkBees { get; set; }
+            public bool checkOtherAnimals { get; set; }
+            public bool checkOtherPlants { get; set; }
+            
             [Required(ErrorMessage = "Maak korte beschrijving over de plant")]
             [StringLength(200,
                 ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten",
@@ -201,6 +205,10 @@ namespace project_c.Controllers
                         plant.Licht = Input.Licht;
                         plant.Water = Input.Water;
 
+                        plant.checkBees = Input.checkBees;
+                        plant.checkOtherAnimals = Input.checkOtherAnimals;
+                        plant.checkOtherPlants = Input.checkOtherPlants;
+
                         plant.Creation = DateTime.Now;
                         plant.UserId = _userManager.GetUserId(User);
                         User plantuser = _context.User.First(u => u.Id == plant.UserId);
@@ -247,6 +255,9 @@ namespace project_c.Controllers
             Input.Soort = plant.Soort;
             Input.Water = plant.Water;
             Input.Licht = plant.Licht;
+            Input.checkBees = plant.checkBees;
+            Input.checkOtherAnimals = plant.checkOtherAnimals;
+            Input.checkOtherPlants = plant.checkOtherPlants;
             Input.Description = plant.Description;
 
             return View(this);
@@ -310,6 +321,10 @@ namespace project_c.Controllers
                         plant.Soort = Input.Soort;
                         plant.Licht = Input.Licht;
                         plant.Water = Input.Water;
+
+                        plant.checkBees = Input.checkBees;
+                        plant.checkOtherAnimals = Input.checkOtherAnimals;
+                        plant.checkOtherPlants = Input.checkOtherPlants;
 
                         plant.Creation = DateTime.Now;
                         User plantuser = _context.User.First(u => u.Id == plant.UserId);

@@ -141,7 +141,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                 await _signInManager.RefreshSignInAsync(user);
                 // _context.Add(user);
                 _context.SaveChanges();
-                StatusMessage = "Your profile has been updated";
+                StatusMessage = "Uw profiel is aangepast.";
                 return RedirectToPage();
             }
             return RedirectToPage();
@@ -202,11 +202,11 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                     "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Bevestigings link verstuurd naar het nieuwe email. Bekijk uw email account a.u.b.";
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Uw email is niet veranderd.";
             return RedirectToPage();
         }
 
@@ -259,7 +259,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
                 "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "Bevestigingsemail verstuurd. Bekijk uw email a.u.b.";
             return RedirectToPage();
         }
     }
