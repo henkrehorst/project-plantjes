@@ -107,7 +107,7 @@
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                     <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Index", "bg-white text-green-600")" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
                     <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Ons", "bg-white text-green-600")" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
-                    <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Home", "Ons", "bg-white text-green-600")" asp-area="" asp-controller="Faq" asp-action="Index">Faq</a>
+                    <a class="w-full block px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-700 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-700 focus:bg-green-100 @Html.IsSelected("Faq", "Index", "bg-white text-green-600")" asp-area="" asp-controller="Faq" asp-action="Index">Faq</a>
                 </div>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -127,6 +127,13 @@
                             <button style="width: 100%; text-align: left" class="block px-3 py-2 rounded-md bg-red-300 text-base font-medium text-red-600 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" type="submit">Logout</button>
                         </form>
                     </div>
+                }
+                else
+                {
+                     <div class="pt-4 px-2 pb-3 border-t bg-gray-300 border-green-800">
+                        <a class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-black-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="Identity" asp-page="/Account/Register">Registreren</a>
+                        <a class="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-area="Identity" asp-page="/Account/Login">Inloggen</a>
+                     </div>   
                 }
             </div>
         </nav>
