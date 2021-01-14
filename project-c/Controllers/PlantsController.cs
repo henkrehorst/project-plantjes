@@ -13,8 +13,10 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using project_c.Helpers;
+using project_c.Models;
 using project_c.Repository;
 using project_c.ViewModels;
 
@@ -64,6 +66,8 @@ namespace project_c.Controllers
                 ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten",
                 MinimumLength = 10)]
             public string Description { get; set; }
+            
+            public string ImageOrder { get; set; }
 
             [DataType(DataType.Upload)]
             [Required(ErrorMessage = "U moet minimaal 1 foto uploaden")]
@@ -165,6 +169,7 @@ namespace project_c.Controllers
                 try
                 {
                     Plant plant = new Plant();
+
                     if (ModelState.IsValid)
                     {
                         plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);
@@ -174,9 +179,25 @@ namespace project_c.Controllers
                         ;
                         plant.Quantity = Input.Amount;
 
-                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
-                        plant.Images = images;
-                        plant.ImgUrl = images[0];
+                        var imageOrder = JsonConvert.DeserializeObject<ImageOrderModel[]>(Input.ImageOrder);
+                        
+                        //convert uploaded images in image order
+                        var imagesArray = new string[imageOrder.Length];
+                        
+                        for (int i = 0; i < imageOrder.Length; i++)
+                        {
+                            var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                                if (plantPicture != null)
+                                {
+                                    imagesArray[i] = await _uploadService.UploadImage(plantPicture);
+                                }
+                        }
+                        
+                        //remove null values from array
+                        imagesArray = imagesArray.Where(x => x != null).ToArray();
+                        
+                        plant.Images = imagesArray;
+                        plant.ImgUrl = imagesArray[0];
 
                         //added categories of plant
                         plant.Aanbod = Input.Aanbod;
@@ -221,6 +242,7 @@ namespace project_c.Controllers
 
         // // GET: PlantsController/Edit/5
         [Authorize]
+        [HttpGet]
         public ActionResult Edit(int id)
         {
             Plant plant = _context.Plants.First(p => p.PlantId == id);
@@ -247,6 +269,15 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Edit(int id, IFormCollection form)
         {
+            var imageOrder = JsonConvert.DeserializeObject<ImageOrderModel[]>(Input.ImageOrder);
+
+            // ignore upload error if no images uploaded and old images exists
+            if (imageOrder != null && imageOrder.Length > 0 && Input.PlantPictures == null)
+            {
+                if (ModelState.ContainsKey("Input.PlantPictures"))
+                    ModelState.Remove("Input.PlantPictures");
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -260,9 +291,30 @@ namespace project_c.Controllers
                         plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
                         plant.Quantity = Input.Amount;
 
-                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
-                        plant.Images = images;
-                        plant.ImgUrl = images[0];
+                        //convert uploaded images in image order
+                        var imagesArray = new string[imageOrder.Length];
+                        for (int i = 0; i < imageOrder.Length; i++)
+                        {
+                            if (imageOrder[i].AlreadyExists)
+                            {
+                                imagesArray[i] = imageOrder[i].Location;
+                            }
+                            else
+                            {
+                                var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                                if (plantPicture != null)
+                                {
+                                    imagesArray[i] = await _uploadService.UploadImage(plantPicture);
+                                }
+                                
+                            }
+                        }
+                        
+                        //remove null values from array
+                        imagesArray = imagesArray.Where(x => x != null).ToArray();
+                        
+                        plant.Images = imagesArray;
+                        plant.ImgUrl = imagesArray[0];
 
                         //added categories of plant
                         plant.Aanbod = Input.Aanbod;

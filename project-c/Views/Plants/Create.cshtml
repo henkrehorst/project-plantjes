@@ -131,7 +131,7 @@
             </div>
             <div class="mb-2 mt-2 p-5">
                 <h1 class="text-2xl font-bold mb-3">Foto's van de plant</h1>
-                <div class="custom-file-container" id="plantPictureUploadBox" data-upload-id="plantPictureUpload">
+                <div class="custom-file-container lg:w-4/5" id="plantPictureUploadBox" data-upload-id="plantPictureUpload">
                     <label class="block text-gray-700 text-sm font-bold mb-1">
                         Upload hier uw files
                         <a
@@ -151,6 +151,7 @@
                             aria-label="Choose File"
                             asp-for="Input.PlantPictures"/>
                         <input type="hidden" name="MAX_FILE_SIZE" value="1048576"/>
+                        <input type="hidden" value="" asp-for="Input.ImageOrder" />
                         <span
                             class="custom-file-container__custom-file__custom-file-control">
                         </span>
