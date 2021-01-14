@@ -177,7 +177,6 @@ namespace project_c.Areas.Identity.Pages.Account
                         }
                     }
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(ReturnUrl);
                 }
 
