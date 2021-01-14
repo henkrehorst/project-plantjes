@@ -705,7 +705,7 @@ module.exports = {
       },
     },
   },
-  variants: {
+    variants: {
     accessibility: ['responsive', 'focus'],
     alignContent: ['responsive'],
     alignItems: ['responsive'],
@@ -765,7 +765,7 @@ module.exports = {
     minWidth: ['responsive'],
     objectFit: ['responsive'],
     objectPosition: ['responsive'],
-    opacity: ['responsive', 'hover', 'focus', 'active'],
+    opacity: ['responsive', 'hover', 'focus', 'active', 'disabled'],
     order: ['responsive'],
     outline: ['responsive', 'focus'],
     overflow: ['responsive'],
@@ -784,7 +784,7 @@ module.exports = {
     strokeWidth: ['responsive'],
     tableLayout: ['responsive'],
     textAlign: ['responsive'],
-    textColor: ['responsive', 'hover', 'focus'],
+    textColor: ['responsive', 'hover', 'focus', 'disabled'],
     textOpacity: ['responsive', 'hover', 'focus'],
     textDecoration: ['responsive', 'hover', 'focus'],
     textTransform: ['responsive'],

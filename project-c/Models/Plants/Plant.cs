@@ -28,6 +28,13 @@ namespace project_c.Models.Plants
         public bool HasBeenApproved { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+
+        //Biodiversity fields
+
+        public bool checkBees { get; set; }
+        public bool checkOtherAnimals { get; set; }
+        public bool checkOtherPlants { get; set; }
+        //End Biodiversity fields
         
         [NotMapped]
         public int Distance { get; set; }
@@ -51,6 +58,9 @@ namespace project_c.Models.Plants
             HasBeenApproved = plant.HasBeenApproved;
             UserId = plant.UserId;
             User = plant.User;
+            checkBees = plant.checkBees;
+            checkOtherAnimals = plant.checkOtherAnimals;
+            checkOtherPlants = plant.checkOtherPlants;
             Distance = (int) distance != 0 ? (int) distance : 1;
         }
     }
