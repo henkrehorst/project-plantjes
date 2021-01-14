@@ -63,7 +63,7 @@ namespace project_c.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required(ErrorMessage = "Geen Email ingevuld")]
-            [EmailAddress]
+            [EmailAddress(ErrorMessage = "Vul een geldig Emailadres in")]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
