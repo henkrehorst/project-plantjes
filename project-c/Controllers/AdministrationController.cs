@@ -50,7 +50,7 @@ namespace project_c.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteReport(int id)
+        public IActionResult DeleteReport(int id)
         {
             try 
             { 
