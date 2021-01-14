@@ -6,7 +6,7 @@
 
 @import "./plant.scss";
 
-@import "file-upload-with-preview/dist/file-upload-with-preview.min.css";
+@import "@henkrehorst/file-upload-with-preview/dist/file-upload-with-preview.min.css";
 
 $brand-color: white;
 
@@ -19,7 +19,7 @@ main {
 }
 
 .home-banner {
-  background: linear-gradient(rgb(0 0 0 / 13%), rgb(0 0 0 / 82%)), url("/Images/banner-home.png") center 75%;
+  background: linear-gradient(rgb(0 0 0 / 32%), rgb(0 0 0 / 8%)), url("/Images/banner-home.png") center 75%;
   background-size: cover;
   width: 100%;
   min-height: 360px;

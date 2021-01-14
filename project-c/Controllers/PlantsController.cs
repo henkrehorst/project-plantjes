@@ -13,8 +13,10 @@ using project_c.Models.Users;
 using project_c.Services;
 using System.Net.Mail;
 using System.Net;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.Internal;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using project_c.Helpers;
+using project_c.Models;
 using project_c.Repository;
 using project_c.ViewModels;
 
@@ -28,6 +30,7 @@ namespace project_c.Controllers
         private readonly PlantRepository _plantRepository;
 
         [BindProperty] public InputModel Input { get; set; }
+
         public class InputModel
         {
             [Required(ErrorMessage = "Voer de naam van de plant in!")]
@@ -35,27 +38,41 @@ namespace project_c.Controllers
                 ErrorMessage = "De naam van de plant mag maximaal 40 tekens en moet minimaal 3 tekens bevatten!",
                 MinimumLength = 3)]
             public string Name { get; set; }
+
             [Required(ErrorMessage = "Voer de lengte van de plant in!")]
             public int Length { get; set; }
+
             [Required(ErrorMessage = "Voer het aantal planten in!")]
             public int Amount { get; set; }
+
             [Required(ErrorMessage = "Selecteer het aanbod waar de plant in hoort!")]
             public int Aanbod { get; set; }
+
             [Required(ErrorMessage = "Selecteer het soort plant!")]
             public int Soort { get; set; }
+
             [Required(ErrorMessage = "Selecteer de hoeveelheid licht die de plant nodig heeft!")]
             public int Licht { get; set; }
+
             [Required(ErrorMessage = "Selecteer de hoeveelheid water die de plant nodig heeft!")]
             public int Water { get; set; }
+
+            public bool checkBees { get; set; }
+            public bool checkOtherAnimals { get; set; }
+            public bool checkOtherPlants { get; set; }
             
             [Required(ErrorMessage = "Maak korte beschrijving over de plant")]
-            [StringLength(200, ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten", MinimumLength = 10)]
+            [StringLength(200,
+                ErrorMessage = "De beschrijving moet minimaal 10 tekens bevatten en mag maximaal 250 tekens bevatten",
+                MinimumLength = 10)]
             public string Description { get; set; }
             
+            public string ImageOrder { get; set; }
+
             [DataType(DataType.Upload)]
             [Required(ErrorMessage = "U moet minimaal 1 foto uploaden")]
-            [MaxFileSizeArray(1* 1024 * 1024)]
-            [AllowedExtensionsArray(new string[] { ".jpg" })]
+            [MaxFileSizeArray(1 * 1024 * 1024)]
+            [AllowedExtensionsArray(new string[] {".jpg"})]
             public IFormFile[] PlantPictures { get; set; }
         }
 
@@ -152,22 +169,45 @@ namespace project_c.Controllers
                 try
                 {
                     Plant plant = new Plant();
+
                     if (ModelState.IsValid)
                     {
-                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);;
+                        plant.Name = char.ToUpper(Input.Name[0]) + Input.Name.Substring(1);
+                        ;
                         plant.Length = Convert.ToInt32(form["length"]);
-                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);;
+                        plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
+                        ;
                         plant.Quantity = Input.Amount;
 
-                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
-                        plant.Images = images;
-                        plant.ImgUrl = images[0];
+                        var imageOrder = JsonConvert.DeserializeObject<ImageOrderModel[]>(Input.ImageOrder);
+                        
+                        //convert uploaded images in image order
+                        var imagesArray = new string[imageOrder.Length];
+                        
+                        for (int i = 0; i < imageOrder.Length; i++)
+                        {
+                            var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                                if (plantPicture != null)
+                                {
+                                    imagesArray[i] = await _uploadService.UploadImage(plantPicture);
+                                }
+                        }
+                        
+                        //remove null values from array
+                        imagesArray = imagesArray.Where(x => x != null).ToArray();
+                        
+                        plant.Images = imagesArray;
+                        plant.ImgUrl = imagesArray[0];
 
                         //added categories of plant
                         plant.Aanbod = Input.Aanbod;
                         plant.Soort = Input.Soort;
                         plant.Licht = Input.Licht;
                         plant.Water = Input.Water;
+
+                        plant.checkBees = Input.checkBees;
+                        plant.checkOtherAnimals = Input.checkOtherAnimals;
+                        plant.checkOtherPlants = Input.checkOtherPlants;
 
                         plant.Creation = DateTime.Now;
                         plant.UserId = _userManager.GetUserId(User);
@@ -189,6 +229,7 @@ namespace project_c.Controllers
                     return Content("Error probeer het opnieuw");
                 }
             }
+
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }
@@ -201,6 +242,7 @@ namespace project_c.Controllers
 
         // // GET: PlantsController/Edit/5
         [Authorize]
+        [HttpGet]
         public ActionResult Edit(int id)
         {
             Plant plant = _context.Plants.First(p => p.PlantId == id);
@@ -213,6 +255,9 @@ namespace project_c.Controllers
             Input.Soort = plant.Soort;
             Input.Water = plant.Water;
             Input.Licht = plant.Licht;
+            Input.checkBees = plant.checkBees;
+            Input.checkOtherAnimals = plant.checkOtherAnimals;
+            Input.checkOtherPlants = plant.checkOtherPlants;
             Input.Description = plant.Description;
 
             return View(this);
@@ -224,6 +269,15 @@ namespace project_c.Controllers
         [Authorize]
         public async Task<ActionResult> Edit(int id, IFormCollection form)
         {
+            var imageOrder = JsonConvert.DeserializeObject<ImageOrderModel[]>(Input.ImageOrder);
+
+            // ignore upload error if no images uploaded and old images exists
+            if (imageOrder != null && imageOrder.Length > 0 && Input.PlantPictures == null)
+            {
+                if (ModelState.ContainsKey("Input.PlantPictures"))
+                    ModelState.Remove("Input.PlantPictures");
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -237,15 +291,40 @@ namespace project_c.Controllers
                         plant.Description = char.ToUpper(Input.Description[0]) + Input.Description.Substring(1);
                         plant.Quantity = Input.Amount;
 
-                        var images = await _uploadService.UploadMultipleImages(Input.PlantPictures);
-                        plant.Images = images;
-                        plant.ImgUrl = images[0];
+                        //convert uploaded images in image order
+                        var imagesArray = new string[imageOrder.Length];
+                        for (int i = 0; i < imageOrder.Length; i++)
+                        {
+                            if (imageOrder[i].AlreadyExists)
+                            {
+                                imagesArray[i] = imageOrder[i].Location;
+                            }
+                            else
+                            {
+                                var plantPicture = Input.PlantPictures.FirstOrDefault(f => f.FileName == imageOrder[i].Location);
+                                if (plantPicture != null)
+                                {
+                                    imagesArray[i] = await _uploadService.UploadImage(plantPicture);
+                                }
+                                
+                            }
+                        }
+                        
+                        //remove null values from array
+                        imagesArray = imagesArray.Where(x => x != null).ToArray();
+                        
+                        plant.Images = imagesArray;
+                        plant.ImgUrl = imagesArray[0];
 
                         //added categories of plant
                         plant.Aanbod = Input.Aanbod;
                         plant.Soort = Input.Soort;
                         plant.Licht = Input.Licht;
                         plant.Water = Input.Water;
+
+                        plant.checkBees = Input.checkBees;
+                        plant.checkOtherAnimals = Input.checkOtherAnimals;
+                        plant.checkOtherPlants = Input.checkOtherPlants;
 
                         plant.Creation = DateTime.Now;
                         User plantuser = _context.User.First(u => u.Id == plant.UserId);
@@ -271,6 +350,7 @@ namespace project_c.Controllers
                     return View();
                 }
             }
+
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
             return View();
         }

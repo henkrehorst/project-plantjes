@@ -45,6 +45,7 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
     //run search function on enter
     if (document.getElementById("search-field")) {
+        document.getElementById("search-field").addEventListener('focusout', useSearchField);
         document.getElementById("search-field").addEventListener("keyup", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
@@ -129,11 +130,12 @@ if (document.getElementsByClassName('filter-checkbox').length > 0) {
 
     //connect zipcode function with zipcode look button
     if (document.getElementById("zipcode-button")) {
-        document.getElementById("zipcode-button").addEventListener('click', useZipcodeField)
+        document.getElementById("zipcode-button").addEventListener('click', useZipcodeField);
     }
 
     //run zipcode function on enter
     if (document.getElementById("zipcode-field")) {
+        document.getElementById("zipcode-field").addEventListener('focusout', useZipcodeField);
         document.getElementById("zipcode-field").addEventListener("keyup", (e) => {
             if (e.key === "Enter") {
                 e.preventDefault();
