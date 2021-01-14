@@ -173,3 +173,13 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
 }
+<scrip>
+    @if (ViewBag.plantIsNotCreated)
+    {
+        <script>Swal.fire({
+                  icon: 'error',
+                  title: 'Oeps...',
+                  text: 'Er is iets fout gegaan!, Probeer het opnieuw.'
+                })</script>
+    }
+</scrip>
