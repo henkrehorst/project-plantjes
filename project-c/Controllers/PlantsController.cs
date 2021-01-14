@@ -241,6 +241,44 @@ namespace project_c.Controllers
             return usr.UserName;
         }
 
+        // //GET: PlantsController/Report/5
+        public ActionResult Report(int id)
+        {
+            Plant plant = _context.Plants.First(p => p.PlantId == id);
+            User user = _context.User.Single(u => u.Id == plant.UserId);
+
+
+            return View(new CreateReportViewModel(plant, user));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<ActionResult> MakeReport(int PlantId, IFormCollection form)
+        {
+            //tedoen - zorg ervoor dat de plantid goed naar deze method verstuurd word.
+            var body = form["Body"].ToString();
+            var sender = await _userManager.GetUserAsync(User);
+            var plant = _context.Plants.First(p => p.PlantId == PlantId);
+            try
+            {
+                Report report = new Report();
+
+                report.Body = body;
+                report.Plant = plant;
+                report.User = await _userManager.GetUserAsync(User);
+
+                _context.Add(report);
+                _context.SaveChanges();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
         // // GET: PlantsController/Edit/5
         [Authorize]
         [HttpGet]
@@ -366,6 +404,7 @@ namespace project_c.Controllers
             {
                 var plant = _context.Plants.Find(id);
                 User usr = _context.User.Single(y => y.Id == plant.UserId);
+                var reports = _context.Reports.Where(r => r.Plant.PlantId == id);
                 if (User.IsInRole("Admin"))
                 {
                     //send email here
@@ -389,6 +428,11 @@ namespace project_c.Controllers
                         }
                     }
 
+                    foreach (Report rep in reports)
+                    {
+                        _context.Reports.Remove(rep);
+                    }
+
                     _context.Plants.Remove(plant);
                     usr.Karma--;
                     _context.SaveChanges();
@@ -397,6 +441,11 @@ namespace project_c.Controllers
                 }
                 else if (_userManager.GetUserId(User) == plant.UserId)
                 {
+                    foreach (Report rep in reports)
+                    {
+                        _context.Reports.Remove(rep);
+                    }
+
                     _context.Plants.Remove(plant);
                     _context.SaveChanges();
                 }
