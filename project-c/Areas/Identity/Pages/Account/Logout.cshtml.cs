@@ -28,18 +28,11 @@ namespace project_c.Areas.Identity.Pages.Account
             Program.IsLoggedIn = false;
         }
 
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        public async Task<IActionResult> OnPost()
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage();
-            }
+            return LocalRedirect("/Identity/Account/Logout");
         }
     }
 }

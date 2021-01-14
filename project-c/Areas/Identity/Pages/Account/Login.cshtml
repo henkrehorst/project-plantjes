@@ -7,63 +7,71 @@
 
 <h1>@ViewData["Title"]</h1>
 <body class="font-normal bg-white">
-    <div class="bg-white mt-6">
-        <div class="items-center flex-1 justify-center px-6 sm:px-0">
-            <div class="h-8 w-102 flex rounded-lg shadow-lg bg-white sm:mx-0" style="height: 600px">
-                <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://www.tuinen.nl/wp-content/uploads/sites/12/2019/01/planten_stekken_FMDB_0-730x413.jpg'); background-size: cover; background-position: center center;"></div>
-                <div class="flex flex-col w-full md:w-1/2 p-4">
-                    <div class="flex flex-col flex-1 justify-center mb-8">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h1 class="text-4xl text-center font-thin">Inloggen</h1>
-                                <section>
-                                    <div class="w-full mt-4">
-                                        <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
-                                            <div class="flex flex-col mt-4">
-                                                <h4 class="text-black">Voer je inloggevens in</h4>
-                                                <hr />
-                                                <div asp-validation-summary="All" class="text-red-700"></div><!--Extra-->
-                                                <div class="form-group flex flex-col mt-4">
-                                                    <label asp-for="Input.Email"></label>
-                                                    <input asp-for="Input.Email" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control focus:outline-none focus:shadow-outline" />
-                                                    <span asp-validation-for="Input.Email" class="text-red-700"></span>
-                                                </div>
-                                                <div class="form-group flex flex-col mt-4">
-                                                    <label asp-for="Input.Password">Wachtwoord</label>
-                                                    <input asp-for="Input.Password" class="flex-grow h-8 px-2 rounded border border-grey-400 form-control focus:outline-none focus:shadow-outline" />
-                                                    <span asp-validation-for="Input.Password" class="text-red-700"></span>
-                                                </div>
-                                                <div class="form-group flex items-center mt-4">
-                                                    <div class="checkbox">
-                                                        <label asp-for="Input.RememberMe">
-                                                            <input asp-for="Input.RememberMe" />
-                                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                                        </label>
-                                                        <a class=" flex items-end align-baseline font-normal text-sm text-blue-500 hover:text-blue-800" id="forgot-password " asp-page="./ForgotPassword">Wachtwoord vergeten?</a>
-                                                    </div>
-                                                </div>
-                                                <div class="flex flex-col mt-8 form-group">
-                                                    <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded">Inloggen</button>
-                                                </div>
-                                                <div class="mt-4 form-group">
-                                                    <p>
-                                                    <p class="text-black">
-                                                        Nog geen account?
-                                                        <a class="underline text-blue-500 hover:bg-blue-700" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren</a>
-                                                    </p>
+<div class="bg-white mt-6">
+    <div class="items-center flex-1 justify-center px-6 sm:px-0">
+        <div class="h-8 w-102 flex rounded-lg shadow-lg bg-white sm:mx-0" style="height: 600px">
+            <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-1/2 bg-cover rounded-l-lg" style="background: url('https://www.tuinen.nl/wp-content/uploads/sites/12/2019/01/planten_stekken_FMDB_0-730x413.jpg'); background-size: cover; background-position: center center;"></div>
+            <div class="flex flex-col w-full md:w-1/2 p-4">
+                <div class="flex flex-col flex-1 justify-center mb-8">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h1 class="text-4xl text-center font-thin">Inloggen</h1>
+                            <section>
+                                <div class="w-full mt-4">
+                                    <form class="form-horizontal w-3/4 mx-auto" id="account" method="post">
+                                        <div class="flex flex-col mt-4">
+                                            <h4 class="text-black">Voer je inloggevens in</h4>
+                                            <hr/>
+                                            <div asp-validation-summary="All" class="text-red-700"></div><!--Extra-->
+                                            <div class="form-group flex flex-col mt-4">
+                                                <label asp-for="Input.Email"></label>
+                                                <input value="@ViewData["email"]" asp-for="Input.Email" class="box-border h-8 w-102 p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control focus:outline-none focus:shadow-outline"/>
+                                                <span asp-validation-for="Input.Email" class="text-red-700"></span>
+                                            </div>
+                                            <div class="form-group flex flex-col mt-4">
+                                                <label asp-for="Input.Password">Wachtwoord</label>
+                                                <input value="@ViewData["password"]" asp-for="Input.Password" class="flex-grow h-8 px-2 rounded border border-grey-400 form-control focus:outline-none focus:shadow-outline"/>
+                                                <span asp-validation-for="Input.Password" class="text-red-700"></span>
+                                            </div>
+                                            <div class="form-group flex items-center mt-4">
+                                                <div class="checkbox">
+                                                    <label asp-for="Input.RememberMe">
+                                                        @{ var isChecked = (bool) ViewData["isChecked"];} 
+                                                        @if (isChecked)
+                                                        {
+                                                            <input asp-for="Input.RememberMe" checked/>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input asp-for="Input.RememberMe"/>
+                                                        }
+                                                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                                    </label>
+                                                    <a class=" flex items-end align-baseline font-normal text-sm text-blue-500 hover:text-blue-800" id="forgot-password " asp-page="./ForgotPassword">Wachtwoord vergeten?</a>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                </section>
-                            </div>
+                                            <div class="flex flex-col mt-8 form-group">
+                                                <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded">Inloggen</button>
+                                            </div>
+                                            <div class="mt-4 form-group">
+                                                <p>
+                                                <p class="text-black">
+                                                    Nog geen account?
+                                                    <a class="underline text-blue-500 hover:bg-blue-700" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Registreren</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </body>
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+</div>
+</body>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}

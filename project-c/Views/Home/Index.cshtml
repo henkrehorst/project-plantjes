@@ -282,3 +282,14 @@
 </div>
 </div>
 </div>
+@{
+   
+    // var isLoggedOut = (bool) ViewData["isLoggedOut"];
+    if (Program.IsLoggedIn)
+    {
+        <script>Swal.fire({position: 'center', icon: 'success', title:'Succesvol ingelogd' , showConfirmButton: false, timer: 2500})</script>
+    }
+
+    Program.IsLoggedIn = false;
+    }
+}

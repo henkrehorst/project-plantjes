@@ -18,8 +18,7 @@ namespace project_c.Controllers
             public async Task<IActionResult> Logout()
             {
                 await _signInManager.SignOutAsync();
-                Program.IsLoggedIn = false;
-                return RedirectToAction("Index", "Home");
+                return LocalRedirect("/Identity/Account/Logout");
             }
 
             public ActionResult RegisterConfirmation()

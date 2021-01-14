@@ -37,6 +37,7 @@
                                         <label class="px-1" asp-for="Input.Email"></label>
                                         <input asp-for="Input.Email" placeholder="Email" class="box-border w-full p-4 flex-grow h-8 px-2 border rounded border-grey-400 form-control focus:outline-none focus:shadow-outline" />
                                         <span asp-validation-for="Input.Email" class="text-red-700"></span>
+                                        <span style="color: red">@Html.ValidationMessage("EmailError")</span>
                                     </div>
                                     <div class="form-group mt-4 ">
                                         <label class="px-1" asp-for="Input.Password"></label>
