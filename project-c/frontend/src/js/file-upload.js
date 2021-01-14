@@ -47,3 +47,19 @@ if (document.getElementById("plantPictureEditUploadBox") !== null) {
             })
         }).catch(e => console.log(e));
 }
+
+if(document.getElementById("avatar_upload_field") !== null){
+    const avatarUpload = new FileUploadWithPreview('avatar', {
+        images : {
+            baseImage : document.getElementById("avatar_upload_field").getAttribute("data-image-location").length === 0 ? '/Images/avatar.png' :
+                document.getElementById("avatar_upload_field").getAttribute("data-image-location")
+        }
+    })
+
+    const bannerUpload = new FileUploadWithPreview('banner', {
+        images : {
+            baseImage :  document.getElementById("banner_upload_field").getAttribute("data-image-location").length === 0 ? '/Images/placeholder-picture.png' :
+                document.getElementById("banner_upload_field").getAttribute("data-image-location")
+        }
+    })
+}

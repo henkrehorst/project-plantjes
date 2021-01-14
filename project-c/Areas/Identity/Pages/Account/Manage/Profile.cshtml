@@ -17,51 +17,29 @@
                         <textarea rows="3" placeholder="Profiel beschrijving" asp-for="Input.Bio" class="box-border w-full sm:w-9/12 p-4 flex-grow px-2 border rounded border-grey-400"></textarea>
                         <span asp-validation-for="Input.Bio" class="block mb-3 text-sm font-medium text-red-700"></span>
                     </div>
-                    <div class="mb-3">
-                        <span class="block text-sm font-medium text-gray-700">Avatar</span>
-                        <label class="w-full sm:w-9/12 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
-                            <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"/>
-                            </svg>
-                            <span class="mt-2 text-base leading-normal">Upload een Avatar</span>
-                            <span id="file-name"></span>
-                            <input type='file' id="avatar_upload" class="hidden" asp-for="Input.Avatar"/>
-                            <script>
-                                let inputFile = document.getElementById('avatar_upload');
-                                let fileNameField = document.getElementById('file-name');
-                                inputFile.addEventListener('change', function (event) {
-                                    let uploadedFileName = event.target.files[0].name;
-                                    fileNameField.textContent = uploadedFileName;
-                                 });
-                            </script>
-                            <label class="text-xs text-gray-500">
-                                JPG tot 1MB
+                    <div class="mb-3 sm:w-9/12">
+                        <div class="custom-file-container" data-upload-id="avatar" data-image-location="@Model.Input.AvatarLocation" id="avatar_upload_field">
+                            <label>Upload een avatar<a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">&times;</a></label>
+                            <label class="custom-file-container__custom-file">
+                                <input type="file" class="custom-file-container__custom-file__custom-file-input" asp-for="Input.Avatar" accept="image/jpeg" aria-label="Choose File">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
+                                <span class="custom-file-container__custom-file__custom-file-control"></span>
                             </label>
-
-                        </label>
+                            <div class="custom-file-container__image-preview"></div>
+                        </div>
                         <span asp-validation-for="Input.Avatar" class="block mb-3 text-sm font-medium text-red-700"></span>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 sm:w-9/12">
                         <span class="block text-sm font-medium text-gray-700">Profiel banner</span>
-                        <label class="w-full sm:w-9/12 flex flex-col items-center px-4 py-6 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
-                            <svg class="w-8 h-8" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z"/>
-                            </svg>
-                            <span class="mt-2 text-base leading-normal">Upload een Banner</span>
-                            <span id="file-name-banner"></span>
-                            <input type='file' id="banner_upload" class="hidden" asp-for="Input.Banner"/>
-                            <script>
-                                let inputFileBanner = document.getElementById('banner_upload');
-                                let fileNameFieldBanner = document.getElementById('file-name-banner');
-                                inputFileBanner.addEventListener('change', function (event) {
-                                     fileNameFieldBanner.textContent = event.target.files[0].name;
-                                });
-                            </script>
-                            <label class="text-xs text-gray-500">
-                                JPG tot 2MB
+                        <div class="custom-file-container" data-upload-id="banner" data-image-location="@Model.Input.BannerLocation" id="banner_upload_field">
+                            <label>Upload een banner<a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">&times;</a></label>
+                            <label class="custom-file-container__custom-file">
+                                <input type="file" class="custom-file-container__custom-file__custom-file-input" asp-for="Input.Banner" accept="image/jpeg" aria-label="Choose File">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
+                                <span class="custom-file-container__custom-file__custom-file-control"></span>
                             </label>
-
-                        </label>
+                            <div class="custom-file-container__image-preview"></div>
+                        </div>
                         <span asp-validation-for="Input.Banner" class="block mb-3 text-sm font-medium text-red-700"></span>
                     </div>
                     <button type="submit" class="w-full sm:w-9/12 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Opslaan</button>

@@ -38,11 +38,17 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             public string Bio { get; set; }
             
             [DataType(DataType.Upload)]
-            [MaxFileSize(1* 1024 * 1024)]
+            [MaxFileSize(2* 1024 * 1024)]
             [AllowedExtensions(new string[] { ".jpg" })]
             public IFormFile Avatar { get; set; }
             
+            [DataType(DataType.Upload)]
+            [MaxFileSize(2* 1024 * 1024)]
+            [AllowedExtensions(new string[] { ".jpg" })]
             public IFormFile Banner { get; set; }
+            
+            public string BannerLocation { get; set; }
+            public string AvatarLocation { get; set; }
             
         }
 
@@ -59,6 +65,8 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             if (user.Bio != null)
             {
                 Input.Bio = user.Bio;
+                Input.AvatarLocation = user.Avatar;
+                Input.BannerLocation = user.ProfileBanner;
             }
 
             return Page();
@@ -66,12 +74,15 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var user = await _userManager.GetUserAsync(User);
+            
             if (!ModelState.IsValid)
             {
+                Input.Bio = user.Bio;
+                Input.AvatarLocation = user.Avatar;
+                Input.BannerLocation = user.ProfileBanner;
                 return Page();
             }
-
-            var user = await _userManager.GetUserAsync(User);
             
             //update bio
             user.Bio = Input.Bio;
@@ -90,8 +101,6 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
 
             _dataContext.Update(user);
             await _dataContext.SaveChangesAsync();
-
-            StatusMessage = "Je profiel is succesvol bijgewerkt.";
 
             return RedirectToAction("Index","Profiel");
         }
