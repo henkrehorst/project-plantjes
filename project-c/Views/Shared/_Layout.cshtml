@@ -28,21 +28,18 @@
                         <div class="hidden md:block">
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <a class="@Html.IsSelected("Home", "Index") z-10 px-6 py-8 rounded-xl font-medium text-green-800 text-green-800 hover:text-green-800 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-800 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Index">Plantjes</a>
-                                
+
                                 <a class="@Html.IsSelected("Home", "Ons") z-10 px-6 py-8 rounded-xl text-md font-medium text-green-800 text-green-800 hover:text-green-800 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-800 focus:bg-green-100" asp-area="" asp-controller="Home" asp-action="Ons">Over ons</a>
                                 
-                                                              
+                                
+
+
                             </div>
                         </div>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-4 flex items-center md:ml-6">
-                            <button class="p-1 border-2 border-transparent bg-green-100 text-green-800 rounded-full hover:text-green-700 focus:outline-none focus:text-green-700 focus: active:bg-green-100" aria-label="Notifications">
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                            </button>
-
+                            <a class="@Html.IsSelected("Faq", "Index") z-10 px-6 py-8 rounded-xl text-md font-medium text-green-800 text-green-800 hover:text-green-800 hover:bg-green-100 active:bg-green-100 focus:outline-none focus:text-green-800 focus:bg-green-100" asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
                             <!-- Profile dropdown -->
                             <div class="ml-3 z-50 relative">
                                 <div>
@@ -63,7 +60,7 @@
                                         <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
                                             <div id="show-menu" class="py-1 rounded-md bg-white shadow-xs" role="menu">
                                                 <a class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-600 hover:bg-green-100 focus:outline-none focus:text-white focus:bg-gray-700" asp-controller="Plants" asp-action="mijnPlanten">Mijn planten</a>
-                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Profiel" asp-action="Index">Mijn profiel</a>    
+                                                <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" asp-controller="Profiel" asp-action="Index">Mijn profiel</a>
                                                 <a class="block px-3 py-2 rounded-md text-base font-medium text-green-700 hover:text-green-700 hover:bg-green-100 active:bg-green-800 focus:outline-none focus:text-white focus:bg-green-800" id="modify" asp-area="Identity" asp-page="/Account/Manage/Modify">Instellingen</a>
 
                                                 @if (User.IsInRole("Admin"))
@@ -245,24 +242,15 @@
             <div class="flex-shrink-0">
                 <div class="text-2xl font-medium">
                     Info<br />
-                    <h1 class="text-sm font-thin">
-                        <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
-                        <a asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
-                    </h1>
+                        <h1 class="text-sm font-thin">
+                            <a asp-area="" asp-controller="Home" asp-action="Voorwaarden">Gebruikersvoorwaarden</a><br />
+                            <a asp-area="" asp-controller="Home" asp-action="Ons">Meer over ons</a><br />
+                            <a asp-area="" asp-controller="Faq" asp-action="Index">FAQ</a>
+                        </h1>
                 </div>
             </div>
         </div>
-        <div class="mb-4">
-            <div class="flex-shrink-0">
-                <div class="text-2xl font-medium">
-                    Links<br />
-                    <h1 class="text-sm font-thin italic">
-                        <a asp-area="" asp-controller="Home" asp-action="Missie">Missie</a><br />
-                        <a asp-area="" asp-controller="Home" asp-action="ContactPage">Contact</a><br />
-                    </h1>
-                </div>
-            </div>
-        </div>
+        
             <div class="mb-4 flex items-center">
                 <div class="flex-shrink-0 mr-3">
                     <div class="text-2xl font-medium">
