@@ -2,4 +2,5 @@
 import './plant-overview/filterMenu';
 import './chat/chat';
 import './file-upload';
-console.log("hello world!")
+// import for password hide/show
+import 'vanilla-js-show-hide-password/toggle-password'

@@ -34,6 +34,9 @@ namespace project_c.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
             [StringLength(100, ErrorMessage = "Het {0} moet minstens {2} en maximaal {1} karakters lang zijn.", MinimumLength = 6)]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", 
+                ErrorMessage = "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
+                               " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
