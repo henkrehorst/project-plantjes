@@ -368,19 +368,19 @@ namespace project_c.Controllers
                 if (User.IsInRole("Admin"))
                 {
                     //send email here
-                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", usr.Email))
+                    using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", usr.Email))
                     {
                         message.Subject = $"Uw plant {plant.Name} is niet goedgekeurd";
                         message.Body = $"Beste {usr.FirstName} , \n\n\n" +
-                                       $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
-                                       "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
-                                       "Groetjes, Het Plantjes Team";
+                            $"In verband met onze siteregels is uw plant {plant.Name} helaas niet goedgekeurd. \n" +
+                            "Neem a.u.b de regels opnieuw door voordat u het opnieuw probeert. \n\n" +
+                            "Groetjes, Plantjesbuurt";
                         message.IsBodyHtml = false;
                         using (SmtpClient smtp = new SmtpClient())
                         {
                             smtp.Host = "smtp.gmail.com";
                             smtp.EnableSsl = true;
-                            NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                             smtp.UseDefaultCredentials = true;
                             smtp.Credentials = cred;
                             smtp.Port = 587;

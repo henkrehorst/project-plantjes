@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -156,7 +156,7 @@ namespace project_c.Areas.Identity.Pages.Account
                         values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
                         protocol: Request.Scheme);
 
-                    using (MailMessage message = new MailMessage("projectplantjes@gmail.com", Input.Email))
+                    using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", Input.Email))
                     {
                         message.Subject = "Account verificatie";
                         message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
@@ -169,7 +169,7 @@ namespace project_c.Areas.Identity.Pages.Account
                         {
                             smtp.Host = "smtp.gmail.com";
                             smtp.EnableSsl = true;
-                            NetworkCredential cred = new NetworkCredential("projectplantjes@gmail.com", "#1Geheim");
+                            NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
                             smtp.UseDefaultCredentials = true;
                             smtp.Credentials = cred;
                             smtp.Port = 587;
