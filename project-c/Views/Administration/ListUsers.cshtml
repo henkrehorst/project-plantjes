@@ -4,7 +4,70 @@
     ViewBag.Title = "All Users";
 }
 
-<h1>All Users</h1>
+<table class="border-collapse w-full table-fixed">
+    <thead>
+        <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                User Id
+            </th>
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                Email
+            </th>
+            <th class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                Opties
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+        <tr class="bg-white lg:hover:bg-gray-100 flex lg:table-row flex-row lg:flex-row flex-wrap lg:flex-no-wrap mb-10 lg:mb-0">
+            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">card-header</span>
+                @user.Id
+            </td>
+            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">card-header</span>
+                @user.UserName
+            </td>
+            <td class="w-full lg:w-auto p-3 text-gray-800 text-center border border-b text-center block lg:table-cell relative lg:static">
+                <span class="lg:hidden absolute top-0 left-0 bg-blue-200 px-2 py-1 text-xs font-bold uppercase">Actions</span>
+                <div class="card-footer inline-flex space-x-4">
+                    <div class="card-footer">
+                    <a asp-controller="Administration" asp-action="EditUser" asp-route-id="@user.Id" class="inline-flex bg-green-500 text-white p-2 px-6 mt-2 hover:bg-green-700 rounded">Bewerken</a>
+                        </div>
+                    <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                        <button onclick="if(!confirm('Weet u zeker dat u de gebruiker @user.Email wilt verwijderen?')){return false;}" type="submit" class=" inline-flex btn btn-danger bg-red-500 text-white p-2 px-4 mt-2 hover:bg-red-700 rounded">Verwijderen</button>
+                    </form>
+                </div>
+                </td> 
+            </tr>
+        }
+        </tbody>
+    </table>
+
+                    @*<h1>All Users</h1>
+
+        @foreach (var user in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    User Id : @user.Id
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@user.UserName</h5>
+                </div>
+                <div class="card-footer">
+                    <div class="card-footer">
+                        <a asp-action="EditUser" asp-controller="Administration"
+                           asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                    </div>
+                    <form method="post" asp-action="DeleteUser" asp-route-id="@user.Id">
+                        <button onclick="if(!confirm('Weet u zeker dat u de gebruiker @user.Email wilt verwijderen?')){return false;}" type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        }*@
 
 @foreach (var user in Model)
 {
