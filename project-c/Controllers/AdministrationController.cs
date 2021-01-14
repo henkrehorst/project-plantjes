@@ -37,6 +37,33 @@ namespace project_c.Controllers
             ViewBag.userIsDeleted = TempData["userIsDeleted"] == null ? false : TempData["userIsDeleted"];
             return View(orderedUsers);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> ListReports()
+        {
+            var reports = await _context.Reports.Include(r => r.User).Include(r => r.Plant).ToListAsync();
+
+            UserReportViewModel model = new UserReportViewModel();
+            model.Report = reports;
+
+            return View(reports);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteReport(int id)
+        {
+            try 
+            { 
+                var report = _context.Reports.Find(id);
+                _context.Reports.Remove(report);
+                _context.SaveChanges();
+                return RedirectToAction("ListReports");
+            }
+            catch
+            {
+                return RedirectToAction("ListReports");
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
