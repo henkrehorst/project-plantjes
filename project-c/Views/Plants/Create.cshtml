@@ -39,13 +39,15 @@
                     <input asp-for="Input.Amount" class="shadow appearance-none border border-blue-500 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Aantal aanbod">
                     <span asp-validation-for="Input.Amount" class="block mb-3 text-sm font-medium text-red-700"></span>
                 </div>
-                <div>
+                <span class="block text-gray-700 text-sm font-bold mb-2" asp-for="Input.checkBees">
+                                        Biodiversiteit</span>
+                <div class="items-center flex">
                     <input asp-for="Input.checkBees" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor bijen</span>
                 </div>
-                <div>
+                <div class="items-center flex">
                     <input asp-for="Input.checkOtherAnimals" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere diersoorten</span>
                 </div>
-                <div>
+                <div class="mb-4 items-center flex">
                     <input asp-for="Input.checkOtherPlants" type="checkbox" class="form-checkbox h-5 w-5 text-red-600"><span class="ml-2 text-gray-700">Goed voor andere plantsoorten</span>
                 </div>
                 @foreach (Filter filter in (ICollection<Filter>) ViewData["Filters"])
