@@ -85,7 +85,7 @@ if(document.getElementById("chat-screen") !== null){
                            if(chat['unreadMessages'] > 0){
                                chatRooms +=
                                    `<div class="cursor-pointer flex items-center border-b border-black bg-white chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
-                                    <img class="m-2 h-8 w-8 rounded-full chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}" src="${chat['avatar']}" alt="">
+                                    <img class="m-2 h-8 w-8 rounded-full chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}" src="${chat['avatar'] === null ? '/Images/avatar.png' : chat['avatar']}" alt="">
                                     <p class="m-0 -mt-1 text-1xl text-black font-bold chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
                                         ${chat['firstName']}
                                         <span class="block -mt-1 text-xs font-medium text-black chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
@@ -99,7 +99,7 @@ if(document.getElementById("chat-screen") !== null){
                            }else{
                            chatRooms += 
                                `<div class="cursor-pointer flex items-center border-b border-black bg-white chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
-                                    <img class="m-2 h-8 w-8 rounded-full chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}" src="${chat['avatar']}" alt="">
+                                    <img class="m-2 h-8 w-8 rounded-full chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}" src="${chat['avatar'] === null ? '/Images/avatar.png' : chat['avatar']}" alt="">
                                     <p class="m-0 -mt-1 text-1xl text-gray-600 font-bold chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
                                         ${chat['firstName']}
                                         <span class="block -mt-1 text-xs font-medium text-gray-600 chat-box" data-userid="${chat['userId']}" data-unread="${chat['unreadMessages']}">
@@ -195,7 +195,7 @@ if(document.getElementById("chat-screen") !== null){
                 response.json().then(data => {
                     console.log(data);
                     document.getElementById("name-place").innerText = data.firstName;
-                    document.getElementById("avatar-place").src = data.avatar;
+                    document.getElementById("avatar-place").src = data.avatar === null ? '/Images/avatar.png': data.avatar;
                     //show messages in view
                     let messageOutput = '';
                     data.messages.forEach(element => {
