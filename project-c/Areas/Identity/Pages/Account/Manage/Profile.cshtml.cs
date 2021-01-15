@@ -94,7 +94,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             }
             
             //update banner if is uploaded
-            if (Input.Avatar != null)
+            if (Input.Banner != null)
             {
                 user.ProfileBanner = await _uploadService.UploadImage(Input.Banner);
             }
@@ -102,7 +102,7 @@ namespace project_c.Areas.Identity.Pages.Account.Manage
             _dataContext.Update(user);
             await _dataContext.SaveChangesAsync();
 
-            return RedirectToAction("Index","Profiel");
+            return RedirectToAction("MijnPlanten","Plants");
         }
     }
 }
