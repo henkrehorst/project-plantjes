@@ -441,7 +441,7 @@ namespace project_c.Controllers
                     usr.Karma--;
                     _context.SaveChanges();
                     TempData["plantIsDeleted"] = true;
-                    return RedirectToAction("Index");
+                    return RedirectToAction("MijnPlanten");
                 }
                 else if (_userManager.GetUserId(User) == plant.UserId)
                 {
@@ -468,10 +468,11 @@ namespace project_c.Controllers
         }
 
         [Authorize]
-        public ActionResult MijnPlanten()
+        public async Task<ActionResult> MijnPlanten()
         {
             var plants = _context.Plants.Where(p => p.UserId == _userManager.GetUserId(User))
                 .OrderByDescending(p => p.Creation);
+            ViewData["User"] = await _userManager.GetUserAsync(User);
             ViewBag.plantIsCreated = TempData["plantIsCreated"] == null ? false : TempData["plantIsCreated"];
             ViewBag.plantIsDeleted = TempData["plantIsDeleted"] == null ? false : TempData["plantIsDeleted"];
 
