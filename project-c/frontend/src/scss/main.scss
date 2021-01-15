@@ -8,7 +8,13 @@
 
 @import "@henkrehorst/file-upload-with-preview/dist/file-upload-with-preview.min.css";
 
+@import "swiper/swiper-bundle.min.css";
+
 $brand-color: white;
+
+:root {
+  --swiper-theme-color: #37a169;
+}
 
 body {
   background-color: $brand-color;
@@ -153,4 +159,24 @@ main {
 .custom-file-container__custom-file__custom-file-control{
   border-color: #4299e1;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
 }
