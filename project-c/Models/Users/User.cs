@@ -24,6 +24,8 @@ namespace project_c.Models.Users
         
         public string ProfileBanner { get; set; }
         
+        public string EmailRecoveryCode { get; set; }
+        
         public string Bio { get; set; }
         public int Karma { get; set; }
 		public virtual ICollection<Message> Messages { get; set; }
