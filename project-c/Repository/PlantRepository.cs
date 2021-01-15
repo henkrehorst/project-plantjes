@@ -55,7 +55,7 @@ namespace project_c.Repository
             }
             else
             {
-                query = query.OrderBy(t => t.plant.Creation);
+                query = query.OrderByDescending(t => t.plant.Creation);
             }
 
             //show only plant data and not user data
@@ -99,7 +99,7 @@ namespace project_c.Repository
             }
             else
             {
-                query = query.OrderBy(p => p.Creation);
+                query = query.OrderByDescending(p => p.Creation);
             }
 
             return await PaginatedResponse<Plant>.CreateAsync(query, page, 18);

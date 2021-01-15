@@ -1,7 +1,7 @@
 ﻿@model IQueryable<Plant>
 @using project_c.Models.Plants;
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Nog niet goedgekeurde planten";
     Layout = "_Layout";
     //host/Administration/ApprovePlants
 }
@@ -10,7 +10,6 @@
 <div class="col-span-9 grid grid-cols-3 gap-4" style="min-height: 100px">
     @if (User.IsInRole("Admin"))
     {
-        <div></div>
         foreach (var plant in Model)
         {
             if (!plant.HasBeenApproved)

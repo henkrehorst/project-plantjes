@@ -540,7 +540,7 @@ namespace project_c.Controllers
                     return Content("You are not authorized to perform this action");
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Home");
             }
             catch
             {
