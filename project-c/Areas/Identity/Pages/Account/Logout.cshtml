@@ -1,10 +1,35 @@
 ﻿@page
+@using Microsoft.VisualStudio.Web.CodeGeneration.Design
 @model LogoutModel
 @{
     ViewData["Title"] = "Log out";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    <p>Je bent uitgelogd.</p>
-</header>
+<body>
+<div id="logout-message" class="-m-2 my-5 mx-5 text-center">
+    <div class="p-2">
+        <div class="inline-flex items-center bg-white leading-none text-green-600 rounded-full p-2 shadow text-teal text-xl">
+            <span class="inline-flex px-2">U bent succesvol uitgelogd.</span>
+        </div>
+    </div>
+</div>
+</body>
+
+@{
+    var isLoggedOut = true;
+    @if (isLoggedOut)
+    {
+        <script>
+        Swal.fire({position: 'center', title:'Uitloggen...' , showConfirmButton: false, timer: 2500})
+        swal.showLoading();
+        </script>
+    }
+}
+<script>
+   var message = document.getElementById("logout-message");
+   message.style.display = "none";
+   
+   setTimeout(() => {
+       message.style.display = "block";
+   },2500)
+</script>

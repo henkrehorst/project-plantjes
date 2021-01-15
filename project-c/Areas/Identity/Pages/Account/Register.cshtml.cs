@@ -36,6 +36,7 @@ namespace project_c.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _EmailModel;
         private readonly ZipCodeService _zipCodeService;
+        private readonly DataContext _context;
 
         public RegisterModel(
             UserManager<User> userManager,
@@ -43,7 +44,8 @@ namespace project_c.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender EmailModel,
             RoleManager<IdentityRole> roleManager,
-            ZipCodeService zipCodeService
+            ZipCodeService zipCodeService,
+            DataContext context
         )
         {
             _userManager = userManager;
@@ -52,6 +54,7 @@ namespace project_c.Areas.Identity.Pages.Account
             _EmailModel = EmailModel;
             _roleManager = roleManager;
             _zipCodeService = zipCodeService;
+            _context = context;
         }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -86,9 +89,10 @@ namespace project_c.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Geen wachtwoord ingevuld")]
             [StringLength(100, ErrorMessage = "Het  {0} moet minstens {2} en maximaal {1} karakters lang zijn.",
                 MinimumLength = 6)]
-            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", 
-                ErrorMessage = "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
-                               " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
+                ErrorMessage =
+                    "Het wachtwoord voldoet niet aan de eisen: het wachtwoord moet minimaal 1 hoofdletter bevatten," +
+                    " minimaal 1 cijfer, minimaal 1 speciaal teken en moet minimaal 8 tekens lang zijn.")]
             [DataType(DataType.Password)]
             [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
@@ -130,67 +134,77 @@ namespace project_c.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var zipCodeInformation = await _zipCodeService.GetZipCodeInformation(Input.PostCode);
-                
+
                 var user = new User
                 {
                     UserName = Input.Email, Email = Input.Email,
-                    FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode, 
+                    FirstName = Input.Voornaam, LastName = Input.Achternaam, ZipCode = Input.PostCode,
                     Location = new Point(zipCodeInformation.Latitude, zipCodeInformation.Longitude)
                 };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (_userManager.Users.Count() == 1)
+                var emailExist = _context.User.Any(p => p.Email == Input.Email);
+                if (emailExist)
                 {
-                    await _userManager.AddToRoleAsync(user, "Admin");
+                    ModelState.AddModelError("EmailError", "Het e-mailadres is al in gebruik");
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, "Customer");
-                }
-
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
-                        protocol: Request.Scheme);
-
-                    using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", Input.Email))
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    if (_userManager.Users.Count() == 1)
                     {
-                        message.Subject = "Account verificatie";
-                        message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
-                                       ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
-                                       "om je email te bevesitgen!\n\n" + callbackUrl +
-                                       "Groetjes,\n\n\nHet hele Plantjesbuurt Team!";
-                        message.IsBodyHtml = false;
-
-                        using (SmtpClient smtp = new SmtpClient())
-                        {
-                            smtp.Host = "smtp.gmail.com";
-                            smtp.EnableSsl = true;
-                            NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
-                            smtp.UseDefaultCredentials = true;
-                            smtp.Credentials = cred;
-                            smtp.Port = 587;
-                            smtp.Send(message);
-                        }
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "Customer");
                     }
 
-                    return LocalRedirect(ReturnUrl);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
+                            protocol: Request.Scheme);
+
+                        using (MailMessage message = new MailMessage("plantjesbuurt@gmail.com", Input.Email))
+                        {
+                            message.Subject = "Account verificatie";
+                            message.Body = "\nHey " + Input.Voornaam + " " + Input.Achternaam +
+                                           ",\n\n Je kunt je account bijna gebruiken! Klik alleen nog even op de onderstaande link" +
+                                           "om je email te bevesitgen!\n\n" + callbackUrl +
+                                           "Groetjes,\n\n\nHet hele Plantjesbuurt Team!";
+                            message.IsBodyHtml = false;
+
+                            using (SmtpClient smtp = new SmtpClient())
+                            {
+                                smtp.Host = "smtp.gmail.com";
+                                smtp.EnableSsl = true;
+                                NetworkCredential cred = new NetworkCredential("plantjesbuurt@gmail.com", "#1Geheim");
+                                smtp.UseDefaultCredentials = true;
+                                smtp.Credentials = cred;
+                                smtp.Port = 587;
+                                smtp.Send(message);
+                            }
+
+                            return LocalRedirect(ReturnUrl);
+                        }
+                        
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
 
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                // If we got this far, something failed, redisplay form
+                return Page();
             }
-
-            // If we got this far, something failed, redisplay form
-            return Page();
+            return LocalRedirect(ReturnUrl);
         }
     }
 }

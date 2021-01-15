@@ -107,6 +107,7 @@ namespace project_c.Controllers
             ViewBag.ratingIsCreated = TempData["ratingIsCreated"] == null ? false : TempData["ratingIsCreated"];
             ViewBag.ratingIsDeleted = TempData["ratingIsDeleted"] == null ? false : TempData["ratingIsDeleted"];
             ViewBag.ratingIsEdited = TempData["ratingIsEdited"] == null ? false : TempData["ratingIsEdited"];
+            ViewBag.reportIsSubmitted = TempData["reportIsSubmitted"] == null ? false : TempData["reportIsSubmitted"];
 
             return latitude != 0.0 && longitude != 0.0
                 ? View(await _plantRepository.GetPlantsWithDistance(_context, latitude, longitude, aanbod, soort, licht,
@@ -155,6 +156,7 @@ namespace project_c.Controllers
         public ActionResult Create()
         {
             ViewData["Filters"] = this._context.Filters.Include(filter => filter.Options).ToList();
+            ViewBag.plantIsNotCreated = TempData["plantIsNotCreated"] == null ? false : TempData["plantIsNotCreated"];
             return View();
         }
 
@@ -227,7 +229,8 @@ namespace project_c.Controllers
                 }
                 catch
                 {
-                    return Content("Error probeer het opnieuw");
+                    TempData["plantIsNotCreated"] = true;
+                    return RedirectToAction("Create");
                 }
             }
 
@@ -269,9 +272,10 @@ namespace project_c.Controllers
                 report.User = await _userManager.GetUserAsync(User);
 
                 _context.Add(report);
-                _context.SaveChanges();
-
-                return RedirectToAction(nameof(Index));
+                _context.SaveChanges();    
+                
+                TempData["reportIsSubmitted"] = true;
+                return RedirectToAction("Index");
             }
             catch
             {
