@@ -71,7 +71,7 @@ namespace project_c.Controllers
 
             [DataType(DataType.Upload)]
             [Required(ErrorMessage = "U moet minimaal 1 foto uploaden")]
-            [MaxFileSizeArray(1 * 1024 * 1024)]
+            [MaxFileSizeArray(2 * 1024 * 1024)]
             [AllowedExtensionsArray(new string[] {".jpg"})]
             public IFormFile[] PlantPictures { get; set; }
         }
