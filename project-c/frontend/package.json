@@ -26,6 +26,7 @@
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
+    "swiper": "^6.4.5",
     "tailwindcss": "1.9.6",
     "vanilla-js-show-hide-password": "^1.0.0",
     "webpack": "^5.4.0",

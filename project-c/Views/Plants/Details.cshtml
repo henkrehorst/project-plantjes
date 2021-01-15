@@ -18,7 +18,20 @@
             </svg>
         </button>
         <div class="lg:w-4/5 mx-auto flex flex-wrap">
-        <img class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" src="@plant.ImgUrl" alt="Plant foto">
+        <div class="swiper-container lg:w-1/2 w-full">
+            <div class="swiper-wrapper" id="image-slider">
+                @foreach (var img in @plant.Images)
+                {
+                    <div class="swiper-slide">
+                        <img class="object-cover object-center rounded border border-gray-200" src="@img" alt="Plant foto">
+                    </div>
+                }
+            </div>
+            <!-- Add Pagination and buttons -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next text-green-600"></div>
+            <div class="swiper-button-prev text-green-600"></div>
+          </div>
         <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
             <div class="text-green-700 text-3xl title-font font-bold mb-1">@plant.Name</div>
             <div class="flex border-t border-gray-300 mt-5 pt-5"></div>
